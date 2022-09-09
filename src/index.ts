@@ -2,32 +2,9 @@
 
 /* MODULES */
 
-import mockRequest from "./api/src/controller/POST/mockRequest";
-import streamPlaylist from "./api/src/controller/POST/streamPlaylist";
-import express from "express";
+import startServer from './server';
 
-import cors from "cors";
-
-/* VARIABLES */
-
-const appExpress = express();
-const port = 8000;
-
-/* ROUTES */
-
-appExpress.use(cors({
-  origin: 'http://localhost:3000'
-}));
-
-appExpress.use(express.urlencoded({ extended: true }));
-appExpress.use(express.json());
-
-appExpress.post("/stream/download", mockRequest);
-
-appExpress.post("/stream/playlist", streamPlaylist);
-
-appExpress.listen(port);
-
+startServer();
 
 /** ELECTION **/
 
