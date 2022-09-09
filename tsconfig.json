@@ -13,7 +13,10 @@
     "resolveJsonModule": true,
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "types": [
+      "jest"
+    ]
   },
   "include": ["src/**/*", "window.d.ts"]
 }
