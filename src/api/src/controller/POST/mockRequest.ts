@@ -1,7 +1,7 @@
 import Listr from "listr";
 
 import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
-import merging from "../../utilFcts/Merging.js";
+import merging from "../../utilFcts/Merging";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";

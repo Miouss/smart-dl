@@ -2,7 +2,7 @@ import fetch from "cross-fetch";
 
 import { Parser } from "m3u8-parser";
 
-import onError from "../utilFcts/OnError.js";
+import onError from "../utilFcts/OnError";
 
 interface PlaylistUrl {
   url: string;

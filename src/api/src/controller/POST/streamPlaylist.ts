@@ -37,15 +37,13 @@ export default async function streamPlaylist(req: Request, res: Response) {
     const username = req.body.id;
     const password = req.body.secret;
 
-    console.log(req.body);
-
     let bearerToken: string,
       vodData: VodData,
       vodPlaylist: VodPlaylist,
       mediaSelection: MediaSelection = undefined;
 
     const { realm, apikey } = await readFile("./src/api/config.json");
-
+    
     const dataCollectList = new Listr([
       {
         title: "Checking Authentification",
@@ -84,7 +82,9 @@ export default async function streamPlaylist(req: Request, res: Response) {
       },
     ]);
 
-    await dataCollect.run();
+    await dataCollect.run().catch(error => {
+      throw new Error(error);
+    });
 
     mediaSelection.VideoSelection.sort((a, b) => {
       return parseInt(a["Average-Bandwidth"]) >=

@@ -1,6 +1,6 @@
 import fetch, { Headers } from "cross-fetch";
 
-import onError from "../utilFcts/OnError.js";
+import onError from "../utilFcts/OnError";
 
 interface Tokens {
   authorisationToken: string,
