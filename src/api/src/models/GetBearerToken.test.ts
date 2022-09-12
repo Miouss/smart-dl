@@ -22,7 +22,7 @@ describe("GetBearerToken", () => {
         ok: false,
       });
 
-      expect(() =>
+      await expect(() =>
         getBearerToken(badUsername, badPassword, realm, apikey)
       ).rejects.toThrow("Credentials incorrect");
     });
