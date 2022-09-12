@@ -34,15 +34,12 @@ interface VideoSelection {
 
 export default async function streamPlaylist(req: Request, res: Response) {
   try {
-    const username = req.body.id;
-    const password = req.body.secret;
-
     let bearerToken: string,
       vodData: VodData,
       vodPlaylist: VodPlaylist,
       mediaSelection: MediaSelection = undefined;
 
-    const { realm, apikey } = await readFile("./src/api/config.json");
+    const { username, password, realm, apikey } = await readFile("./src/api/config.json");
     
     const dataCollectList = new Listr([
       {
