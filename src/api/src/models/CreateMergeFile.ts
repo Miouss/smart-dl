@@ -6,15 +6,20 @@ export default async function createMergeFile(
   fileName: string,
   urlList: Array<string>,
   outputPath: string,
-  extension: MediaExtension
+  extension: MediaExtension,
+  testPath = false
 ) {
+  const mergeFilePath = testPath
+    ? `src/api/src/testData/downloadVodPlaylist/testOuput/${fileName}.txt`
+    : `./src/api/processing/${fileName}.txt`;
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  truncate(`./src/api/processing/${fileName}.txt`, 0, () => {});
+  truncate(mergeFilePath, 0, () => {});
 
   for (let i = 0; i < urlList.length; i++) {
     await promises.writeFile(
-      `./src//api/processing/${fileName}.txt`,
-      `file '${outputPath}\\${i}.${extension}'\n`,
+      mergeFilePath,
+      `file '${outputPath}/${i}.${extension}'\n`,
       { flag: "a" }
     );
   }
