@@ -1,7 +1,9 @@
 import Listr from "listr";
 
-import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
 import merging from "../../utilFcts/Merging";
+import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
+import downloadVodFragments from "../../models/DownloadVodFragments";
+import createMergeFile from "../../models/CreateMergeFile";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
@@ -15,23 +17,22 @@ export default async function mockRequest(req: Request, res: Response) {
     const vodChoices = req.body.mediaSelection;
 
     const vodVideoUrlPlaylist: string =
-      vodChoices.prefix + vodChoices.VideoSelection[0].url;
+      vodChoices.prefix +
+      vodChoices.VideoSelection[vodChoices.VideoSelection.length - 1].url;
     const vodAudioUrlPlaylist: string =
       vodChoices.prefix +
-      vodChoices.AudioSelection[vodChoices.VideoSelection[0].audio].English.uri;
+      vodChoices.AudioSelection[
+        vodChoices.VideoSelection[vodChoices.VideoSelection.length - 1].audio
+      ].English.uri;
 
-    await downloadVodPlaylist(
-      "listVideo",
-      vodVideoUrlPlaylist,
-      "ts",
-      outputPath
-    );
-    await downloadVodPlaylist(
-      "listAudio",
-      vodAudioUrlPlaylist,
-      "aac",
-      outputPath
-    );
+    const videoUrlList = await downloadVodPlaylist(vodVideoUrlPlaylist);
+    const audioUrlList = await downloadVodPlaylist(vodAudioUrlPlaylist);
+
+    await downloadVodFragments(videoUrlList, "ts", outputPath);
+    await downloadVodFragments(audioUrlList, "aac", outputPath);
+
+    await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
+    await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
 
     const mergingVideoFrags = [
       "-y",
@@ -87,24 +88,24 @@ export default async function mockRequest(req: Request, res: Response) {
           await merging("ffmpeg", mergingAudioFrags);
         },
       },
-      {
-        title: "Deleting Video & Audio Fragments",
-        task: async () => {
-          await merging("del-frag-src.bat", [`${outputPath}`]);
-        },
-      },
+      // {
+      //   title: "Deleting Video & Audio Fragments",
+      //   task: async () => {
+      //     await merging("del-frag-src.bat", [`${outputPath}`]);
+      //   },
+      // },
       {
         title: "Merging Video with Audio",
         task: async () => {
           await merging("ffmpeg", mergingVideoWithAudio);
         },
       },
-      {
-        title: "Deleting Video and Audio Parts",
-        task: async () => {
-          await merging("del-full-src.bat", [`${outputPath}`]);
-        },
-      },
+      // {
+      //   title: "Deleting Video and Audio Parts",
+      //   task: async () => {
+      //     await merging("del-full-src.bat", [`${outputPath}`]);
+      //   },
+      // },
     ]);
 
     await mergingTasks.run();
