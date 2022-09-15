@@ -90,3 +90,4 @@ out/
 
 #processing
 src/api/processing
+src/api/config.json
