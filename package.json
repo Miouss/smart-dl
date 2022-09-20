@@ -78,7 +78,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.4",
     "@types/cors": "^2.8.12",
-    "@types/express": "^4.17.13",
+    "@types/express": "^4.17.14",
     "@types/jest": "^29.0.0",
     "@types/jsonfile": "^6.1.0",
     "@types/listr": "^0.14.4",
