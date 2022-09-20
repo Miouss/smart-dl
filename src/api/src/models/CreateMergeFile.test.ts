@@ -25,7 +25,7 @@ describe("CreateMergeFile", () => {
     );
 
     const testMergeFileContent = await fsPromises.readFile(
-      "src/api/src/testData/downloadVodPlaylist/testOuput/listVideoTest.txt",
+      "src/api/src/testData/downloadVodPlaylist/listVideoTest.txt",
       { encoding: "utf8" }
     );
 
@@ -56,7 +56,7 @@ describe("CreateMergeFile", () => {
     );
 
     const testMergeFileContent = await fsPromises.readFile(
-      "src/api/src/testData/downloadVodPlaylist/testOuput/listAudioTest.txt",
+      "src/api/src/testData/downloadVodPlaylist/listAudioTest.txt",
       { encoding: "utf8" }
     );
 

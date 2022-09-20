@@ -10,7 +10,7 @@ export default async function createMergeFile(
   testPath = false
 ) {
   const mergeFilePath = testPath
-    ? `src/api/src/testData/downloadVodPlaylist/testOuput/${fileName}.txt`
+    ? `src/api/src/testData/downloadVodPlaylist/${fileName}.txt`
     : `./src/api/processing/${fileName}.txt`;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
