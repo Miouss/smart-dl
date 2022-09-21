@@ -91,4 +91,6 @@ out/
 #api
 src/api/processing
 src/api/config.json
-src/api/src/testData/downloadVodPlaylist/testOuput
+
+#public
+public/testData/downloadVodPlaylist/testOuput
