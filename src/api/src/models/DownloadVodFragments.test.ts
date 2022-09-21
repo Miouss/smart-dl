@@ -1,4 +1,5 @@
 import startServer from "../../../server";
+import fetch from "cross-fetch";
 import { monitorPublicFolder } from "../../../express";
 import downloadVodFragments from "./DownloadVodFragments";
 
@@ -25,5 +26,32 @@ describe("downloadVodFragments", () => {
     }
 
     await downloadVodFragments(videoUrlList, "ts", outputPath);
+
+    await compareStreams(videoUrlList);
+  });
+
+  it("should download vod's audio fragments", async () => {
+    const audioUrlList = [];
+
+    for (let i = 0; i < 38; i++) {
+      audioUrlList.push(`http://localhost:8000/testData/downloadVodPlaylist/${i}.aac`);
+    }
+
+    await downloadVodFragments(audioUrlList, "aac", outputPath);
+
+    await compareStreams(audioUrlList);
   });
 });
+
+
+async function compareStreams(urlList: Array<string>){
+  await Promise.all(urlList.map(async (url: string) => {
+    const response = await fetch(url);
+    const response2 = await fetch(url.replace("downloadVodPlaylist/", "downloadVodPlaylist/testOutput/"));
+    
+    const responseBuffer = await response.arrayBuffer();
+    const response2Buffer = await response2.arrayBuffer();
+
+    expect(responseBuffer).toEqual(response2Buffer);
+  }))
+}
