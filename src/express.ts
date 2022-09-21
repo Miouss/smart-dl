@@ -20,3 +20,8 @@ appExpress.post("/stream/download", mockRequest);
 appExpress.post("/stream/playlist", streamPlaylist);
 
 export default appExpress;
+
+export function monitorPublicFolder(){
+  appExpress.use(express.static('public'));
+  appExpress.use('/testData', express.static('testData'));
+}

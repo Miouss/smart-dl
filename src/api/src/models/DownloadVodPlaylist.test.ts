@@ -20,14 +20,14 @@ describe("downloadVodPlaylist", () => {
     });
 
     const videoUrlList = await downloadVodPlaylist(
-      "./src/api/src/testData/index.m3u8"
+      "./public/testData/index.m3u8"
     );
 
     
     const correctVideoUrlList = [];
 
     for (let i = 1; i < 38; i++) {
-        correctVideoUrlList.push(`./src/api/src/testData/${i}.ts`);
+        correctVideoUrlList.push(`./public/testData/${i}.ts`);
     }
 
     expect(videoUrlList).toMatchObject(correctVideoUrlList);
@@ -44,13 +44,13 @@ describe("downloadVodPlaylist", () => {
     });
 
     const audioUrlList = await downloadVodPlaylist(
-      "./src/api/src/testData/index.m3u8"
+      "./public/testData/index.m3u8"
     );
 
     const correctAudioUrlList = [];
 
     for (let i = 1; i < 38; i++) {
-        correctAudioUrlList.push(`./src/api/src/testData/${i}.aac`);
+        correctAudioUrlList.push(`./public/testData/${i}.aac`);
     }
 
     expect(audioUrlList).toMatchObject(correctAudioUrlList);

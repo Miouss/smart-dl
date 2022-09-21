@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 
 type MediaExtension = "ts" | "aac";
 
-export default async function downloadVod(
+export default async function downloadVodFragments(
   urlList: Array<string>,
   extension: MediaExtension,
   outputPath: string
@@ -31,7 +31,7 @@ export default async function downloadVod(
               .fill(0)
               .map(async (value, j) => {
                 const request = await fetch(urlList[i + j]);
-
+                console.log(request);
                 await new Promise<void>((resolve) => {
                   const writeStream = createWriteStream(
                     `${outputPath}\\${i + j}.${extension}`
