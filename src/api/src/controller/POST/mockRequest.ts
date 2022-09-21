@@ -1,5 +1,3 @@
-import Listr from "listr";
-
 import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
 import downloadVodFragments from "../../models/DownloadVodFragments";
 import createMergeFile from "../../models/CreateMergeFile";
