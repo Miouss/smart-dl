@@ -31,7 +31,7 @@ export default async function downloadVodFragments(
               .fill(0)
               .map(async (value, j) => {
                 const request = await fetch(urlList[i + j]);
-                console.log(request);
+
                 await new Promise<void>((resolve) => {
                   const writeStream = createWriteStream(
                     `${outputPath}\\${i + j}.${extension}`
