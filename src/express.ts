@@ -1,5 +1,5 @@
 import express from "express";
-import mockRequest from "./api/src/controller/POST/mockRequest";
+import downloadMedia from "./api/src/controller/POST/downloadMedia";
 import streamPlaylist from "./api/src/controller/POST/streamPlaylist";
 
 import cors from "cors";
@@ -15,7 +15,7 @@ appExpress.use(
 appExpress.use(express.urlencoded({ extended: true }));
 appExpress.use(express.json());
 
-appExpress.post("/stream/download", mockRequest);
+appExpress.post("/stream/download", downloadMedia);
 
 appExpress.post("/stream/playlist", streamPlaylist);
 
