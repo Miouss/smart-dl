@@ -4,6 +4,8 @@ import fetch, { Headers } from "cross-fetch";
 import TextField from "@mui/material/TextField";
 import { Stack } from "@mui/system";
 
+import MediaSelection from "./components/MediaSelections";
+
 export default function App() {
   const [data, setData] = useState(null);
   const [showUrl, setShowUrl] = useState(null);
@@ -30,21 +32,23 @@ export default function App() {
 
       const mediaSelection = await response.json();
 
-      const options2 = {
-        method: "POST",
-        headers: header,
-        body: JSON.stringify({
-          mediaSelection,
-          showUrl,
-        }),
-      };
+      setData(mediaSelection);
 
-      const response2 = await fetch(
-        "http://localhost:8000/stream/download",
-        options2
-      );
+      // const options2 = {
+      //   method: "POST",
+      //   headers: header,
+      //   body: JSON.stringify({
+      //     mediaSelection,
+      //     showUrl,
+      //   }),
+      // };
 
-      setData(await response2.json());
+      // const response2 = await fetch(
+      //   "http://localhost:8000/stream/download",
+      //   options2
+      // );
+
+      // setData(await response2.json());
     } else {
       alert("Tick use saved credentials please");
     }
@@ -99,9 +103,7 @@ export default function App() {
         </Stack>
       </form>
 
-      <div>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
+      <MediaSelection mediaChoices={data} />
     </>
   );
 }
