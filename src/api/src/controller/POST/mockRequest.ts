@@ -1,9 +1,9 @@
 import Listr from "listr";
 
-import merging from "../../utilFcts/Merging";
 import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
 import downloadVodFragments from "../../models/DownloadVodFragments";
 import createMergeFile from "../../models/CreateMergeFile";
+import handleMerging from "../../models/HandleMerging";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
@@ -34,81 +34,7 @@ export default async function mockRequest(req: Request, res: Response) {
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
 
-    const mergingVideoFrags = [
-      "-y",
-      "-safe",
-      "0",
-      "-f",
-      "concat",
-      "-i",
-      "listVideo.txt",
-      "-c",
-      "copy",
-      `${outputPath}\\output.ts`,
-    ];
-
-    const mergingAudioFrags = [
-      "-y",
-      "-safe",
-      "0",
-      "-f",
-      "concat",
-      "-i",
-      "listAudio.txt",
-      "-c",
-      "copy",
-      `${outputPath}\\output.aac`,
-    ];
-
-    const mergingVideoWithAudio = [
-      "-y",
-      "-i",
-      `${outputPath}\\output.ts`,
-      "-i",
-      `${outputPath}\\output.aac`,
-      "-c",
-      "copy",
-      `"${outputPath}\\${vodChoices.vodTitle
-        // eslint-disable-next-line no-useless-escape
-        .replace(/[\/]/g, "-")
-        // eslint-disable-next-line no-useless-escape
-        .replace(/[\/\\:*?"<>]/g, "")}".mp4`,
-    ];
-
-    const mergingTasks = new Listr([
-      {
-        title: "Merging Video Fragments",
-        task: async () => {
-          await merging("ffmpeg", mergingVideoFrags);
-        },
-      },
-      {
-        title: "Merging Audio Fragments",
-        task: async () => {
-          await merging("ffmpeg", mergingAudioFrags);
-        },
-      },
-      // {
-      //   title: "Deleting Video & Audio Fragments",
-      //   task: async () => {
-      //     await merging("del-frag-src.bat", [`${outputPath}`]);
-      //   },
-      // },
-      {
-        title: "Merging Video with Audio",
-        task: async () => {
-          await merging("ffmpeg", mergingVideoWithAudio);
-        },
-      },
-      // {
-      //   title: "Deleting Video and Audio Parts",
-      //   task: async () => {
-      //     await merging("del-full-src.bat", [`${outputPath}`]);
-      //   },
-      // },
-    ]);
-
-    await mergingTasks.run();
+    await handleMerging(vodChoices.vodTitle, outputPath);
 
     console.timeEnd("Operations Completed in ");
 
