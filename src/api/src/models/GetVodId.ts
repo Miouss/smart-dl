@@ -5,6 +5,7 @@ import onError from "../utilFcts/OnError";
 interface Metadata {
   vodId: string,
   vodName: string,
+  vodThumbnail: string
 }
 
 export default async function getVodId(showUrl: string) {
@@ -21,6 +22,7 @@ export default async function getVodId(showUrl: string) {
   const metadata: Metadata = {
     vodId: data.entries[0].item.customFields.DiceVideoId,
     vodName: data.title,
+    vodThumbnail: data.entries[0].item.images.poster
   }
 
   return metadata;

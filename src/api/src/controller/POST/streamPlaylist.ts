@@ -11,6 +11,7 @@ import { Request, Response } from "express";
 interface VodData {
   vodId: string;
   vodName: string;
+  vodThumbnail: string
 }
 
 interface VodPlaylist {
@@ -23,6 +24,7 @@ interface MediaSelection {
   AudioSelection: Array<any>;
   prefix: string;
   vodTitle?: string;
+  vodThumbnail?: string
 }
 
 interface VideoSelection {
@@ -91,6 +93,7 @@ export default async function streamPlaylist(req: Request, res: Response) {
     });
 
     mediaSelection.vodTitle = vodData.vodName;
+    mediaSelection.vodThumbnail = vodData.vodThumbnail;
 
     res.status(200);
     res.json(mediaSelection);
