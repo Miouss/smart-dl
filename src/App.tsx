@@ -4,7 +4,7 @@ import fetch, { Headers } from "cross-fetch";
 import TextField from "@mui/material/TextField";
 import { Stack } from "@mui/system";
 
-import MediaSelection from "./components/MediaSelections";
+import MediaSelection from "./components/MediaMenu";
 
 export default function App() {
   const [data, setData] = useState(null);
