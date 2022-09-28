@@ -8,38 +8,17 @@ import getVodStreams from "../../models/GetVodStreams";
 
 import { Request, Response } from "express";
 
-interface VodData {
-  vodId: string;
-  vodName: string;
-  vodThumbnail: string
-}
+import { Media } from "../../../../types/Media"
+import { Metadata } from "../../../../types/Metadata";
+import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 
-interface VodPlaylist {
-  url: string;
-  prefix: string;
-}
-
-interface MediaSelection {
-  VideoSelection: Array<VideoSelection>;
-  AudioSelection: Array<any>;
-  prefix: string;
-  vodTitle?: string;
-  vodThumbnail?: string
-}
-
-interface VideoSelection {
-  resolution: string;
-  "Average-Bandwidth": string;
-  audio: string;
-  url: string;
-}
 
 export default async function streamPlaylist(req: Request, res: Response) {
   try {
     let bearerToken: string,
-      vodData: VodData,
-      vodPlaylist: VodPlaylist,
-      mediaSelection: MediaSelection = undefined;
+      vodData: Metadata,
+      vodPlaylist: PlaylistUrl,
+      mediaSelection: Media;
 
     const { username, password, realm, apikey } = await readFile("./src/api/config.json");
     
@@ -91,9 +70,10 @@ export default async function streamPlaylist(req: Request, res: Response) {
         ? -1
         : 1;
     });
-
-    mediaSelection.vodTitle = vodData.vodName;
-    mediaSelection.vodThumbnail = vodData.vodThumbnail;
+    
+    mediaSelection.title = vodData.title;
+    mediaSelection.thumbnail = vodData.thumbnail;
+    mediaSelection.description = vodData.description;
 
     res.status(200);
     res.json(mediaSelection);
