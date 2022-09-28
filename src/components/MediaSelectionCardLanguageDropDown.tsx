@@ -3,7 +3,7 @@ import React from "react";
 import { Grid } from "@mui/material";
 import Button from "@mui/material/Button";
 
-import { AudioSelection, LangSelection } from "../types/Media";
+import { AudioSelection } from "../types/Media";
 import { Stack } from "@mui/system";
 
 interface Props {
