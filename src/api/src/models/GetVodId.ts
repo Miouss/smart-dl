@@ -2,11 +2,7 @@ import fetch from "cross-fetch";
 
 import onError from "../utilFcts/OnError";
 
-interface Metadata {
-  vodId: string,
-  vodName: string,
-  vodThumbnail: string
-}
+import { Metadata } from "../../../types/Metadata";
 
 export default async function getVodId(showUrl: string) {
   const path = showUrl.replace("https://watch.wwe.com", "");
@@ -21,8 +17,9 @@ export default async function getVodId(showUrl: string) {
 
   const metadata: Metadata = {
     vodId: data.entries[0].item.customFields.DiceVideoId,
-    vodName: data.title,
-    vodThumbnail: data.entries[0].item.images.poster
+    title: data.title,
+    thumbnail: data.entries[0].item.images.wallpaper,
+    description: data.entries[0].item.shortDescription
   }
 
   return metadata;
