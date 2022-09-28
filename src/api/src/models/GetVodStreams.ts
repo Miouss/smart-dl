@@ -4,25 +4,8 @@ import { Parser } from "m3u8-parser";
 
 import onError from "../utilFcts/OnError";
 
-interface PlaylistUrl {
-  url: string;
-  prefix: string,
-}
-
-interface MediaSelection {
-  VideoSelection: Array<VideoSelection>,
-  AudioSelection: Array<any>,
-  prefix: string,
-  vodTitle?:string
-}
-
-interface VideoSelection{
-  resolution: string,
-  "Average-Bandwidth": string,
-  audio: string,
-  url: string,
-}
-
+import { PlaylistUrl } from "../../../types/PlaylistUrl";
+import { Media, VideoSelection, AudioSelection } from "../../../types/Media";
 
 export default async function getVodStreams(vodPlaylist: PlaylistUrl) {
   const response = await fetch(vodPlaylist.url);
@@ -42,19 +25,29 @@ export default async function getVodStreams(vodPlaylist: PlaylistUrl) {
   videoManifest.forEach((element: any) => {
     videoSelection.push({
       resolution: `${element.attributes.RESOLUTION.width}x${element.attributes.RESOLUTION.height}`,
-      "Average-Bandwidth": element.attributes["AVERAGE-BANDWIDTH"],
+      "Average-Bandwidth": element.attributes["AVERAGE-BANDWIDTH"].slice(0, -2),
       audio: element.attributes.AUDIO,
       url: element.uri,
     });
   });
 
-  const audioSelection = parser.manifest.mediaGroups.AUDIO;
+  const audioSelection: Record<string, AudioSelection> = {};
 
-  const mediaSelection: MediaSelection = {
+  for (const audioQuality in parser.manifest.mediaGroups.AUDIO) {
+    audioSelection[audioQuality] = {};
+    for (const param in parser.manifest.mediaGroups.AUDIO[audioQuality]) {
+      audioSelection[audioQuality][param] = {
+        lang: parser.manifest.mediaGroups.AUDIO[audioQuality][param].language,
+        url: parser.manifest.mediaGroups.AUDIO[audioQuality][param].uri,
+      };
+    }
+  }
+
+  const mediaSelection: Media = {
     AudioSelection: audioSelection,
     VideoSelection: videoSelection,
     prefix: vodPlaylist.prefix,
-  }
+  };
 
   return mediaSelection;
 }
