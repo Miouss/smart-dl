@@ -1,31 +1,16 @@
 import React from "react";
+import MediaSelectionCard from "./MediaSelectionCard";
 
-interface Props {
-  mediaChoices: MediaChoices;
-}
+import { Media } from "../types/Media";
 
-interface MediaChoices {
-  VideoSelection: Array<VideoSelection>;
-  AudioSelection: Array<any>;
-  prefix: string;
-  vodTitle?: string;
-}
+export default function MediaSelection({ ...data }: Media) {
+  const numberOfCards = Object.keys(data).length;
 
-interface VideoSelection {
-  resolution: string;
-  "Average-Bandwidth": string;
-  audio: string;
-  url: string;
-}
-
-export default function MediaSelection(mediaChoices: Props): any {
-  if (mediaChoices === null) {
-    return null;
-  }
+  if (numberOfCards === 0) return null;
 
   return (
-    <div>
-      <pre>{JSON.stringify(mediaChoices, null, 2)}</pre>
-    </div>
+    <>
+      <MediaSelectionCard {...data} />
+    </>
   );
 }
