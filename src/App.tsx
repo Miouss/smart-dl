@@ -103,7 +103,7 @@ export default function App() {
         </Stack>
       </form>
 
-      <MediaSelection mediaChoices={data} />
+      <MediaSelection {...data} />
     </>
   );
 }
