@@ -1,20 +1,29 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import { Grid } from "@mui/material";
 import Button from "@mui/material/Button";
 
-import { AudioSelection } from "../types/Media";
+import {
+  AudioSelection,
+  MediaUrls,
+  MediaDetails,
+  LangSelection,
+} from "../types/Media";
 import { Stack } from "@mui/system";
 
 interface Props {
   selection: AudioSelection | null;
   setAudioSelected: (audio: string) => void;
+  setFetchMedia: Dispatch<SetStateAction<MediaUrls>>;
+  setMediaDetails: Dispatch<SetStateAction<MediaDetails>>;
 }
 
-export default function MediaSelectionCardLanguageDropDown({
+export default function MediaMenuCardSelectionLanguage({
   selection,
   setAudioSelected,
-}: Props) {
+  setFetchMedia,
+  setMediaDetails,
+}: Props): JSX.Element {
   console.log(selection);
 
   if (selection === null) return null;
@@ -23,8 +32,16 @@ export default function MediaSelectionCardLanguageDropDown({
     setAudioSelected(null);
   };
 
-  const handleClick = (url: string) => {
-    console.log(url);
+  const handleClick = (langSelected: LangSelection) => {
+    setFetchMedia((prevState: MediaUrls) => ({
+      audio: langSelected.url as unknown as string,
+      video: prevState.video,
+    }));
+
+    setMediaDetails((prevState: MediaDetails) => ({
+      lang: langSelected.lang as unknown as string,
+      resolution: prevState.resolution,
+    }));
   };
   const langBtns: React.ReactElement[] = [];
 
@@ -33,7 +50,9 @@ export default function MediaSelectionCardLanguageDropDown({
       <Grid item key={`${lang} Btn`}>
         <Button
           variant={"contained"}
-          onClick={() => handleClick(selection[lang].url as unknown as string)}
+          onClick={() =>
+            handleClick(selection[lang] as unknown as LangSelection)
+          }
         >
           {lang}
         </Button>

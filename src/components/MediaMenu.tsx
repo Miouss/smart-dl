@@ -1,5 +1,5 @@
 import React from "react";
-import MediaSelectionCard from "./MediaSelectionCard";
+import MediaMenuCard from "./MediaMenuCard";
 
 import { Media } from "../types/Media";
 
@@ -10,7 +10,7 @@ export default function MediaSelection({ ...data }: Media) {
 
   return (
     <>
-      <MediaSelectionCard {...data} />
+      <MediaMenuCard {...data} />
     </>
   );
 }

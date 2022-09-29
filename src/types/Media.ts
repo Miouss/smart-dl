@@ -25,4 +25,14 @@ interface LangSelection {
   };
 }
 
-export { Media, VideoSelection, AudioSelection, LangSelection };
+interface MediaUrls {
+  audio?: string,
+  video?: string,
+}
+
+interface MediaDetails {
+  lang?: string,
+  resolution?: string,
+}
+
+export { Media, VideoSelection, AudioSelection, LangSelection, MediaUrls, MediaDetails };
