@@ -6,25 +6,14 @@ import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
 
-export default async function mockRequest(req: Request, res: Response) {
+export default async function streamDownload(req: Request, res: Response) {
   console.time("Operations Completed in ");
 
   const { outputPath } = await readFile("./src/api/config.json");
 
   try {
-    const vodChoices = req.body.mediaSelection;
-
-    const vodVideoUrlPlaylist: string =
-      vodChoices.prefix +
-      vodChoices.VideoSelection[vodChoices.VideoSelection.length - 1].url;
-    const vodAudioUrlPlaylist: string =
-      vodChoices.prefix +
-      vodChoices.AudioSelection[
-        vodChoices.VideoSelection[vodChoices.VideoSelection.length - 1].audio
-      ].English.uri;
-
-    const videoUrlList = await downloadVodPlaylist(vodVideoUrlPlaylist);
-    const audioUrlList = await downloadVodPlaylist(vodAudioUrlPlaylist);
+    const videoUrlList = await downloadVodPlaylist(req.body.videoUrl);
+    const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
 
     await downloadVodFragments(videoUrlList, "ts", outputPath);
     await downloadVodFragments(audioUrlList, "aac", outputPath);
@@ -32,12 +21,12 @@ export default async function mockRequest(req: Request, res: Response) {
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
 
-    await handleMerging(vodChoices.vodTitle, outputPath);
+    await handleMerging(req.body.vodTitle, outputPath);
 
     console.timeEnd("Operations Completed in ");
 
     res.status(200);
-    res.json(vodChoices);
+    res.json({ "Download": true });
   } catch (error) {
     res.status(404);
     res.json({ errorMessage: error });
