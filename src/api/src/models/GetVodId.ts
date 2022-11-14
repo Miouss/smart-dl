@@ -11,7 +11,7 @@ export default async function getVodId(showUrl: string) {
     `https://cdn.watch.wwe.com/api/page?path=${path}&segments=fr&text_entry_format=html`
   );
 
-  onError(response, "Can't retrieve data");
+  onError(response, "Can't retrieve data", 404);
 
   const data = await response.json();
 

@@ -10,7 +10,7 @@ import { Media, VideoSelection, AudioSelection } from "../../../types/Media";
 export default async function getVodStreams(vodPlaylist: PlaylistUrl) {
   const response = await fetch(vodPlaylist.url);
 
-  onError(response, "Can't get playlist url");
+  onError(response, "Can't get playlist url", 404);
 
   const data = await response.text();
 

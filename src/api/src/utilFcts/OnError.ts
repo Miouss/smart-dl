@@ -1,5 +1,7 @@
-export default function onError(response:Response, message:string) {
+import ErrorWithStatusCode from "./ErrorWithStatusCode";
+
+export default function onError(response: Response, message: string, code: number) {
   if (!response.ok) {
-    throw new Error(message);
+    throw new ErrorWithStatusCode(message, code);
   }
 }
