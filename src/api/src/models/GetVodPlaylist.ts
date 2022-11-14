@@ -28,13 +28,13 @@ export default async function getVodPlaylist(
     options
   );
 
-  onError(response, `Request to retrieve url playlists  of vod id ${vodId} failed`);
+  onError(response, `Request to retrieve url playlists  of vod id ${vodId} failed`, 404);
 
   const data = await response.json();
 
   const response2 = await fetch(data.playerUrlCallback);
 
-  onError(response2, "Can't access list of available m3u8 playlist");
+  onError(response2, "Can't access list of available m3u8 playlist", 403);
 
   const data2 = await response2.json();
 

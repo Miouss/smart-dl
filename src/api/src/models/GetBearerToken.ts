@@ -30,7 +30,7 @@ export default async function getBearerToken(
     options
   );
 
-  onError(response, "Credentials incorrect");
+  onError(response, "Credentials incorrect", 401);
 
   const data : Tokens = await response.json();
 

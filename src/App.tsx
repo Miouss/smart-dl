@@ -1,56 +1,65 @@
 import React, { useState } from "react";
 import fetch, { Headers } from "cross-fetch";
 
-import TextField from "@mui/material/TextField";
-import { Stack } from "@mui/system";
+import Input from "@mui/material/Input";
+import { Stack, ThemeProvider } from "@mui/system";
+import { createTheme } from "@mui/material/styles";
+import MediaMenu from "./components/MediaMenu";
+import {
+  Alert,
+  Button,
+  Collapse,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 
-import MediaSelection from "./components/MediaSelections";
+import FolderIcon from "@mui/icons-material/Folder";
+import NearMeIcon from "@mui/icons-material/NearMe";
+
+interface Account {
+  username: string;
+  password: string;
+}
 
 export default function App() {
   const [data, setData] = useState(null);
   const [showUrl, setShowUrl] = useState(null);
+  const [account, setAccount] = useState<Account>({
+    username: "",
+    password: "",
+  });
+  const [saveCredentials, setSaveCredentials] = useState(false);
   const [useSavedCredentials, setUseSavedCredentials] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<undefined | string>(undefined);
 
   async function fetching(showUrl: string) {
-    if (useSavedCredentials) {
-      const header = new Headers({
-        "Content-Type": "application/json",
-      });
+    const header = new Headers({
+      "Content-Type": "application/json",
+    });
 
-      const options = {
-        method: "POST",
-        headers: header,
-        body: JSON.stringify({
-          showUrl,
-        }),
-      };
+    const options = {
+      method: "POST",
+      headers: header,
+      body: JSON.stringify({
+        showUrl,
+        account,
+        saveCredentials,
+        useSavedCredentials,
+      }),
+    };
 
-      const response = await fetch(
-        "http://localhost:8000/stream/playlist",
-        options
-      );
+    const response = await fetch(
+      "http://localhost:8000/stream/playlist",
+      options
+    );
 
+    if (response.ok) {
       const mediaSelection = await response.json();
 
       setData(mediaSelection);
-
-      // const options2 = {
-      //   method: "POST",
-      //   headers: header,
-      //   body: JSON.stringify({
-      //     mediaSelection,
-      //     showUrl,
-      //   }),
-      // };
-
-      // const response2 = await fetch(
-      //   "http://localhost:8000/stream/download",
-      //   options2
-      // );
-
-      // setData(await response2.json());
     } else {
-      alert("Tick use saved credentials please");
+      const message = await response.text();
+      setErrorMsg(message);
     }
   }
 
@@ -59,51 +68,261 @@ export default function App() {
     fetching(showUrl);
   };
 
+  const handleCredentials = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setAccount((account) => {
+      return {
+        username:
+          e.target.id === "username" ? e.target.value : account.username,
+        password:
+          e.target.id === "password" ? e.target.value : account.password,
+      };
+    });
+  };
+
   const chooseSaveLocation = (e: React.MouseEvent) => {
     e.preventDefault();
     window.fileSystemAPI.openFileSystemDialog();
   };
 
-  return (
-    <>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <Stack justifyContent={"center"} alignItems={"center"} spacing={5}>
+  const style = {
+    height: "100vh",
+    width: "100vw",
+  };
+
+  const chooseSaveLocationStyle = {
+    background: "#4F4F4F",
+    marginLeft: "24px",
+    "&:hover": {
+      background: "rgba(208, 2, 27, 1)",
+    },
+  };
+
+  const submitButtonStyle = {
+    marginLeft: "24px",
+    "&:hover": {
+      backgroundOpacity: 0.5,
+    },
+  };
+
+  const customTheme = createTheme({
+    components: {
+      MuiInput: {
+        defaultProps: {
+          disableUnderline: true,
+        },
+        styleOverrides: {
+          root: {
+            borderBottom: "1px solid rgba(208, 2, 27, 1)",
+            boxShadow: "0px 1px 1px rgba(208, 2, 27, 0.25)",
+          },
+          input: {
+            color: "white",
+            "&::placeholder": {
+              color: "#828282",
+            },
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "& .MuiSwitch-switchBase": {
+              "&+ .MuiSwitch-track": {
+                backgroundColor: "red",
+                opacity: 1,
+              },
+              "&.Mui-checked": {
+                "+ .MuiSwitch-track": {
+                  backgroundColor: "green",
+                  opacity: 1,
+                },
+                "& .MuiSwitch-thumb": {
+                  color: "white",
+                },
+              },
+            },
+          },
+        },
+      },
+      MuiFormControlLabel: {
+        styleOverrides: {
+          root: {
+            "& .MuiFormControlLabel-label": {
+              color: "#E0E0E0",
+              fontFamily: "Roboto",
+              fontStyle: "normal",
+              fontWeight: "400",
+              fontSize: "18px",
+              lineHeight: "21px",
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (data === null) {
+    return (
+      <>
+        <ThemeProvider theme={customTheme}>
           <Stack
-            direction={"row"}
             justifyContent={"center"}
             alignItems={"center"}
+            spacing={5}
+            sx={style}
           >
-            <TextField
-              id="standard-basic"
-              label="Url link"
-              variant="standard"
-              onChange={(event) => setShowUrl(event.target.value)}
-            />
-            <button onClick={(e) => chooseSaveLocation(e)}>
-              Choose Save Location
-            </button>
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <Stack
+                justifyContent={"center"}
+                alignItems={"center"}
+                spacing={5}
+              >
+                {errorMsg !== undefined && (
+                  <Alert severity="error">{errorMsg}</Alert>
+                )}
+
+                <Stack
+                  direction={"row"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Input
+                    placeholder="Url Link"
+                    onChange={(event) => setShowUrl(event.target.value)}
+                  />
+                  <Button
+                    variant="contained"
+                    className="save-button"
+                    onClick={(e) => chooseSaveLocation(e)}
+                    sx={chooseSaveLocationStyle}
+                  >
+                    <FolderIcon style={{ color: "#fff" }} />
+                  </Button>
+                </Stack>
+                <Stack
+                  direction={"column"}
+                  width={"100%"}
+                  height={"100%"}
+                  spacing={2}
+                >
+                  <Collapse in={!useSavedCredentials} orientation="vertical">
+                    <Stack
+                      direction={"column"}
+                      width={"100%"}
+                      height={"100%"}
+                      spacing={2}
+                    >
+                      <Input
+                        id="username"
+                        name="username"
+                        placeholder="Username"
+                        onChange={(e) => handleCredentials(e)}
+                      />
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        onChange={(e) => handleCredentials(e)}
+                      />
+
+                      <FormControlLabel
+                        id="saveCred"
+                        control={
+                          <Switch
+                            color="primary"
+                            onChange={() =>
+                              setSaveCredentials(!saveCredentials)
+                            }
+                          />
+                        }
+                        label="Save Credentials"
+                      />
+                    </Stack>
+                  </Collapse>
+                  <FormControlLabel
+                    id="useSavedCred"
+                    control={
+                      <Switch
+                        color="primary"
+                        onChange={() =>
+                          setUseSavedCredentials(!useSavedCredentials)
+                        }
+                      />
+                    }
+                    label="Use Saved Credentials"
+                  />
+                </Stack>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="success"
+                  sx={submitButtonStyle}
+                >
+                  <NearMeIcon style={{ color: "#fff" }} />
+                </Button>
+              </Stack>
+            </form>
           </Stack>
-          <Stack
-            direction={"row"}
-            justifyContent={"space-evenly"}
-            width={"100%"}
-            height={"100%"}
-          >
-            <Stack direction={"row"}>
-              <input
-                type="checkbox"
-                onClick={() => setUseSavedCredentials(!useSavedCredentials)}
-              />
-              <label> use saved credentials ?</label>
+        </ThemeProvider>
+      </>
+    );
+  } else {
+    return (
+      <ThemeProvider theme={customTheme}>
+        <Stack spacing={5} sx={style}>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <Stack
+              justifyContent={"center"}
+              alignItems={"center"}
+              sx={{
+                marginTop: "5rem",
+              }}
+              spacing={5}
+            >
+              {errorMsg !== undefined && (
+                <Alert severity="error">{errorMsg}</Alert>
+              )}
+              <Stack
+                direction={"row"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Input
+                  placeholder="Url Link"
+                  onChange={(event) => setShowUrl(event.target.value)}
+                />
+                <Button
+                  variant="contained"
+                  onClick={(e) => chooseSaveLocation(e)}
+                  sx={chooseSaveLocationStyle}
+                >
+                  <FolderIcon style={{ color: "#fff" }} />
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="success"
+                  sx={submitButtonStyle}
+                >
+                  <NearMeIcon style={{ color: "#fff" }} />
+                </Button>
+              </Stack>
             </Stack>
-            <Stack>
-              <button type="submit">Submit</button>
+          </form>
+          <Stack width={"100%"} justifyContent={"center"} alignItems={"center"}>
+            <Stack
+              width={"720px"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <MediaMenu {...data} />
             </Stack>
           </Stack>
         </Stack>
-      </form>
-
-      <MediaSelection mediaChoices={data} />
-    </>
-  );
+      </ThemeProvider>
+    );
+  }
 }

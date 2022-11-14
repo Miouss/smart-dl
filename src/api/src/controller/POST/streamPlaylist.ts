@@ -1,5 +1,5 @@
 import Listr from "listr";
-import { readFile } from "jsonfile";
+import jsonfile from "jsonfile";
 
 import getBearerToken from "../../models/GetBearerToken";
 import getVodId from "../../models/GetVodId";
@@ -8,38 +8,45 @@ import getVodStreams from "../../models/GetVodStreams";
 
 import { Request, Response } from "express";
 
-interface VodData {
-  vodId: string;
-  vodName: string;
-}
+import { Media } from "../../../../types/Media"
+import { Metadata } from "../../../../types/Metadata";
+import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 
-interface VodPlaylist {
-  url: string;
-  prefix: string;
-}
-
-interface MediaSelection {
-  VideoSelection: Array<VideoSelection>;
-  AudioSelection: Array<any>;
-  prefix: string;
-  vodTitle?: string;
-}
-
-interface VideoSelection {
-  resolution: string;
-  "Average-Bandwidth": string;
-  audio: string;
-  url: string;
-}
 
 export default async function streamPlaylist(req: Request, res: Response) {
+  console.log(req.body);
+
+  const configPath = "./src/api/config.json";
+  const configData =  await jsonfile.readFile(configPath);
+
+  const realm = configData.realm;
+  const apikey = configData.apikey;
+  let username: string | undefined = undefined;
+  let password: string | undefined = undefined;
+
+  if(req.body.saveCredentials){
+    configData.username = req.body.account.username;
+    configData.password = req.body.account.password;
+
+    jsonfile.writeFile(configPath, configData, function (err) {
+      if (err) console.error(err);
+    });
+  }else if(req.body.useSavedCredentials){
+    username = configData.username;
+    password = configData.password;
+  }
+
+  if(req.body.saveCredentials || !req.body.useSavedCredentials){
+    username = req.body.account.username;
+    password = req.body.account.password;
+  }
+  
   try {
     let bearerToken: string,
-      vodData: VodData,
-      vodPlaylist: VodPlaylist,
-      mediaSelection: MediaSelection = undefined;
+      vodData: Metadata,
+      vodPlaylist: PlaylistUrl,
+      mediaSelection: Media;
 
-    const { username, password, realm, apikey } = await readFile("./src/api/config.json");
     
     const dataCollectList = new Listr([
       {
@@ -79,9 +86,7 @@ export default async function streamPlaylist(req: Request, res: Response) {
       },
     ]);
 
-    await dataCollect.run().catch(error => {
-      throw new Error(error);
-    });
+    await dataCollect.run();
 
     mediaSelection.VideoSelection.sort((a, b) => {
       return parseInt(a["Average-Bandwidth"]) >=
@@ -89,13 +94,15 @@ export default async function streamPlaylist(req: Request, res: Response) {
         ? -1
         : 1;
     });
-
-    mediaSelection.vodTitle = vodData.vodName;
+    
+    mediaSelection.title = vodData.title;
+    mediaSelection.thumbnail = vodData.thumbnail;
+    mediaSelection.description = vodData.description;
 
     res.status(200);
     res.json(mediaSelection);
-  } catch (error) {
-    res.status(404);
-    res.json({ errorMessage: error });
+  } catch (err) {
+    res.status(err.code);
+    res.send(err.message);
   }
 }
