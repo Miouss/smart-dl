@@ -8,9 +8,10 @@ export default function MediaSelection({ ...data }: Media) {
 
   if (numberOfCards === 0) return null;
 
+
   return (
     <>
-      <MediaMenuCard {...data} />
+        <MediaMenuCard {...data} />
     </>
   );
 }

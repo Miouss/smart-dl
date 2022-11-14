@@ -42,28 +42,27 @@ export default function MediaMenuCard({ ...vod }: Media) {
   };
 
   async function handleDownload() {
-    setMediaDownloaded(true);
-    // const header = new Headers({
-    //   "Content-Type": "application/json",
-    // });
+    const header = new Headers({
+      "Content-Type": "application/json",
+    });
 
-    // const options = {
-    //   method: "POST",
-    //   headers: header,
-    //   body: JSON.stringify({
-    //     videoUrl: vod.prefix + fetchMedia.video,
-    //     audioUrl: vod.prefix + fetchMedia.audio,
-    //     vodTitle: vod.title,
-    //   }),
-    // };
+    const options = {
+      method: "POST",
+      headers: header,
+      body: JSON.stringify({
+        videoUrl: vod.prefix + fetchMedia.video,
+        audioUrl: vod.prefix + fetchMedia.audio,
+        vodTitle: vod.title,
+      }),
+    };
 
-    // const response = await fetch(
-    //   "http://localhost:8000/stream/download",
-    //   options
-    // );
+    const response = await fetch(
+      "http://localhost:8000/stream/download",
+      options
+    );
 
-    // if (response.ok) setMediaDownloaded(true);
-    // else setMediaDownloaded(false);
+    if (response.ok) setMediaDownloaded(true);
+    else setMediaDownloaded(false);
   }
 
   React.useEffect(() => {
