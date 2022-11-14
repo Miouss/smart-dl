@@ -27,6 +27,10 @@ describe("getVodId", () => {
         entries: [
           {
             item: {
+              images: {
+                wallpaper: "VOD Thumbnail"
+              },
+              shortDescription: "VOD Description",
               customFields: {
                 DiceVideoId: "VOD Id",
               },
@@ -40,6 +44,8 @@ describe("getVodId", () => {
     expect(metadata).toMatchObject({
       vodId: "VOD Id",
       vodName: "VOD Title",
+      thumbnail: "VOD Thumbnail",
+      description: "VOD Description",
     });
   });
 });
