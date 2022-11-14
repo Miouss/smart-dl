@@ -43,7 +43,7 @@ describe("getVodId", () => {
 
     expect(metadata).toMatchObject({
       vodId: "VOD Id",
-      vodName: "VOD Title",
+      title: "VOD Title",
       thumbnail: "VOD Thumbnail",
       description: "VOD Description",
     });
