@@ -102,6 +102,7 @@ export default async function streamPlaylist(req: Request, res: Response) {
     res.status(200);
     res.json(mediaSelection);
   } catch (err) {
-    console.log(err.code);
+    res.status(err.code);
+    res.send(err.message);
   }
 }
