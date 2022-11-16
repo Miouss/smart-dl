@@ -11,6 +11,8 @@ import {
 } from "../types/Media";
 import { Stack } from "@mui/system";
 
+import SelectButton from "./styled/SelectButton"
+
 interface Props {
   selection: AudioSelection | null;
   setAudioSelected: (audio: string) => void;
@@ -20,17 +22,12 @@ interface Props {
 
 export default function MediaMenuCardSelectionLanguage({
   selection,
-  setAudioSelected,
   setFetchMedia,
   setMediaDetails,
 }: Props): JSX.Element {
   console.log(selection);
 
   if (selection === null) return null;
-
-  const backToResolutionMenu = () => {
-    setAudioSelected(null);
-  };
 
   const handleClick = (langSelected: LangSelection) => {
     setFetchMedia((prevState: MediaUrls) => ({
@@ -48,14 +45,14 @@ export default function MediaMenuCardSelectionLanguage({
   for (const lang in selection) {
     langBtns.push(
       <Grid item key={`${lang} Btn`}>
-        <Button
+        <SelectButton
           variant={"contained"}
           onClick={() =>
             handleClick(selection[lang] as unknown as LangSelection)
           }
         >
           {lang}
-        </Button>
+        </SelectButton>
       </Grid>
     );
   }
@@ -72,9 +69,6 @@ export default function MediaMenuCardSelectionLanguage({
         >
           {langBtns}
         </Grid>
-        <Button variant={"contained"} onClick={backToResolutionMenu}>
-          Back to resolutions menu
-        </Button>
       </Stack>
     </>
   );
