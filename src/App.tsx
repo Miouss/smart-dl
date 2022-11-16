@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import fetch, { Headers } from "cross-fetch";
 
 import Input from "@mui/material/Input";
@@ -23,7 +23,7 @@ interface Account {
 
 export default function App() {
   const [data, setData] = useState(null);
-  const [showUrl, setShowUrl] = useState(null);
+  const [showUrl, setShowUrl] = useState(undefined);
   const [account, setAccount] = useState<Account>({
     username: "",
     password: "",
@@ -101,9 +101,6 @@ export default function App() {
 
   const submitButtonStyle = {
     marginLeft: "24px",
-    "&:hover": {
-      backgroundOpacity: 0.5,
-    },
   };
 
   const customTheme = createTheme({
