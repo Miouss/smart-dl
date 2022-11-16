@@ -1,7 +1,8 @@
 import React from "react";
 
 import { Grid } from "@mui/material";
-import Button from "@mui/material/Button";
+
+import SelectButton from "./styled/SelectButton"
 
 import { VideoSelection, MediaUrls, MediaDetails } from "../types/Media";
 
@@ -34,13 +35,13 @@ export default function MediaMenuCardSelectionResolution({
   selection.forEach((param, i) => {
     resolutionsButtons.push(
       <Grid item key={`resBut${i}`}>
-        <Button
+        <SelectButton
           style={{ textTransform: "none" }}
           variant={"contained"}
           onClick={() => handleClick(param.audio, param.url, param.resolution)}
         >
           {param.resolution} <br /> ({param["Average-Bandwidth"]} kbps)
-        </Button>
+        </SelectButton>
       </Grid>
     );
   });
