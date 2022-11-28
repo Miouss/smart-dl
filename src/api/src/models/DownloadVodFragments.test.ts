@@ -1,4 +1,5 @@
 import startServer from "../../../server";
+import window from "../../../index";
 import fetch from "cross-fetch";
 import { monitorPublicFolder } from "../../../express";
 import downloadVodFragments from "./DownloadVodFragments";
