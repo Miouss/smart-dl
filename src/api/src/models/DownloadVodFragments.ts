@@ -4,7 +4,6 @@ import { createWriteStream } from "fs";
 
 type MediaExtension = "ts" | "aac";
 
-import window from "../../../index";
 
 export default async function downloadVodFragments(
   urlList: Array<string>,
@@ -28,7 +27,6 @@ export default async function downloadVodFragments(
             i + 1
           }-${i + iterableArrayLength}/${urlList.length}`;
 
-          window().webContents.send("update-download-steps", mediaType, [i + 1, i + iterableArrayLength], urlList.length);
 
           await Promise.all(
             Array(iterableArrayLength)

@@ -6,7 +6,7 @@ import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
 
-import window from "../../../../index";
+import mainWindow from "../../../../index";
 
 export default async function streamDownload(req: Request, res: Response) {
   console.time("Operations Completed in ");
@@ -14,32 +14,32 @@ export default async function streamDownload(req: Request, res: Response) {
   const { outputPath } = await readFile("./src/api/config.json");
 
   try {
-    window().webContents.send("download-fully-starts");
+    mainWindow.webContents.send("download-fully-starts");
 
-    window().webContents.send("recovering-frags-playlists-starts");
+    mainWindow.webContents.send("recovering-frags-playlists-starts");
     
     const videoUrlList = await downloadVodPlaylist(req.body.videoUrl);
     const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
 
-    window().webContents.send("recovering-frags-playlists-ends");
+    mainWindow.webContents.send("recovering-frags-playlists-ends");
 
-    window().webContents.send("downloading-frags-starts");
+    mainWindow.webContents.send("downloading-frags-starts");
 
     await downloadVodFragments(videoUrlList, "ts", outputPath);
     await downloadVodFragments(audioUrlList, "aac", outputPath);
 
-    window().webContents.send("downloading-frags-ends");
+    mainWindow.webContents.send("downloading-frags-ends");
 
-    window().webContents.send("merging-starts");
+    mainWindow.webContents.send("merging-starts");
 
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
 
     await handleMerging(req.body.vodTitle, outputPath);
 
-    window().webContents.send("merging-ends");
+    mainWindow.webContents.send("merging-ends");
 
-    window().webContents.send("download-fully-completed");
+    mainWindow.webContents.send("download-fully-completed");
 
     console.timeEnd("Operations Completed in ");
 

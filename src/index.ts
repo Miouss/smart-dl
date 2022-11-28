@@ -93,6 +93,4 @@ ipcMain.on("notify", (_, message) => showNotification(message));
 
 ipcMain.on("openFSDialogue", retrieveOutputPath);
 
-export default function get(){
-  return mainWindow;
-}
+export default mainWindow;
