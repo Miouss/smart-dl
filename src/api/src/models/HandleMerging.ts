@@ -1,7 +1,7 @@
 import merging from "../utilFcts/Merging";
 import Listr from "listr";
 
-import {getWindow} from "../../../index";
+import window from "../../../index";
 
 export default async function handleMerging(
   vodTitle: string,
@@ -52,41 +52,41 @@ export default async function handleMerging(
     {
       title: "Merging Video Fragments",
       task: async () => {
-        getWindow().webContents.send("merging-video-starts");
+        window().webContents.send("merging-video-starts");
         await merging("ffmpeg", mergingVideoFrags);
-        getWindow().webContents.send("merging-video-ends");
+        window().webContents.send("merging-video-ends");
       },
     },
     {
       title: "Merging Audio Fragments",
       task: async () => {
-        getWindow().webContents.send("merging-audio-starts");
+        window().webContents.send("merging-audio-starts");
         await merging("ffmpeg", mergingAudioFrags);
-        getWindow().webContents.send("merging-audio-ends");
+        window().webContents.send("merging-audio-ends");
       },
     },
     {
       title: "Deleting Video & Audio Fragments",
       task: async () => {
-        getWindow().webContents.send("deleting-frags-starts");
+        window().webContents.send("deleting-frags-starts");
         await merging("del-frag-src.bat", [`${outputPath}`]);
-        getWindow().webContents.send("deleting-frags-ends");
+        window().webContents.send("deleting-frags-ends");
       },
     },
     {
       title: "Merging Video with Audio",
       task: async () => {
-        getWindow().webContents.send("merging-parts-starts");
+        window().webContents.send("merging-parts-starts");
         await merging("ffmpeg", mergingVideoWithAudio);
-        getWindow().webContents.send("merging-parts-ends");
+        window().webContents.send("merging-parts-ends");
       },
     },
     {
       title: "Deleting Video and Audio Parts",
       task: async () => {
-        getWindow().webContents.send("deleting-parts-starts");
+        window().webContents.send("deleting-parts-starts");
         await merging("del-full-src.bat", [`${outputPath}`]);
-        getWindow().webContents.send("deleting-parts-ends");
+        window().webContents.send("deleting-parts-ends");
       },
     },
   ]);

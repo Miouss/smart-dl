@@ -44,10 +44,6 @@ const createWindow = (): void => {
   mainWindow.webContents.openDevTools();
 };
 
-export const getWindow = () => {
-  return mainWindow;
-}
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -96,3 +92,7 @@ function showNotification(message: string) {
 ipcMain.on("notify", (_, message) => showNotification(message));
 
 ipcMain.on("openFSDialogue", retrieveOutputPath);
+
+export default function get(){
+  return mainWindow;
+}
