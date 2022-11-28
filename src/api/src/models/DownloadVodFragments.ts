@@ -4,6 +4,7 @@ import { createWriteStream } from "fs";
 
 type MediaExtension = "ts" | "aac";
 
+
 export default async function downloadVodFragments(
   urlList: Array<string>,
   extension: MediaExtension,
@@ -25,6 +26,7 @@ export default async function downloadVodFragments(
           task.title = `Downloading ${urlList.length} ${mediaType} Fragments ${
             i + 1
           }-${i + iterableArrayLength}/${urlList.length}`;
+
 
           await Promise.all(
             Array(iterableArrayLength)

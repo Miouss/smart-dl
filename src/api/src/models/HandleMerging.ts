@@ -1,6 +1,8 @@
 import merging from "../utilFcts/Merging";
 import Listr from "listr";
 
+import mainWindow from "../../../index";
+
 export default async function handleMerging(
   vodTitle: string,
   outputPath: string
@@ -50,31 +52,41 @@ export default async function handleMerging(
     {
       title: "Merging Video Fragments",
       task: async () => {
+        mainWindow.webContents.send("merging-video-starts");
         await merging("ffmpeg", mergingVideoFrags);
+        mainWindow.webContents.send("merging-video-ends");
       },
     },
     {
       title: "Merging Audio Fragments",
       task: async () => {
+        mainWindow.webContents.send("merging-audio-starts");
         await merging("ffmpeg", mergingAudioFrags);
+        mainWindow.webContents.send("merging-audio-ends");
       },
     },
     {
       title: "Deleting Video & Audio Fragments",
       task: async () => {
+        mainWindow.webContents.send("deleting-frags-starts");
         await merging("del-frag-src.bat", [`${outputPath}`]);
+        mainWindow.webContents.send("deleting-frags-ends");
       },
     },
     {
       title: "Merging Video with Audio",
       task: async () => {
+        mainWindow.webContents.send("merging-parts-starts");
         await merging("ffmpeg", mergingVideoWithAudio);
+        mainWindow.webContents.send("merging-parts-ends");
       },
     },
     {
       title: "Deleting Video and Audio Parts",
       task: async () => {
+        mainWindow.webContents.send("deleting-parts-starts");
         await merging("del-full-src.bat", [`${outputPath}`]);
+        mainWindow.webContents.send("deleting-parts-ends");
       },
     },
   ]);
