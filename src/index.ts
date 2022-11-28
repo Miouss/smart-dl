@@ -44,7 +44,7 @@ const createWindow = (): void => {
   mainWindow.webContents.openDevTools();
 };
 
-export default function get(): BrowserWindow{
+export const getWindow = () => {
   return mainWindow;
 }
 
