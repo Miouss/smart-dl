@@ -14,8 +14,6 @@ import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 
 
 export default async function streamPlaylist(req: Request, res: Response) {
-  console.log(req.body);
-
   const configPath = "./src/api/config.json";
   const configData =  await jsonfile.readFile(configPath);
 
