@@ -8,12 +8,20 @@ import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import { Box } from "@mui/material";
 
-import { Media, MediaUrls } from "../types/Media";
+import { Media, MediaDetails, MediaUrls } from "../types/Media";
 
 import MediaMenuCardSelection from "./MediaMenuCardSelection";
+import MediaMenuCardNavBar from "./MediaMenuCardNavBar";
+import { Stack } from "@mui/system";
 
 export default function MediaMenuCard({ ...vod }: Media) {
   const [mediaDownloaded, setMediaDownloaded] = useState(false);
+
+  const [mediaDetails, setMediaDetails] = useState<MediaDetails>({
+    lang: undefined,
+    resolution: undefined,
+  });
+
 
   const [fetchMedia, setFetchMedia] = useState<MediaUrls>({
     audio: undefined,
@@ -21,6 +29,8 @@ export default function MediaMenuCard({ ...vod }: Media) {
   });
 
   const [mediaSelected, setMediaSelected] = useState(false);
+  const [downloadStarted, setDownloadStarted] = useState(false);
+  const [resetSelection, setResetSelection] = useState(false);
 
   async function handleDownload() {
     const header = new Headers({
@@ -37,6 +47,12 @@ export default function MediaMenuCard({ ...vod }: Media) {
       }),
     };
 
+    console.log(JSON.stringify({
+      videoUrl: vod.prefix + fetchMedia.video,
+      audioUrl: vod.prefix + fetchMedia.audio,
+      vodTitle: vod.title,
+    }));
+
     const response = await fetch(
       "http://localhost:8000/stream/download",
       options
@@ -52,6 +68,11 @@ export default function MediaMenuCard({ ...vod }: Media) {
     }
   }, [fetchMedia]);
 
+  useEffect(() => {
+    if(downloadStarted){
+      handleDownload();
+    }
+  }, [downloadStarted]);
 
   return (
     <>
@@ -77,15 +98,25 @@ export default function MediaMenuCard({ ...vod }: Media) {
           </Typography>
         </CardContent>
         <CardActions>
-          <MediaMenuCardSelection
-            setFetchMedia={setFetchMedia}
-            setMediaSelected={setMediaSelected}
-            setMediaDownloaded={setMediaDownloaded}
-            handleDownload={handleDownload}
-            vod={vod}
-            mediaSelected={mediaSelected}
-            mediaDownloaded={mediaDownloaded}
-          />
+          <Stack direction="column" width="100%" spacing={2}>
+            <MediaMenuCardSelection
+              setFetchMedia={setFetchMedia}
+              setMediaSelected={setMediaSelected}
+              setMediaDownloaded={setMediaDownloaded}
+              setDownloadStarted={setDownloadStarted}
+              setMediaDetails={setMediaDetails}
+              vod={vod}
+              resetSelection={resetSelection}
+            />
+            <MediaMenuCardNavBar
+                setResetSelection={setResetSelection}
+                setDownloadStarted={setDownloadStarted}
+                mediaSelected={mediaSelected}
+                downloadStarted={downloadStarted}
+                mediaDetails={mediaDetails}
+                mediaDownloaded={mediaDownloaded}
+            />
+          </Stack>
         </CardActions>
       </Card>
     </>
