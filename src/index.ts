@@ -39,10 +39,14 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  
 };
+
+function getWindow() {
+  return mainWindow; // Return the instance of the window
+}
+
+export default getWindow;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -92,5 +96,3 @@ function showNotification(message: string) {
 ipcMain.on("notify", (_, message) => showNotification(message));
 
 ipcMain.on("openFSDialogue", retrieveOutputPath);
-
-export default mainWindow;
