@@ -47,12 +47,6 @@ export default function MediaMenuCard({ ...vod }: Media) {
       }),
     };
 
-    console.log(JSON.stringify({
-      videoUrl: vod.prefix + fetchMedia.video,
-      audioUrl: vod.prefix + fetchMedia.audio,
-      vodTitle: vod.title,
-    }));
-
     const response = await fetch(
       "http://localhost:8000/stream/download",
       options
