@@ -4,7 +4,7 @@ import { Grid } from "@mui/material";
 
 import SelectButton from "../../../styled/SelectButton"
 
-import { VideoSelection, MediaUrls, MediaDetails } from "../../../../types/Media";
+import { VideoSelection, MediaUrls, MediaDetails } from "../../../../../types/Media";
 
 interface Props {
   selection: VideoSelection[];

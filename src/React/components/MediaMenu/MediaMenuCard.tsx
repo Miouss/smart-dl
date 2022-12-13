@@ -9,8 +9,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import { Box } from "@mui/material";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { Media, MediaDetails, MediaUrls } from "../../types/Media";
+import { Media, MediaDetails, MediaUrls } from "../../../types/Media";
 
 import CardSelect from "./Card/CardSelect";
 import CardNavbar from "./Card/CardNavbar";

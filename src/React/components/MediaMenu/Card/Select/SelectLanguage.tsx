@@ -7,7 +7,7 @@ import {
   MediaUrls,
   MediaDetails,
   LangSelection,
-} from "../../../../types/Media";
+} from "../../../../../types/Media";
 import { Stack } from "@mui/system";
 
 import SelectButton from "../../../styled/SelectButton"

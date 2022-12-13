@@ -9,7 +9,7 @@ import {
   Tabs,
 } from "@mui/material";
 
-import { MediaUrls, MediaDetails } from "../../../types/Media";
+import { MediaUrls, MediaDetails } from "../../../../types/Media";
 import TabPanel from "../../styled/TabPanel";
 
 interface Props {

@@ -10,7 +10,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileDownloadOffIcon from "@mui/icons-material/FileDownloadOff";
 import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 
-import { MediaDetails } from "../../../types/Media";
+import { MediaDetails } from "../../../../types/Media";
 
 interface Props {
   setResetSelection: Dispatch<SetStateAction<boolean>>;

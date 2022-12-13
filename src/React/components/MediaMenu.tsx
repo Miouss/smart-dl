@@ -1,7 +1,7 @@
 import React from "react";
 import MediaMenuCard from "./MediaMenu/MediaMenuCard";
 
-import { Media } from "../types/Media";
+import { Media } from "../../types/Media";
 
 export default function MediaSelection({ ...data }: Media) {
   const numberOfCards = Object.keys(data).length;
