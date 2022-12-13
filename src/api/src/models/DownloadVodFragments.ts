@@ -2,6 +2,9 @@ import fetch from "cross-fetch";
 import Listr from "listr";
 import { createWriteStream } from "fs";
 
+import getWindow from "../../../index";
+
+
 type MediaExtension = "ts" | "aac";
 
 
@@ -11,6 +14,8 @@ export default async function downloadVodFragments(
   outputPath: string
 ) {
   const mediaType = extension === "ts" ? "Video" : "Audio";
+
+  const windowWebContents = getWindow().webContents;
 
   const testList = new Listr([
     {
@@ -27,6 +32,7 @@ export default async function downloadVodFragments(
             i + 1
           }-${i + iterableArrayLength}/${urlList.length}`;
 
+          windowWebContents.send("update-download-steps", task.title, mediaType);
 
           await Promise.all(
             Array(iterableArrayLength)
@@ -59,4 +65,6 @@ export default async function downloadVodFragments(
   ]);
 
   await testList.run();
+
+  windowWebContents.send("download-steps-ends", mediaType);
 }
