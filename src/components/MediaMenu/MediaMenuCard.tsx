@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import fetch, { Headers } from "cross-fetch";
 
+import { Stack } from "@mui/system";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import { Box } from "@mui/material";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { Media, MediaDetails, MediaUrls } from "../../types/Media";
 
-import { Media, MediaDetails, MediaUrls } from "../types/Media";
-
-import MediaMenuCardSelection from "./MediaMenuCardSelection";
-import MediaMenuCardNavBar from "./MediaMenuCardNavBar";
-import { Stack } from "@mui/system";
+import CardSelect from "./Card/CardSelect";
+import CardNavbar from "./Card/CardNavbar";
+import CardStepper from "./Card/CardStepper";
 
 export default function MediaMenuCard({ ...vod }: Media) {
   const [mediaDownloaded, setMediaDownloaded] = useState(false);
@@ -21,7 +23,6 @@ export default function MediaMenuCard({ ...vod }: Media) {
     lang: undefined,
     resolution: undefined,
   });
-
 
   const [fetchMedia, setFetchMedia] = useState<MediaUrls>({
     audio: undefined,
@@ -63,7 +64,7 @@ export default function MediaMenuCard({ ...vod }: Media) {
   }, [fetchMedia]);
 
   useEffect(() => {
-    if(downloadStarted){
+    if (downloadStarted) {
       handleDownload();
     }
   }, [downloadStarted]);
@@ -93,22 +94,27 @@ export default function MediaMenuCard({ ...vod }: Media) {
         </CardContent>
         <CardActions>
           <Stack direction="column" width="100%" spacing={2}>
-            <MediaMenuCardSelection
-              setFetchMedia={setFetchMedia}
-              setMediaSelected={setMediaSelected}
-              setMediaDownloaded={setMediaDownloaded}
-              setDownloadStarted={setDownloadStarted}
-              setMediaDetails={setMediaDetails}
-              vod={vod}
-              resetSelection={resetSelection}
-            />
-            <MediaMenuCardNavBar
-                setResetSelection={setResetSelection}
+            {downloadStarted ? (
+              <CardStepper />
+            ) : (
+              <CardSelect
+                setFetchMedia={setFetchMedia}
+                setMediaSelected={setMediaSelected}
+                setMediaDownloaded={setMediaDownloaded}
                 setDownloadStarted={setDownloadStarted}
-                mediaSelected={mediaSelected}
-                downloadStarted={downloadStarted}
-                mediaDetails={mediaDetails}
-                mediaDownloaded={mediaDownloaded}
+                setMediaDetails={setMediaDetails}
+                vod={vod}
+                resetSelection={resetSelection}
+              />
+            )}
+
+            <CardNavbar
+              setResetSelection={setResetSelection}
+              setDownloadStarted={setDownloadStarted}
+              mediaSelected={mediaSelected}
+              downloadStarted={downloadStarted}
+              mediaDetails={mediaDetails}
+              mediaDownloaded={mediaDownloaded}
             />
           </Stack>
         </CardActions>

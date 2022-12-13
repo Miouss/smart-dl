@@ -1,5 +1,5 @@
 import React from "react";
-import MediaMenuCard from "./MediaMenuCard";
+import MediaMenuCard from "./MediaMenu/MediaMenuCard";
 
 import { Media } from "../types/Media";
 

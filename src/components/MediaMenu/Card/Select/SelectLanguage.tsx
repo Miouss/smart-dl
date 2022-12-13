@@ -7,10 +7,10 @@ import {
   MediaUrls,
   MediaDetails,
   LangSelection,
-} from "../types/Media";
+} from "../../../../types/Media";
 import { Stack } from "@mui/system";
 
-import SelectButton from "./styled/SelectButton"
+import SelectButton from "../../../styled/SelectButton"
 
 interface Props {
   selection: AudioSelection | null;
@@ -19,7 +19,7 @@ interface Props {
   setMediaDetails: Dispatch<SetStateAction<MediaDetails>>;
 }
 
-export default function MediaMenuCardSelectionLanguage({
+export default function SelectLanguage({
   selection,
   setFetchMedia,
   setMediaDetails,

@@ -2,9 +2,9 @@ import React from "react";
 
 import { Grid } from "@mui/material";
 
-import SelectButton from "./styled/SelectButton"
+import SelectButton from "../../../styled/SelectButton"
 
-import { VideoSelection, MediaUrls, MediaDetails } from "../types/Media";
+import { VideoSelection, MediaUrls, MediaDetails } from "../../../../types/Media";
 
 interface Props {
   selection: VideoSelection[];
@@ -13,7 +13,7 @@ interface Props {
   setMediaDetails: (mediaDetails : MediaDetails) => void; 
 }
 
-export default function MediaMenuCardSelectionResolution({
+export default function SelectResolution({
   selection,
   setAudioSelected,
   setFetchMedia,

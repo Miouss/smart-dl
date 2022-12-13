@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 
-import MediaMenuCardSelectionLanguage from "./MediaMenuCardSelectionLanguage";
-import MediaMenuCardSelectionResolution from "./MediaMenuCardSelectionResolution";
+import SelectLanguage from "./Select/SelectLanguage";
+import SelectResolution from "./Select/SelectResolution";
 
 import { Stack } from "@mui/system";
 import {
@@ -9,8 +9,8 @@ import {
   Tabs,
 } from "@mui/material";
 
-import { MediaUrls, MediaDetails } from "../types/Media";
-import TabPanel from "./styled/TabPanel";
+import { MediaUrls, MediaDetails } from "../../../types/Media";
+import TabPanel from "../../styled/TabPanel";
 
 interface Props {
   setFetchMedia: Dispatch<SetStateAction<MediaUrls>>;
@@ -105,7 +105,7 @@ export default function MediaMenuCardSelection({
         </Tabs>
       </Stack>
       <TabPanel value={tabIndex} index={0}>
-        <MediaMenuCardSelectionResolution
+        <SelectResolution
           selection={vod.VideoSelection}
           setAudioSelected={setAudioSelected}
           setFetchMedia={setFetchMedia}
@@ -113,7 +113,7 @@ export default function MediaMenuCardSelection({
         />
       </TabPanel>
       <TabPanel value={tabIndex} index={1}>
-        <MediaMenuCardSelectionLanguage
+        <SelectLanguage
           selection={vod.AudioSelection[audioSelected]}
           setAudioSelected={setAudioSelected}
           setFetchMedia={setFetchMedia}
