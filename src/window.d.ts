@@ -12,6 +12,7 @@ export interface IDownloadAPI {
   onRecoveringFragsPlaylistsEnds: (callback) => void;
   onDownloadingFragsStarts: (callback) => void;
   onUpdateDownloadSteps: (callback) => void;
+  onDownloadStepsEnds: (callback) => void;
   onDownloadingFragsEnds: (callback) => void;
   onMergingStarts: (callback) => void;
   onMergingVideoStarts: (callback) => void;
