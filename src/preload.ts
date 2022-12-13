@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
@@ -30,6 +31,9 @@ contextBridge.exposeInMainWorld("downloadAPI", {
   },
   onUpdateDownloadSteps: (callback: any) => {
     ipcRenderer.on("update-download-steps", callback);
+  },
+  onDownloadStepsEnds: (callback: any) => {
+    ipcRenderer.on("download-steps-ends", callback);
   },
   onDownloadingFragsEnds: (callback: any) => {
     ipcRenderer.on("downloading-frags-ends", callback);
