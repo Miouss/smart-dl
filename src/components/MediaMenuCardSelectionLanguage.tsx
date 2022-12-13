@@ -25,8 +25,6 @@ export default function MediaMenuCardSelectionLanguage({
   setFetchMedia,
   setMediaDetails,
 }: Props): JSX.Element {
-  console.log(selection);
-
   if (selection === null) return null;
 
   const handleClick = (langSelected: LangSelection) => {
