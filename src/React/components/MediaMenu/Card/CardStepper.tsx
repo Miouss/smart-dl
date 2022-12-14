@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import Box from "@mui/material/Box";
+import { Box, Stack } from "@mui/material";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 
-import { TaskLabel } from "../../styled/TaskLabel";
+import StepperSteps from "./Stepper/StepperSteps";
 
 interface Task {
   title: string;
@@ -39,6 +39,12 @@ export default function MediaMenuStepper() {
     done: false,
   });
 
+  const [mergingPartsTask, setMergingPartsTask] = useState<Task>({
+    title: "waiting to merge video and audio parts into mp4 file",
+    started: false,
+    done: false,
+  });
+
   const steps = [
     "Downloading Fragments",
     "Merging Fragments into Video and Audio Parts",
@@ -63,8 +69,28 @@ export default function MediaMenuStepper() {
     )
   );
 
-  window.downloadAPI.onMergingVideoEnds(() => endTask(setMergingVideoPartTask));
-  window.downloadAPI.onMergingAudioEnds(() => endTask(setMergingAudioPartTask));
+  window.downloadAPI.onMergingVideoEnds(() =>
+    endTask(
+      setMergingVideoPartTask,
+      "Video's fragments had been merged into single part successfully"
+    )
+  );
+  window.downloadAPI.onMergingAudioEnds(() =>
+    endTask(
+      setMergingAudioPartTask,
+      "Audio's fragments had been merged into single part successfully"
+    )
+  );
+
+  window.downloadAPI.onMergingPartsStarts(() =>
+    startTask(
+      setMergingPartsTask,
+      "Merging video and audio parts into MP4 file"
+    )
+  );
+  window.downloadAPI.onMergingPartsEnds(() =>
+    endTask(setMergingPartsTask, "Video and audio parts merged sucessfully")
+  );
 
   window.downloadAPI.onUpdateDownloadSteps(
     (_: unknown, taskTitle: string, mediaType: Media) => {
@@ -76,8 +102,14 @@ export default function MediaMenuStepper() {
 
   window.downloadAPI.onDownloadStepsEnds((_: unknown, mediaType: Media) => {
     mediaType === "Audio"
-      ? endTask(setAudioFragsDlTask)
-      : endTask(setVideoFragsDlTask);
+      ? endTask(
+          setAudioFragsDlTask,
+          "Audio's fragments had been downloaded successfully"
+        )
+      : endTask(
+          setVideoFragsDlTask,
+          "Video's fragments had been downloaded successfully"
+        );
   });
 
   const startTask = (
@@ -102,55 +134,15 @@ export default function MediaMenuStepper() {
     });
   };
 
-  const endTask = (setStateOfTask: Dispatch<SetStateAction<Task>>) => {
+  const endTask = (
+    setStateOfTask: Dispatch<SetStateAction<Task>>,
+    updatedTaskTitle: string | undefined = undefined
+  ) => {
     setStateOfTask((task) => ({
-      title: task.title,
+      title: updatedTaskTitle !== undefined ? updatedTaskTitle : task.title,
       started: true,
       done: true,
     }));
-  };
-
-  const StepsStates = () => {
-    switch (activeStep) {
-      case 0:
-        return (
-          <>
-            <TaskLabel
-              variant="h6"
-              started={videoFragsDlTask.started ? 1 : 0}
-              done={videoFragsDlTask.done ? 1 : 0}
-            >
-              
-            </TaskLabel>
-            <TaskLabel
-              variant="h6"
-              started={audioFragsDlTask.started ? 1 : 0}
-              done={audioFragsDlTask.done ? 1 : 0}
-            >
-              
-            </TaskLabel>
-          </>
-        );
-      default:
-        return (
-          <>
-            <TaskLabel
-              variant="h6"
-              started={mergingVideoPartTask.started ? 1 : 0}
-              done={mergingVideoPartTask.done ? 1 : 0}
-            >
-              {mergingVideoPartTask.title}
-            </TaskLabel>
-            <TaskLabel
-              variant="h6"
-              started={mergingAudioPartTask.started ? 1 : 0}
-              done={mergingAudioPartTask.done ? 1 : 0}
-            >
-              {mergingAudioPartTask.title}
-            </TaskLabel>
-          </>
-        );
-    }
   };
 
   return (
@@ -182,7 +174,16 @@ export default function MediaMenuStepper() {
         ))}
       </Stepper>
 
-      <StepsStates />
+      <Stack direction={"column"} marginTop={"1rem"} marginBottom={"1rem"}>
+        <StepperSteps
+          activeStep={activeStep}
+          videoFragsDlTask={videoFragsDlTask}
+          audioFragsDlTask={audioFragsDlTask}
+          mergingVideoPartTask={mergingVideoPartTask}
+          mergingAudioPartTask={mergingAudioPartTask}
+          mergingPartsTask={mergingPartsTask}
+        />
+      </Stack>
     </Box>
   );
 }
