@@ -121,22 +121,3 @@ export default function MediaMenuCard({ ...vod }: Media) {
     </>
   );
 }
-
-/*
-
-      <Button
-        variant={"contained"}
-        style={{ textTransform: "none" }}
-        onClick={handleDownload}
-      >
-        DOWNLOAD in {mediaDetails.lang.toUpperCase()} at{" "}
-        {mediaDetails.resolution.split("x")[1]}p
-      </Button>
-      <Button variant={"contained"} onClick={resetSelection} sx={{
-        backgroundColor: "rgba(208, 2, 27, 0.25)",
-
-      }}>
-        <UndoIcon sx={{color: "white"}} />
-      </Button>
-
-*/
