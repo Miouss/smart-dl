@@ -13,6 +13,7 @@ import { MediaDetails } from "../../../../types/Media";
 interface Props {
   setResetSelection: Dispatch<SetStateAction<boolean>>;
   setDownloadStarted: Dispatch<SetStateAction<boolean>>;
+  setBackHome: Dispatch<SetStateAction<boolean>>;
   mediaSelected: boolean;
   downloadStarted: boolean;
   mediaDetails: MediaDetails;
@@ -22,6 +23,7 @@ interface Props {
 export default function MediaMenuCardNavBar({
   setResetSelection,
   setDownloadStarted,
+  setBackHome,
   mediaSelected,
   downloadStarted,
   mediaDetails,
@@ -46,7 +48,7 @@ export default function MediaMenuCardNavBar({
         },
       }}
     >
-      <NavbarHomeButton />
+      <NavbarHomeButton setBackHome={setBackHome} />
       <NavbarRetryButton setResetSelection={setResetSelection} downloadStarted={downloadStarted} />
 
       {mediaSelected ? (

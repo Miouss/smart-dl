@@ -1,10 +1,10 @@
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import fetch, { Headers } from "cross-fetch";
 
 import Input from "@mui/material/Input";
 import { Stack, ThemeProvider } from "@mui/system";
 import { createTheme } from "@mui/material/styles";
-import MediaMenu from "./components/MediaMenu";
+import MediaMenuCard from "./components/MediaMenuCard";
 import {
   Alert,
   Button,
@@ -31,6 +31,7 @@ export default function App() {
   const [saveCredentials, setSaveCredentials] = useState(false);
   const [useSavedCredentials, setUseSavedCredentials] = useState(false);
   const [errorMsg, setErrorMsg] = useState<undefined | string>(undefined);
+  const [backHome, setBackHome] = useState(false);
 
   async function fetching(showUrl: string) {
     const header = new Headers({
@@ -65,7 +66,12 @@ export default function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetching(showUrl);
+    console.log(showUrl);
+    if(showUrl === undefined || showUrl === ""){
+      setErrorMsg("No url link provided");
+    }else{
+      fetching(showUrl);
+    }
   };
 
   const handleCredentials = (
@@ -160,10 +166,29 @@ export default function App() {
     },
   });
 
+  useEffect(() => {
+      setData(null);
+      setShowUrl(undefined);
+      setAccount({
+        username: "",
+        password: "",
+      });
+      setSaveCredentials(false);
+      setUseSavedCredentials(false);
+  }, [backHome]);
+
+  useEffect(() => {
+    if(errorMsg !== undefined){
+      setTimeout(() => {
+        setErrorMsg(undefined);
+      }, 5000);
+    }
+  }, [errorMsg])
+
   if (data === null) {
     return (
       <>
-        <ThemeProvider theme={customTheme}>
+        <ThemeProvider theme={customTheme} key="">
           <Stack
             justifyContent={"center"}
             alignItems={"center"}
@@ -315,7 +340,7 @@ export default function App() {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <MediaMenu {...data} />
+              <MediaMenuCard setBackHome={setBackHome} vod={data} />
             </Stack>
           </Stack>
         </Stack>

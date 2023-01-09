@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import fetch, { Headers } from "cross-fetch";
 
 import { Stack } from "@mui/system";
@@ -9,13 +9,18 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import { Box } from "@mui/material";
-import { Media, MediaDetails, MediaUrls } from "../../../types/Media";
+import { Media, MediaDetails, MediaUrls } from "../../types/Media";
 
-import CardSelect from "./Card/CardSelect";
-import CardNavbar from "./Card/CardNavbar";
-import CardStepper from "./Card/CardStepper";
+import CardSelect from "./MenuCard/CardSelect";
+import CardNavbar from "./MenuCard/CardNavbar";
+import CardStepper from "./MenuCard/CardStepper";
 
-export default function MediaMenuCard({ ...vod }: Media) {
+interface Props {
+  setBackHome: Dispatch<SetStateAction<boolean>>;
+  vod: Media;
+}
+
+export default function MediaMenuCard({ setBackHome, vod }: Props) {
   const [mediaDownloaded, setMediaDownloaded] = useState(false);
 
   const [mediaDetails, setMediaDetails] = useState<MediaDetails>({
@@ -115,6 +120,7 @@ export default function MediaMenuCard({ ...vod }: Media) {
             <CardNavbar
               setResetSelection={setResetSelection}
               setDownloadStarted={setDownloadStarted}
+              setBackHome={setBackHome}
               mediaSelected={mediaSelected}
               downloadStarted={downloadStarted}
               mediaDetails={mediaDetails}
