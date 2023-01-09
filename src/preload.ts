@@ -14,6 +14,13 @@ contextBridge.exposeInMainWorld("downloadAPI", {
   cancelDownload: () => {
     ipcRenderer.send("cancel-download");
   },
+
+  onCancelStarts: (callback: any) => {
+    ipcRenderer.on("canceling-starts", callback);
+  },
+  onCancelEnds: (callback: any) => {
+    ipcRenderer.on("canceling-ends", callback);
+  },
   onDownloadFullyStarts: (callback: any) => {
     ipcRenderer.on("download-fully-starts", callback);
   },
