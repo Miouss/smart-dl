@@ -8,7 +8,7 @@ import NavbarDownloadButton from "./Navbar/NavbarDownloadButton";
 import NavbarCancelDownloadButton from "./Navbar/NavbarCancelDownloadButton";
 import NavbarDownloadDisabledButton from "./Navbar/NavbarDownloadDisabledButton";
 
-import { MediaDetails } from "../../../../types/Media";
+import { MediaDetails } from "../../../types/Media";
 
 interface Props {
   setResetSelection: Dispatch<SetStateAction<boolean>>;
@@ -48,23 +48,28 @@ export default function MediaMenuCardNavBar({
         },
       }}
     >
-      <NavbarHomeButton setBackHome={setBackHome} />
-      <NavbarRetryButton setResetSelection={setResetSelection} downloadStarted={downloadStarted} />
-
-      {mediaSelected ? (
-        downloadStarted ? (
-          <NavbarCancelDownloadButton />
-        ) : (
-          <NavbarDownloadButton
-            setDownloadStarted={setDownloadStarted}
-            downloadStarted={downloadStarted}
-            mediaDownloaded={mediaDownloaded}
-          >
-            {mediaLabel}
-          </NavbarDownloadButton>
-        )
+      {downloadStarted ? (
+        <NavbarCancelDownloadButton />
       ) : (
-        <NavbarDownloadDisabledButton />
+        <>
+          <NavbarHomeButton setBackHome={setBackHome} />
+          <NavbarRetryButton
+            setResetSelection={setResetSelection}
+            downloadStarted={downloadStarted}
+          />
+
+          {mediaSelected ? (
+            <NavbarDownloadButton
+              setDownloadStarted={setDownloadStarted}
+              downloadStarted={downloadStarted}
+              mediaDownloaded={mediaDownloaded}
+            >
+              {mediaLabel}
+            </NavbarDownloadButton>
+          ) : (
+            <NavbarDownloadDisabledButton />
+          )}
+        </>
       )}
     </ButtonGroup>
   );

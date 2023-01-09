@@ -7,10 +7,10 @@ import {
   MediaUrls,
   MediaDetails,
   LangSelection,
-} from "../../../../../types/Media";
+} from "../../../../types/Media";
 import { Stack } from "@mui/system";
 
-import SelectButton from "../../../styled/SelectButton"
+import SelectButton from "../../styled/SelectButton"
 
 interface Props {
   selection: AudioSelection | null;

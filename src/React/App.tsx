@@ -4,7 +4,7 @@ import fetch, { Headers } from "cross-fetch";
 import Input from "@mui/material/Input";
 import { Stack, ThemeProvider } from "@mui/system";
 import { createTheme } from "@mui/material/styles";
-import MediaMenuCard from "./components/MediaMenuCard";
+import MenuCard from "./components/MenuCard";
 import {
   Alert,
   Button,
@@ -340,7 +340,7 @@ export default function App() {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <MediaMenuCard setBackHome={setBackHome} vod={data} />
+              <MenuCard setBackHome={setBackHome} vod={data} />
             </Stack>
           </Stack>
         </Stack>

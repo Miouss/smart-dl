@@ -20,7 +20,7 @@ interface Props {
   vod: Media;
 }
 
-export default function MediaMenuCard({ setBackHome, vod }: Props) {
+export default function MenuCard({ setBackHome, vod }: Props) {
   const [mediaDownloaded, setMediaDownloaded] = useState(false);
 
   const [mediaDetails, setMediaDetails] = useState<MediaDetails>({

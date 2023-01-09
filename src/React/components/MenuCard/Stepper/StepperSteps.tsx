@@ -2,7 +2,7 @@ import React from "react";
 
 import StepsTask from "./Steps/StepsTask";
 
-import { Task } from "../../../../../types/Task";
+import { Task } from "../../../../types/Task";
 
 interface Props {
   activeStep: number;

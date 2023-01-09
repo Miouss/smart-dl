@@ -1,9 +1,9 @@
 import React from "react";
 
-import { TaskLabel } from "../../../../styled/TaskLabel";
+import { TaskLabel } from "../../../styled/TaskLabel";
 import TaskState from "./Task/TaskState";
 
-import { Task } from "../../../../../../types/Task";
+import { Task } from "../../../../../types/Task";
 
 interface Props {
   task: Task;

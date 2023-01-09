@@ -9,8 +9,8 @@ import {
   Tabs,
 } from "@mui/material";
 
-import { MediaUrls, MediaDetails } from "../../../../types/Media";
-import TabPanel from "../../styled/TabPanel";
+import { MediaUrls, MediaDetails } from "../../../types/Media";
+import TabPanel from "../styled/TabPanel";
 
 interface Props {
   setFetchMedia: Dispatch<SetStateAction<MediaUrls>>;

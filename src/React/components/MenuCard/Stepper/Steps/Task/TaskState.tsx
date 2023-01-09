@@ -3,7 +3,7 @@ import React from "react";
 import { Stack, Box, CircularProgress } from "@mui/material";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import DoneIcon from "@mui/icons-material/Done";
-import { Task } from "../../../../../../../types/Task";
+import { Task } from "../../../../../../types/Task";
 
 interface Props {
   task: Task;
