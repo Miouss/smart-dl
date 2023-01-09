@@ -40,7 +40,7 @@ export default async function streamDownload(req: Request, res: Response) {
 
     windowWebContents.send("merging-ends");
 
-    windowWebContents.send("download-fully-completed");
+    windowWebContents.send("download-fully-ends");
 
     console.timeEnd("Operations Completed in ");
 
