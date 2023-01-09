@@ -4,12 +4,6 @@
 
 import { ipcRenderer, contextBridge } from "electron";
 
-contextBridge.exposeInMainWorld("notificationAPI", {
-  sendNotification: () => {
-    ipcRenderer.send("notify", process.versions.node);
-  },
-});
-
 contextBridge.exposeInMainWorld("fileSystemAPI", {
   openFileSystemDialog: () => {
     ipcRenderer.send("openFSDialogue");
@@ -17,6 +11,9 @@ contextBridge.exposeInMainWorld("fileSystemAPI", {
 });
 
 contextBridge.exposeInMainWorld("downloadAPI", {
+  cancelDownload: () => {
+    ipcRenderer.send("cancel-download");
+  },
   onDownloadFullyStarts: (callback: any) => {
     ipcRenderer.on("download-fully-starts", callback);
   },
