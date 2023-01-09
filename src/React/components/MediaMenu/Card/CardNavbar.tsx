@@ -47,7 +47,7 @@ export default function MediaMenuCardNavBar({
       }}
     >
       <NavbarHomeButton />
-      <NavbarRetryButton setResetSelection={setResetSelection} />
+      <NavbarRetryButton setResetSelection={setResetSelection} downloadStarted={downloadStarted} />
 
       {mediaSelected ? (
         downloadStarted ? (
