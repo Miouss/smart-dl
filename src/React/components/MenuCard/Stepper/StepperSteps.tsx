@@ -6,38 +6,33 @@ import { Task } from "../../../../types/Task";
 
 interface Props {
   activeStep: number;
-  videoFragsDlTask: Task;
-  audioFragsDlTask: Task;
-  mergingVideoPartTask: Task;
-  mergingAudioPartTask: Task;
-  mergingPartsTask: Task;
+  tasks: {
+    videoFrags: Task;
+    audioFrags: Task;
+    videoPart: Task;
+    audioPart: Task;
+    parts: Task;
+  };
 }
 
-export default function StepperSteps({
-  activeStep,
-  videoFragsDlTask,
-  audioFragsDlTask,
-  mergingVideoPartTask,
-  mergingAudioPartTask,
-  mergingPartsTask,
-}: Props) {
+export default function StepperSteps({ activeStep, tasks }: Props) {
   switch (activeStep) {
     case 0:
       return (
         <>
-          <StepsTask task={videoFragsDlTask} />
-          <StepsTask task={audioFragsDlTask} />
+          <StepsTask task={tasks.videoFrags} />
+          <StepsTask task={tasks.audioFrags} />
         </>
       );
     case 1:
       return (
         <>
-          <StepsTask task={mergingVideoPartTask} />
-          <StepsTask task={mergingAudioPartTask} />
+          <StepsTask task={tasks.videoPart} />
+          <StepsTask task={tasks.audioPart} />
         </>
       );
     case 2:
-      return <StepsTask task={mergingPartsTask} />;
+      return <StepsTask task={tasks.parts} />;
     default:
       return null;
   }
