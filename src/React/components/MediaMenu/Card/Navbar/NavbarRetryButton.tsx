@@ -1,6 +1,4 @@
-
-
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 import { Button } from "@mui/material";
 
@@ -8,22 +6,39 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 
 interface Props {
   setResetSelection: Dispatch<SetStateAction<boolean>>;
+  downloadStarted: boolean;
 }
 
-export default function NavbarRetryButton({setResetSelection} : Props){
-    return      <Button
-    onClick={() => setResetSelection((resetSelection) => !resetSelection)}
-    sx={{
-      background: "rgba(208, 2, 27, 1)",
-      "&:hover": {
-        background: "rgba(208, 2, 27, 0.7)",
-      },
-    }}
-  >
-    <RefreshIcon
+export default function NavbarRetryButton({
+  setResetSelection,
+  downloadStarted,
+}: Props) {
+  const [donwnloadFullyEnded, setDownloadFullyEnded] = useState(false);
+
+  window.downloadAPI.onDownloadFullyStarts(() => {
+    setDownloadFullyEnded(false);
+  })
+
+  window.downloadAPI.onDownloadFullyEnds(() => {
+    setDownloadFullyEnded(true);
+  });
+
+  return (
+    <Button
+      onClick={() => setResetSelection((resetSelection) => !resetSelection)}
+      disabled={downloadStarted && !donwnloadFullyEnded}
       sx={{
-        color: "white",
+        background: "rgba(208, 2, 27, 1)",
+        "&:hover": {
+          background: "rgba(208, 2, 27, 0.7)",
+        },
       }}
-    />
-  </Button>;
+    >
+      <RefreshIcon
+        sx={{
+          color: "white",
+        }}
+      />
+    </Button>
+  );
 }
