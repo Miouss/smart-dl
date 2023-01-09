@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 
 import { ButtonGroup } from "@mui/material";
 
@@ -34,6 +34,16 @@ export default function MediaMenuCardNavBar({
     ${mediaDetails.lang.toUpperCase()}`
     : "";
 
+  const [donwnloadFullyEnded, setDownloadFullyEnded] = useState(false);
+
+  window.downloadAPI.onDownloadFullyStarts(() => {
+    setDownloadFullyEnded(false);
+  });
+
+  window.downloadAPI.onDownloadFullyEnds(() => {
+    setDownloadFullyEnded(true);
+  });
+
   return (
     <ButtonGroup
       fullWidth
@@ -48,17 +58,14 @@ export default function MediaMenuCardNavBar({
         },
       }}
     >
-      {downloadStarted ? (
+      {downloadStarted && !mediaDownloaded ? (
         <NavbarCancelDownloadButton />
       ) : (
         <>
           <NavbarHomeButton setBackHome={setBackHome} />
-          <NavbarRetryButton
-            setResetSelection={setResetSelection}
-            downloadStarted={downloadStarted}
-          />
+          <NavbarRetryButton setResetSelection={setResetSelection} />
 
-          {mediaSelected ? (
+          {mediaSelected && !mediaDownloaded ? (
             <NavbarDownloadButton
               setDownloadStarted={setDownloadStarted}
               downloadStarted={downloadStarted}

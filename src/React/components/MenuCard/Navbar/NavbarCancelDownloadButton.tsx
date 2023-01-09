@@ -8,9 +8,9 @@ export default function NavbarCancelDownloadButton() {
   return (
     <Button
       sx={{
-        background: "rgba(213, 162, 0, 1)",
+        background: "rgba(208, 2, 27, 1)",
         "&:hover": {
-          background: "rgba(213, 162, 0, 0.8)",
+          background: "rgba(208, 2, 27, 0.7)",
         },
       }}
     >
