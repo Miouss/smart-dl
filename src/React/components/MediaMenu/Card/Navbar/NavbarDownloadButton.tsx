@@ -13,8 +13,6 @@ interface Props {
 
 export default function NavbarDownloadButton({
   setDownloadStarted,
-  downloadStarted,
-  mediaDownloaded,
   children
 }: Props){
   return (
