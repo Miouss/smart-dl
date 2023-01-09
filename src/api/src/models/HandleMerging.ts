@@ -1,7 +1,6 @@
-import merging from "../utilFcts/Merging";
 import Listr from "listr";
 
-import getWindow from "../../../index";
+import { mergingTask, deletingTask } from "../tasks/tasks";
 
 export default async function handleMerging(
   vodTitle: string,
@@ -48,49 +47,39 @@ export default async function handleMerging(
       .replace(/[\/\\:*?"<>]/g, "")}".mp4`,
   ];
 
-  const windowWebContents = getWindow().webContents;
-
   const mergingTasks = new Listr([
-    {
-      title: "Merging Video Fragments",
-      task: async () => {
-        windowWebContents.send("merging-video-starts");
-        await merging("ffmpeg", mergingVideoFrags);
-        windowWebContents.send("merging-video-ends");
-      },
-    },
-    {
-      title: "Merging Audio Fragments",
-      task: async () => {
-        windowWebContents.send("merging-audio-starts");
-        await merging("ffmpeg", mergingAudioFrags);
-        windowWebContents.send("merging-audio-ends");
-      },
-    },
-    {
-      title: "Deleting Video & Audio Fragments",
-      task: async () => {
-        windowWebContents.send("deleting-frags-starts");
-        await merging("del-frag-src.bat", [`${outputPath}`]);
-        windowWebContents.send("deleting-frags-ends");
-      },
-    },
-    {
-      title: "Merging Video with Audio",
-      task: async () => {
-        windowWebContents.send("merging-parts-starts");
-        await merging("ffmpeg", mergingVideoWithAudio);
-        windowWebContents.send("merging-parts-ends");
-      },
-    },
-    {
-      title: "Deleting Video and Audio Parts",
-      task: async () => {
-        windowWebContents.send("deleting-parts-starts");
-        await merging("del-full-src.bat", [`${outputPath}`]);
-        windowWebContents.send("deleting-parts-ends");
-      },
-    },
+    mergingTask(
+      "Merging Video Fragments",
+      mergingVideoFrags,
+      "merging-video-starts",
+      "merging-video-ends"
+    ),
+    mergingTask(
+      "Merging Audio Fragments",
+      mergingAudioFrags,
+      "merging-audio-starts",
+      "merging-audio-ends"
+    ),
+    deletingTask(
+      "Deleting Video & Audio Fragments",
+      "del-frag-src",
+      outputPath,
+      "deleting-frags-starts",
+      "deleting-frags-ends"
+    ),
+    mergingTask(
+      "Merging Video with Audio",
+      mergingVideoWithAudio,
+      "merging-parts-starts",
+      "merging-parts-ends"
+    ),
+    deletingTask(
+      "Deleting Video and Audio Parts",
+      "del-full-src",
+      outputPath,
+      "deleting-parts-starts",
+      "deleting-parts-ends"
+    ),
   ]);
 
   await mergingTasks.run();
