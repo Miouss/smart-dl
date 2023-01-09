@@ -68,6 +68,11 @@ export default function MediaMenuCard({ ...vod }: Media) {
     }
   }, [downloadStarted]);
 
+  useEffect(() => {
+      setFetchMedia({ video: undefined, audio: undefined });
+      setDownloadStarted(false);
+  }, [resetSelection]);
+
   return (
     <>
       <Card sx={{ background: "inherit", boxShadow: "none" }}>
