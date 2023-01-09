@@ -34,16 +34,6 @@ export default function MediaMenuCardNavBar({
     ${mediaDetails.lang.toUpperCase()}`
     : "";
 
-  const [donwnloadFullyEnded, setDownloadFullyEnded] = useState(false);
-
-  window.downloadAPI.onDownloadFullyStarts(() => {
-    setDownloadFullyEnded(false);
-  });
-
-  window.downloadAPI.onDownloadFullyEnds(() => {
-    setDownloadFullyEnded(true);
-  });
-
   return (
     <ButtonGroup
       fullWidth
