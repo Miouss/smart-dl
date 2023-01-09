@@ -1,12 +1,13 @@
 import React from "react";
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import { Stack } from "@mui/system";
 
 export default function NavbarCancelDownloadButton() {
   return (
     <Button
+      onClick={() => window.downloadAPI.cancelDownload()}
       sx={{
         background: "rgba(208, 2, 27, 1)",
         "&:hover": {
@@ -14,11 +15,7 @@ export default function NavbarCancelDownloadButton() {
         },
       }}
     >
-      <Stack
-        direction={"row"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
+      <Stack direction={"row"} justifyContent={"center"} alignItems={"center"}>
         <CloseIcon />
       </Stack>
     </Button>
