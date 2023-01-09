@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 
 import { styled } from "@mui/material/styles";
 import { Box, Stack } from "@mui/material";
@@ -18,44 +18,14 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 
-interface Task {
-  title: string;
-  started: boolean;
-  done: boolean;
-}
+import { task } from "../../utils/task";
+
+import { Task } from "../../../types/Task";
 
 type Media = "Video" | "Audio";
 
 export default function MediaMenuStepper() {
   const [activeStep, setActiveStep] = useState<number>(0);
-
-  const [audioFragsDlTask, setAudioFragsDlTask] = useState<Task>({
-    title: "waiting to download audio fragments",
-    started: false,
-    done: false,
-  });
-  const [videoFragsDlTask, setVideoFragsDlTask] = useState<Task>({
-    title: "waiting to download video fragments",
-    started: false,
-    done: false,
-  });
-
-  const [mergingVideoPartTask, setMergingVideoPartTask] = useState<Task>({
-    title: "waiting to merge video fragments into single part",
-    started: false,
-    done: false,
-  });
-  const [mergingAudioPartTask, setMergingAudioPartTask] = useState<Task>({
-    title: "waiting to merge audio fragments into single part",
-    started: false,
-    done: false,
-  });
-
-  const [mergingPartsTask, setMergingPartsTask] = useState<Task>({
-    title: "waiting to merge video and audio parts into mp4 file",
-    started: false,
-    done: false,
-  });
 
   const steps = [
     "Downloading Fragments",
@@ -68,94 +38,90 @@ export default function MediaMenuStepper() {
   window.downloadAPI.onMergingPartsEnds(() => setActiveStep(2));
   window.downloadAPI.onMergingEnds(() => setActiveStep(4));
 
+  const [audioFrags, setAudioFrags] = useState<Task>({
+    title: "waiting to download audio fragments",
+    started: false,
+    done: false,
+  });
+  const [videoFrags, setVideoFrags] = useState<Task>({
+    title: "waiting to download video fragments",
+    started: false,
+    done: false,
+  });
+
+  const [videoPart, setVideoPart] = useState<Task>({
+    title: "waiting to merge video fragments into single part",
+    started: false,
+    done: false,
+  });
+  const [audioPart, setAudioPart] = useState<Task>({
+    title: "waiting to merge audio fragments into single part",
+    started: false,
+    done: false,
+  });
+
+  const [parts, setParts] = useState<Task>({
+    title: "waiting to merge video and audio parts into mp4 file",
+    started: false,
+    done: false,
+  });
+
+  const download = {
+    audioFrags,
+    videoFrags,
+  };
+  const merge = {
+    videoPart,
+    audioPart,
+    parts,
+  };
+
   window.downloadAPI.onMergingVideoStarts(() =>
-    startTask(
-      setMergingVideoPartTask,
-      "Merging video's fragments into single part"
-    )
+    task.start(setVideoPart, "Merging video's fragments into single part")
   );
   window.downloadAPI.onMergingAudioStarts(() =>
-    startTask(
-      setMergingAudioPartTask,
-      "Merging audio's fragments into single part"
-    )
+    task.start(setAudioPart, "Merging audio's fragments into single part")
   );
 
   window.downloadAPI.onMergingVideoEnds(() =>
-    endTask(
-      setMergingVideoPartTask,
+    task.end(
+      setVideoPart,
       "Video's fragments had been merged into single part successfully"
     )
   );
   window.downloadAPI.onMergingAudioEnds(() =>
-    endTask(
-      setMergingAudioPartTask,
+    task.end(
+      setAudioPart,
       "Audio's fragments had been merged into single part successfully"
     )
   );
 
   window.downloadAPI.onMergingPartsStarts(() =>
-    startTask(
-      setMergingPartsTask,
-      "Merging video and audio parts into MP4 file"
-    )
+    task.start(setParts, "Merging video and audio parts into MP4 file")
   );
   window.downloadAPI.onMergingPartsEnds(() =>
-    endTask(setMergingPartsTask, "Video and audio parts merged sucessfully")
+    task.end(setParts, "Video and audio parts merged sucessfully")
   );
 
   window.downloadAPI.onUpdateDownloadSteps(
     (_: unknown, taskTitle: string, mediaType: Media) => {
       mediaType === "Audio"
-        ? updateTask(setAudioFragsDlTask, taskTitle)
-        : updateTask(setVideoFragsDlTask, taskTitle);
+        ? task.update(setAudioFrags, taskTitle)
+        : task.update(setVideoFrags, taskTitle);
     }
   );
 
   window.downloadAPI.onDownloadStepsEnds((_: unknown, mediaType: Media) => {
     mediaType === "Audio"
-      ? endTask(
-          setAudioFragsDlTask,
+      ? task.end(
+          setAudioFrags,
           "Audio's fragments had been downloaded successfully"
         )
-      : endTask(
-          setVideoFragsDlTask,
+      : task.end(
+          setVideoFrags,
           "Video's fragments had been downloaded successfully"
         );
   });
-
-  const startTask = (
-    setStateOfTask: Dispatch<SetStateAction<Task>>,
-    updatedTaskTitle: string | undefined = undefined
-  ) => {
-    setStateOfTask((task) => ({
-      title: updatedTaskTitle !== undefined ? updatedTaskTitle : task.title,
-      started: true,
-      done: false,
-    }));
-  };
-
-  const updateTask = (
-    setStateOfTask: Dispatch<SetStateAction<Task>>,
-    taskTitle: string
-  ) => {
-    setStateOfTask({
-      title: taskTitle,
-      started: true,
-      done: false,
-    });
-  };
-
-  const endTask = (
-    setStateOfTask: Dispatch<SetStateAction<Task>>,
-    updatedTaskTitle: string | undefined = undefined
-  ) => {
-    setStateOfTask((task) => ({
-      title: updatedTaskTitle !== undefined ? updatedTaskTitle : task.title,
-      started: true,
-      done: true,
-    }));
-  };
 
   const CustomizedStepConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -256,11 +222,7 @@ export default function MediaMenuStepper() {
       <Stack direction={"column"} marginTop={"1rem"} marginBottom={"1rem"}>
         <StepperSteps
           activeStep={activeStep}
-          videoFragsDlTask={videoFragsDlTask}
-          audioFragsDlTask={audioFragsDlTask}
-          mergingVideoPartTask={mergingVideoPartTask}
-          mergingAudioPartTask={mergingAudioPartTask}
-          mergingPartsTask={mergingPartsTask}
+          tasks={{ ...download, ...merge }}
         />
       </Stack>
     </Box>
