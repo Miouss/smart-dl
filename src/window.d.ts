@@ -7,6 +7,7 @@ export interface IFileSystemAPI {
 }
 
 export interface IDownloadAPI {
+  cancelDownload: () => void;
   onDownloadFullyStarts: (callback) => void;
   onRecoveringFragsPlaylistsStarts: (callback) => void;
   onRecoveringFragsPlaylistsEnds: (callback) => void;
