@@ -5,17 +5,17 @@ export default async function handleCanceling(outputPath: string) {
   const deletingList = new Listr([
     deletingTask(
       "Deleting Video & Audio Fragments",
-      "del-frag-src",
+      "del-frags-src",
       outputPath,
       "deleting-frags-starts",
       "deleting-frags-ends"
     ),
     deletingTask(
       "Deleting Video & Audio Fragments",
-      "del-frag-src",
+      "del-parts-src",
       outputPath,
-      "deleting-frags-starts",
-      "deleting-frags-ends"
+      "deleting-parts-starts",
+      "deleting-parts-ends"
     ),
   ]);
 

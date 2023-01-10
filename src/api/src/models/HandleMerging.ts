@@ -62,7 +62,7 @@ export default async function handleMerging(
     ),
     deletingTask(
       "Deleting Video & Audio Fragments",
-      "del-frag-src",
+      "del-frags-src",
       outputPath,
       "deleting-frags-starts",
       "deleting-frags-ends"
@@ -75,7 +75,7 @@ export default async function handleMerging(
     ),
     deletingTask(
       "Deleting Video and Audio Parts",
-      "del-full-src",
+      "del-parts-src",
       outputPath,
       "deleting-parts-starts",
       "deleting-parts-ends"
