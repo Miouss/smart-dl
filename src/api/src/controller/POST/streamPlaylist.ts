@@ -17,8 +17,8 @@ export default async function streamPlaylist(req: Request, res: Response) {
   const configPath = "./src/api/config.json";
   const configData =  await jsonfile.readFile(configPath);
 
-  const realm = configData.realm;
-  const apikey = configData.apikey;
+  const realm: string = configData.realm;
+  const apikey: string = configData.apikey;
   let username: string | undefined = undefined;
   let password: string | undefined = undefined;
 
@@ -67,7 +67,7 @@ export default async function streamPlaylist(req: Request, res: Response) {
           (vodPlaylist = await getVodPlaylist(
             bearerToken,
             vodData.vodId,
-            realm as string,
+            realm,
             apikey
           )),
       },
