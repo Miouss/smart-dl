@@ -11,9 +11,12 @@ export default function SelectButton(props: any) {
         fontWeight: "400",
         lineHeight: "21px",
         color: "#FFFFFF",
-        background: "#4F4F4F",
+        backgroundColor: "#4F4F4F",
         boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
         borderRadius: "2px",
+        "&:hover": {
+          backgroundColor: "rgba(208, 2, 27, 1)",
+        }
       }}
 
       {...props}
