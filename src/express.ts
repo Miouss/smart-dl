@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Express } from "express";
 import streamDownload from "./api/src/controller/POST/downloadMedia";
 import streamPlaylist from "./api/src/controller/POST/streamPlaylist";
 
@@ -19,6 +19,15 @@ appExpress.post("/stream/download", streamDownload);
 appExpress.post("/stream/playlist", streamPlaylist);
 
 export default appExpress;
+
+export function startServer(appExpress: Express){
+  return appExpress.listen(8000);
+}
+
+export function stopServer(server: any){
+  server.close();
+}
+
 
 export function monitorPublicFolder(){
   appExpress.use(express.static('public'));
