@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction } from "react";
 
-import { Button, Stack, CircularProgress } from "@mui/material";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
+import { Button, Stack } from "@mui/material";
+
+import SimCardDownloadOutlinedIcon from '@mui/icons-material/SimCardDownloadOutlined';
 
 interface Props {
   setDownloadStarted: Dispatch<SetStateAction<boolean>>;
@@ -31,7 +31,7 @@ export default function NavbarDownloadButton({
         alignItems={"center"}
         sx={{ gap: "12px", textTransform: "none" }}
       >
-        <FileDownloadIcon />
+        <SimCardDownloadOutlinedIcon />
         {children}
       </Stack>
     </Button>
