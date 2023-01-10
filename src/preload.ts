@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld("downloadAPI", {
   },
 
   onCancelStarts: (callback: any) => {
+    ipcRenderer.send("canceling-starts");
     ipcRenderer.on("canceling-starts", callback);
   },
   onCancelEnds: (callback: any) => {
