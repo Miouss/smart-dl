@@ -1,6 +1,6 @@
 import fetch from "cross-fetch";
 
-import onError from "../utilFcts/OnError";
+import onError from "../utils/OnError";
 
 import { Metadata } from "../../../types/Metadata";
 

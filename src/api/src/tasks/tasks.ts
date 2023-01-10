@@ -1,5 +1,5 @@
 import getWindow from "../../../index";
-import merging from "../utilFcts/Merging";
+import merging from "../utils/Merging";
 
 export const mergingTask = (taskTitle: string, mergingInstruction: string[], startEvent: string, endEvent:string) => {
   const windowWebContents = getWindow().webContents;
