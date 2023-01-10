@@ -23,7 +23,7 @@ interface Account {
 
 export default function App() {
   const [data, setData] = useState(null);
-  const [showUrl, setShowUrl] = useState(undefined);
+  const [showUrl, setShowUrl] = useState<undefined | string>(undefined);
   const [account, setAccount] = useState<Account>({
     username: "",
     password: "",
