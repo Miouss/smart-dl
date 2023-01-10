@@ -15,6 +15,7 @@ export default async function streamDownload(req: Request, res: Response) {
   console.time("Operations Completed in ");
 
   const { outputPath } = await readFile("./src/api/config.json");
+  const vodTitle = req.body.vodTitle;
 
   const windowWebContents = getWindow().webContents;
 
@@ -44,11 +45,29 @@ export default async function streamDownload(req: Request, res: Response) {
 
     windowWebContents.send("downloading-frags-starts");
 
-    await downloadVodFragments(videoUrlList, "ts", outputPath);
-    checkCancelStatus();
+    let keepDownloading = true;
+    let simultaneousDL = 10;
+    let index = 0;
 
-    await downloadVodFragments(audioUrlList, "aac", outputPath);
-    checkCancelStatus();
+    while(keepDownloading){
+      keepDownloading = await downloadVodFragments(videoUrlList, "ts", outputPath, index, simultaneousDL);
+      checkCancelStatus();
+      index += simultaneousDL;
+    }
+
+    windowWebContents.send("download-steps-ends", "Video");
+  
+    keepDownloading = true;
+    simultaneousDL = 10;
+    index = 0;
+
+    while(keepDownloading){
+      keepDownloading = await downloadVodFragments(audioUrlList, "aac", outputPath, index, simultaneousDL);
+      checkCancelStatus();
+      index += simultaneousDL;
+    }
+    windowWebContents.send("download-steps-ends", "Audio");
+
 
     windowWebContents.send("downloading-frags-ends");
 
@@ -60,7 +79,7 @@ export default async function streamDownload(req: Request, res: Response) {
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
     checkCancelStatus();
 
-    await handleMerging(req.body.vodTitle, outputPath);
+    await handleMerging(vodTitle, outputPath);
     checkCancelStatus();
 
     windowWebContents.send("merging-ends");

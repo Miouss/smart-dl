@@ -1,70 +1,63 @@
 import fetch from "cross-fetch";
-import Listr from "listr";
+
 import { createWriteStream } from "fs";
 
 import getWindow from "../../../index";
 
-
 type MediaExtension = "ts" | "aac";
-
 
 export default async function downloadVodFragments(
   urlList: Array<string>,
   extension: MediaExtension,
-  outputPath: string
+  outputPath: string,
+  i: number,
+  simultaneousDL : number,
 ) {
   const mediaType = extension === "ts" ? "Video" : "Audio";
 
   const windowWebContents = getWindow().webContents;
 
-  const testList = new Listr([
-    {
-      title: `Downloading ${urlList.length} ${mediaType} Fragments`,
-      task: async (ctx, task) => {
-        const simultaneousDL = 10;
-        for (let i = 0; i < urlList.length; i += simultaneousDL) {
-          const iterableArrayLength =
-            i + simultaneousDL < urlList.length
-              ? simultaneousDL
-              : urlList.length - i;
+  const iterableArrayLength =
+  i + simultaneousDL < urlList.length
+    ? simultaneousDL
+    : urlList.length - i;
 
-          task.title = `Downloading ${urlList.length} ${mediaType} Fragments ${
-            i + 1
-          }-${i + iterableArrayLength}/${urlList.length}`;
+  async function startDownload() {
+      const taskTitle = `Downloading ${urlList.length} ${mediaType} Fragments ${
+        i + 1
+      }-${i + iterableArrayLength}/${urlList.length}`;
 
-          windowWebContents.send("update-download-steps", task.title, mediaType);
+      windowWebContents.send("update-download-steps", taskTitle, mediaType);
 
-          await Promise.all(
-            Array(iterableArrayLength)
-              .fill(0)
-              .map(async (value, j) => {
-                const request = await fetch(urlList[i + j]);
+      await Promise.all(
+        Array(iterableArrayLength)
+          .fill(0)
+          .map(async (value, j) => {
+            const request = await fetch(urlList[i + j]);
 
-                await new Promise<void>((resolve) => {
-                  const writeStream = createWriteStream(
-                    `${outputPath}\\${i + j}.${extension}`
-                  );
+            await new Promise<void>((resolve) => {
+              const writeStream = createWriteStream(
+                `${outputPath}\\${i + j}.${extension}`
+              );
 
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  request.body.pipe(writeStream);
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              request.body.pipe(writeStream);
 
-                  writeStream.on("error", (err) => {
-                    console.log("Error : " + err);
-                  });
+              writeStream.on("error", (err) => {
+                console.log("Error : " + err);
+              });
 
-                  writeStream.on("finish", () => {
-                    resolve();
-                  });
-                });
-              })
-          );
-        }
-      },
-    },
-  ]);
+              writeStream.on("finish", () => {
+                resolve();
+              });
+            });
+          })
+      );
+    
+  }
 
-  await testList.run();
+  await startDownload();
 
-  windowWebContents.send("download-steps-ends", mediaType);
+  return iterableArrayLength === simultaneousDL;
 }
