@@ -11,7 +11,7 @@ export default async function handleCanceling(outputPath: string) {
       "deleting-frags-ends"
     ),
     deletingTask(
-      "Deleting Video & Audio Fragments",
+      "Deleting Video & Audio Parts",
       "del-parts-src",
       outputPath,
       "deleting-parts-starts",
