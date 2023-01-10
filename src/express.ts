@@ -24,6 +24,7 @@ export function startServer(appExpress: Express){
   return appExpress.listen(8000);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function stopServer(server: any){
   server.close();
 }
