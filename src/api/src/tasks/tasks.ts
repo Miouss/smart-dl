@@ -1,7 +1,12 @@
 import getWindow from "../../../index";
 import merging from "../utils/Merging";
 
-export const mergingTask = (taskTitle: string, mergingInstruction: string[], startEvent: string, endEvent:string) => {
+export const mergingTask = (
+  taskTitle: string,
+  mergingInstruction: string[],
+  startEvent: string,
+  endEvent: string
+) => {
   const windowWebContents = getWindow().webContents;
 
   return {
@@ -14,7 +19,13 @@ export const mergingTask = (taskTitle: string, mergingInstruction: string[], sta
   };
 };
 
-export const deletingTask = (taskTitle: string, mergingFile: string, outputPath: string, startEvent: string, endEvent:string) => {
+export const deletingTask = (
+  taskTitle: string,
+  mergingFile: string,
+  outputPath: string,
+  startEvent: string,
+  endEvent: string
+) => {
   const windowWebContents = getWindow().webContents;
 
   return {
@@ -24,5 +35,5 @@ export const deletingTask = (taskTitle: string, mergingFile: string, outputPath:
       await merging(`${mergingFile}.bat`, [`${outputPath}`]);
       windowWebContents.send(endEvent);
     },
-  }
-}
+  };
+};
