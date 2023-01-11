@@ -1,25 +1,20 @@
 import getWindow from "../../../index";
 import merging from "../utils/Merging";
 
-export const mergingTask = (
+export const mergingTask = async (
   taskTitle: string,
   mergingInstruction: string[],
   startEvent: string,
   endEvent: string
 ) => {
   const windowWebContents = getWindow().webContents;
-
-  return {
-    title: taskTitle,
-    task: async () => {
-      windowWebContents.send(startEvent);
-      await merging("ffmpeg", mergingInstruction);
-      windowWebContents.send(endEvent);
-    },
-  };
+  console.log(taskTitle);
+  windowWebContents.send(startEvent);
+  await merging("ffmpeg", mergingInstruction);
+  windowWebContents.send(endEvent);
 };
 
-export const deletingTask = (
+export const deletingTask = async (
   taskTitle: string,
   mergingFile: string,
   outputPath: string,
@@ -27,13 +22,8 @@ export const deletingTask = (
   endEvent: string
 ) => {
   const windowWebContents = getWindow().webContents;
-
-  return {
-    title: taskTitle,
-    task: async () => {
-      windowWebContents.send(startEvent);
-      await merging(`${mergingFile}.bat`, [`${outputPath}`]);
-      windowWebContents.send(endEvent);
-    },
-  };
+  console.log(taskTitle);
+  windowWebContents.send(startEvent);
+  await merging(`${mergingFile}.bat`, [`${outputPath}`]);
+  windowWebContents.send(endEvent);
 };

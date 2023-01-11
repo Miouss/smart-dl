@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import { Stack } from "@mui/material";
 
 import Stepper from "@mui/material/Stepper";
@@ -70,53 +69,6 @@ export default function StepperSteps({ activeStep }: Props) {
     parts,
   };
 
-  window.downloadAPI.onMergingVideoStarts(() =>
-    task.start(setVideoPart, "Merging video's fragments into single part")
-  );
-  window.downloadAPI.onMergingAudioStarts(() =>
-    task.start(setAudioPart, "Merging audio's fragments into single part")
-  );
-
-  window.downloadAPI.onMergingVideoEnds(() =>
-    task.end(
-      setVideoPart,
-      "Video's fragments had been merged into single part successfully"
-    )
-  );
-  window.downloadAPI.onMergingAudioEnds(() =>
-    task.end(
-      setAudioPart,
-      "Audio's fragments had been merged into single part successfully"
-    )
-  );
-
-  window.downloadAPI.onMergingPartsStarts(() =>
-    task.start(setParts, "Merging video and audio parts into MP4 file")
-  );
-  window.downloadAPI.onMergingPartsEnds(() =>
-    task.end(setParts, "Video and audio parts merged sucessfully")
-  );
-
-  window.downloadAPI.onUpdateDownloadSteps(
-    (_: unknown, taskTitle: string, mediaType: Media) => {
-      mediaType === "Audio"
-        ? task.update(setAudioFrags, taskTitle)
-        : task.update(setVideoFrags, taskTitle);
-    }
-  );
-
-  window.downloadAPI.onDownloadStepsEnds((_: unknown, mediaType: Media) => {
-    mediaType === "Audio"
-      ? task.end(
-          setAudioFrags,
-          "Audio's fragments had been downloaded successfully"
-        )
-      : task.end(
-          setVideoFrags,
-          "Video's fragments had been downloaded successfully"
-        );
-  });
-
   const icons: { [index: string]: React.ReactElement } = {
     1: <FileCopyIcon />,
     2: <DifferenceIcon />,
@@ -124,6 +76,71 @@ export default function StepperSteps({ activeStep }: Props) {
     4: <ThumbUpIcon />,
   };
 
+  useEffect(() => {
+    const onMergingVideoStarts = window.downloadAPI.onMergingVideoStarts(
+      () => {
+        task.start(setVideoPart, "Merging video's fragments into single part");
+      }
+    );
+
+    const onMergingAudioStarts = window.downloadAPI.onMergingAudioStarts(
+      () =>
+        task.start(setAudioPart, "Merging audio's fragments into single part")
+    );
+
+    const onMergingVideoEnds = window.downloadAPI.onMergingVideoEnds(() =>
+      task.end(
+        setVideoPart,
+        "Video's fragments had been merged into single part successfully"
+      )
+    );
+    const onMergingAudioEnds = window.downloadAPI.onMergingAudioEnds(() =>
+      task.end(
+        setAudioPart,
+        "Audio's fragments had been merged into single part successfully"
+      )
+    );
+
+    const onMergingPartsStarts = window.downloadAPI.onMergingPartsStarts(
+      () => task.start(setParts, "Merging video and audio parts into MP4 file")
+    );
+    const onMergingPartsEnds = window.downloadAPI.onMergingPartsEnds(() =>
+      task.end(setParts, "Video and audio parts merged sucessfully")
+    );
+
+    const onUpdateDownloadSteps = window.downloadAPI.onUpdateDownloadSteps(
+      (_: unknown, taskTitle: string, mediaType: Media) => {
+        mediaType === "Audio"
+          ? task.update(setAudioFrags, taskTitle)
+          : task.update(setVideoFrags, taskTitle);
+      }
+    );
+
+    const onDownloadStepsEnds = window.downloadAPI.onDownloadStepsEnds(
+      (_: unknown, mediaType: Media) => {
+        mediaType === "Audio"
+          ? task.end(
+              setAudioFrags,
+              "Audio's fragments had been downloaded successfully"
+            )
+          : task.end(
+              setVideoFrags,
+              "Video's fragments had been downloaded successfully"
+            );
+      }
+    );
+
+    return () => {
+      onMergingVideoStarts;
+      onMergingAudioStarts;
+      onMergingVideoEnds;
+      onMergingAudioEnds;
+      onMergingPartsStarts;
+      onMergingPartsEnds;
+      onUpdateDownloadSteps;
+      onDownloadStepsEnds;
+    };
+  }, []);
   return (
     <>
       <Stepper

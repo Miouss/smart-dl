@@ -4,10 +4,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import { Stack } from "@mui/system";
 
-export default function NavbarCancelDownloadButton() {
+export default function NavbarCancelButton() {
   return (
     <Button
-      onClick={() => window.downloadAPI.cancelDownload()}
+      onClick={() => window.downloadAPI.cancelButtonPressed()}
       sx={{
         background: "rgba(208, 2, 27, 1)",
         "&:hover": {

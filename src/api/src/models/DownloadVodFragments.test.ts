@@ -1,6 +1,7 @@
-/*import fetch from "cross-fetch";
-import appExpress, {startServer, stopServer, monitorPublicFolder} from "../../../express";
 import downloadVodFragments from "./DownloadVodFragments";
+
+import fetch from "cross-fetch";
+import appExpress, {startServer, stopServer, monitorPublicFolder} from "../../../express";
 
 const outputPath = "./public/testData/downloadVodPlaylist/testOuput";
 
@@ -75,4 +76,4 @@ async function compareStreams(urlList: Array<string>) {
       expect(responseBuffer).toEqual(response2Buffer);
     })
   );
-}*/
+}

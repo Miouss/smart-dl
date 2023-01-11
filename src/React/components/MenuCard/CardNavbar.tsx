@@ -5,7 +5,7 @@ import { ButtonGroup } from "@mui/material";
 import NavbarHomeButton from "./Navbar/NavbarHomeButton";
 import NavbarRetryButton from "./Navbar/NavbarRetryButton";
 import NavbarDownloadButton from "./Navbar/NavbarDownloadButton";
-import NavbarCancelDownloadButton from "./Navbar/NavbarCancelDownloadButton";
+import NavbarCancelButton from "./Navbar/NavbarCancelButton";
 import NavbarDownloadDisabledButton from "./Navbar/NavbarDownloadDisabledButton";
 
 import { MediaDetails } from "../../../types/Media";
@@ -49,7 +49,7 @@ export default function MediaMenuCardNavBar({
       }}
     >
       {downloadStarted && !mediaDownloaded ? (
-        <NavbarCancelDownloadButton />
+        <NavbarCancelButton />
       ) : (
         <>
           <NavbarHomeButton setBackHome={setBackHome} />

@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from "react";
 import fetch, { Headers } from "cross-fetch";
 
-import Input from "@mui/material/Input";
 import { Stack, ThemeProvider } from "@mui/system";
-import { createTheme } from "@mui/material/styles";
 import MenuCard from "./components/MenuCard";
-import {
-  Alert,
-  Button,
-  Collapse,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
+import { Alert, Box, Collapse, FormControlLabel, Switch } from "@mui/material";
 
 import FolderIcon from "@mui/icons-material/Folder";
 import NearMeIcon from "@mui/icons-material/NearMe";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
+import {
+  UrlInput,
+  CredentialsBox,
+  PasswordBox,
+  UsernameInput,
+  PasswordInput,
+  SubmitButton,
+  ChooseSaveLocationButton,
+} from "./components/Form/Form";
+
+import {
+  customTheme,
+  mainFrameStyle,
+  VisibilityIconStyle,
+} from "./components/styled/AppStyle";
 
 interface Account {
   username: string;
@@ -32,6 +43,8 @@ export default function App() {
   const [useSavedCredentials, setUseSavedCredentials] = useState(false);
   const [errorMsg, setErrorMsg] = useState<undefined | string>(undefined);
   const [backHome, setBackHome] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   async function fetching(showUrl: string) {
     const header = new Headers({
@@ -66,10 +79,10 @@ export default function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(showUrl);
-    if(showUrl === undefined || showUrl === ""){
+
+    if (showUrl === undefined || showUrl === "") {
       setErrorMsg("No url link provided");
-    }else{
+    } else {
       fetching(showUrl);
     }
   };
@@ -92,81 +105,8 @@ export default function App() {
     window.fileSystemAPI.openFileSystemDialog();
   };
 
-  const style = {
-    height: "100vh",
-    width: "100vw",
-  };
-
-  const chooseSaveLocationStyle = {
-    background: "#4F4F4F",
-    marginLeft: "24px",
-    "&:hover": {
-      background: "rgba(208, 2, 27, 1)",
-    },
-  };
-
-  const submitButtonStyle = {
-    marginLeft: "24px",
-  };
-
-  const customTheme = createTheme({
-    components: {
-      MuiInput: {
-        defaultProps: {
-          disableUnderline: true,
-        },
-        styleOverrides: {
-          root: {
-            borderBottom: "1px solid rgba(208, 2, 27, 1)",
-            boxShadow: "0px 1px 1px rgba(208, 2, 27, 0.25)",
-          },
-          input: {
-            color: "white",
-            "&::placeholder": {
-              color: "#828282",
-            },
-          },
-        },
-      },
-      MuiSwitch: {
-        styleOverrides: {
-          root: {
-            "& .MuiSwitch-switchBase": {
-              "&+ .MuiSwitch-track": {
-                backgroundColor: "red",
-                opacity: 1,
-              },
-              "&.Mui-checked": {
-                "+ .MuiSwitch-track": {
-                  backgroundColor: "green",
-                  opacity: 1,
-                },
-                "& .MuiSwitch-thumb": {
-                  color: "white",
-                },
-              },
-            },
-          },
-        },
-      },
-      MuiFormControlLabel: {
-        styleOverrides: {
-          root: {
-            "& .MuiFormControlLabel-label": {
-              color: "#E0E0E0",
-              fontFamily: "Roboto",
-              fontStyle: "normal",
-              fontWeight: "400",
-              fontSize: "18px",
-              lineHeight: "21px",
-            },
-          },
-        },
-      },
-    },
-  });
-
-  useEffect(() => {
+  useEffect(
+    function resetFields() {
       setData(null);
       setShowUrl(undefined);
       setAccount({
@@ -175,15 +115,22 @@ export default function App() {
       });
       setSaveCredentials(false);
       setUseSavedCredentials(false);
-  }, [backHome]);
+    },
+    [backHome]
+  );
 
-  useEffect(() => {
-    if(errorMsg !== undefined){
-      setTimeout(() => {
-        setErrorMsg(undefined);
-      }, 5000);
-    }
-  }, [errorMsg])
+  useEffect(
+    function handleAlertBoxSpawnDelay() {
+      if (errorMsg !== undefined) {
+        const timer = setTimeout(() => {
+          setErrorMsg(undefined);
+        }, 5000);
+
+        return () => clearTimeout(timer);
+      }
+    },
+    [errorMsg]
+  );
 
   if (data === null) {
     return (
@@ -193,35 +140,38 @@ export default function App() {
             justifyContent={"center"}
             alignItems={"center"}
             spacing={5}
-            sx={style}
+            sx={mainFrameStyle}
           >
+            {errorMsg === undefined ? (
+              <Box sx={{ height: "48px" }}></Box>
+            ) : (
+              <Alert
+                severity="error"
+                sx={{ width: "fit-content", height: "fit-content" }}
+              >
+                {errorMsg}
+              </Alert>
+            )}
+
             <form onSubmit={(e) => handleSubmit(e)}>
               <Stack
                 justifyContent={"center"}
                 alignItems={"center"}
                 spacing={5}
               >
-                {errorMsg !== undefined && (
-                  <Alert severity="error">{errorMsg}</Alert>
-                )}
-
                 <Stack
                   direction={"row"}
                   justifyContent={"center"}
                   alignItems={"center"}
                 >
-                  <Input
-                    placeholder="Url Link"
+                  <UrlInput
                     onChange={(event) => setShowUrl(event.target.value)}
                   />
-                  <Button
-                    variant="contained"
-                    className="save-button"
+                  <ChooseSaveLocationButton
                     onClick={(e) => chooseSaveLocation(e)}
-                    sx={chooseSaveLocationStyle}
                   >
                     <FolderIcon style={{ color: "#fff" }} />
-                  </Button>
+                  </ChooseSaveLocationButton>
                 </Stack>
                 <Stack
                   direction={"column"}
@@ -230,25 +180,26 @@ export default function App() {
                   spacing={2}
                 >
                   <Collapse in={!useSavedCredentials} orientation="vertical">
-                    <Stack
-                      direction={"column"}
-                      width={"100%"}
-                      height={"100%"}
-                      spacing={2}
-                    >
-                      <Input
-                        id="username"
-                        name="username"
-                        placeholder="Username"
-                        onChange={(e) => handleCredentials(e)}
-                      />
-                      <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        onChange={(e) => handleCredentials(e)}
-                      />
+                    <CredentialsBox>
+                      <UsernameInput onChange={(e) => handleCredentials(e)} />
+                      <PasswordBox>
+                        <PasswordInput
+                          type={showPassword ? "text" : "password"}
+                          onChange={(e) => handleCredentials(e)}
+                        />
+
+                        {showPassword ? (
+                          <VisibilityIcon
+                            onClick={() => setShowPassword(true)}
+                            sx={VisibilityIconStyle}
+                          />
+                        ) : (
+                          <VisibilityOffIcon
+                            onClick={() => setShowPassword(false)}
+                            sx={VisibilityIconStyle}
+                          />
+                        )}
+                      </PasswordBox>
 
                       <FormControlLabel
                         id="saveCred"
@@ -262,7 +213,7 @@ export default function App() {
                         }
                         label="Save Credentials"
                       />
-                    </Stack>
+                    </CredentialsBox>
                   </Collapse>
                   <FormControlLabel
                     id="useSavedCred"
@@ -277,14 +228,9 @@ export default function App() {
                     label="Use Saved Credentials"
                   />
                 </Stack>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="success"
-                  sx={submitButtonStyle}
-                >
+                <SubmitButton>
                   <NearMeIcon style={{ color: "#fff" }} />
-                </Button>
+                </SubmitButton>
               </Stack>
             </form>
           </Stack>
@@ -294,7 +240,7 @@ export default function App() {
   } else {
     return (
       <ThemeProvider theme={customTheme}>
-        <Stack spacing={5} sx={style}>
+        <Stack spacing={5} sx={mainFrameStyle}>
           <form onSubmit={(e) => handleSubmit(e)}>
             <Stack
               justifyContent={"center"}
@@ -312,25 +258,17 @@ export default function App() {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <Input
-                  placeholder="Url Link"
+                <UrlInput
                   onChange={(event) => setShowUrl(event.target.value)}
                 />
-                <Button
-                  variant="contained"
+                <ChooseSaveLocationButton
                   onClick={(e) => chooseSaveLocation(e)}
-                  sx={chooseSaveLocationStyle}
                 >
                   <FolderIcon style={{ color: "#fff" }} />
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="success"
-                  sx={submitButtonStyle}
-                >
+                </ChooseSaveLocationButton>
+                <SubmitButton>
                   <NearMeIcon style={{ color: "#fff" }} />
-                </Button>
+                </SubmitButton>
               </Stack>
             </Stack>
           </form>

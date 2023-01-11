@@ -8,44 +8,46 @@ import getVodStreams from "../../models/GetVodStreams";
 
 import { Request, Response } from "express";
 
-import { Media } from "../../../../types/Media"
+import { Media } from "../../../../types/Media";
 import { Metadata } from "../../../../types/Metadata";
 import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 
+import ErrorWithStatusCode from "../../utils/ErrorWithStatusCode";
 
-export default async function streamPlaylist(req: Request, res: Response) {
-  const configPath = "./src/api/config.json";
-  const configData =  await jsonfile.readFile(configPath);
-
-  const realm: string = configData.realm;
-  const apikey: string = configData.apikey;
-  let username: string | undefined = undefined;
-  let password: string | undefined = undefined;
-
-  if(req.body.saveCredentials){
-    configData.username = req.body.account.username;
-    configData.password = req.body.account.password;
-
-    jsonfile.writeFile(configPath, configData, function (err) {
-      if (err) console.error(err);
-    });
-  }else if(req.body.useSavedCredentials){
-    username = configData.username;
-    password = configData.password;
-  }
-
-  if(req.body.saveCredentials || !req.body.useSavedCredentials){
-    username = req.body.account.username;
-    password = req.body.account.password;
-  }
-  
+export default async function downloadPlaylist(req: Request, res: Response) {
   try {
+    const configPath = "./src/api/config.json";
+    const configData = await jsonfile.readFile(configPath);
+    if (configData.outputPath === undefined) {
+      throw new ErrorWithStatusCode("Please choose a save location", 403);
+    }
+    const realm: string = configData.realm;
+    const apikey: string = configData.apikey;
+    let username: string | undefined = undefined;
+    let password: string | undefined = undefined;
+
+    if (req.body.saveCredentials) {
+      configData.username = req.body.account.username;
+      configData.password = req.body.account.password;
+
+      jsonfile.writeFile(configPath, configData, function (err) {
+        if (err) console.error(err);
+      });
+    } else if (req.body.useSavedCredentials) {
+      username = configData.username;
+      password = configData.password;
+    }
+
+    if (req.body.saveCredentials || !req.body.useSavedCredentials) {
+      username = req.body.account.username;
+      password = req.body.account.password;
+    }
+
     let bearerToken: string,
       vodData: Metadata,
       vodPlaylist: PlaylistUrl,
       mediaSelection: Media;
 
-    
     const dataCollectList = new Listr([
       {
         title: "Checking Authentification",
@@ -92,7 +94,7 @@ export default async function streamPlaylist(req: Request, res: Response) {
         ? -1
         : 1;
     });
-    
+
     mediaSelection.title = vodData.title;
     mediaSelection.thumbnail = vodData.thumbnail;
     mediaSelection.description = vodData.description;

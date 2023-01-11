@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Stack } from "@mui/material";
 
@@ -6,7 +6,7 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 
-import CancelIcon from '@mui/icons-material/Cancel';
+import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
@@ -53,26 +53,33 @@ export default function StepperSteps({ activeStep }: Props) {
     mediaParts,
   };
 
-  window.downloadAPI.onDeletingFragsStarts(() =>
-    task.start(setMediaFrags, "Deleting downloaded media's fragments")
-  );
+  useEffect(() => {
+    const DeletingFragsStartsEvent = window.downloadAPI.onDeletingFragsStarts(
+      () => task.start(setMediaFrags, "Deleting downloaded media's fragments")
+    );
 
-  window.downloadAPI.onDeletingFragsEnds(() =>
-    task.end(setMediaFrags, "Media's fragments had been deleted successfully")
-  );
+    const DeletingFragsEndsEvent = window.downloadAPI.onDeletingFragsEnds(() =>
+      task.end(setMediaFrags, "Media's fragments had been deleted successfully")
+    );
 
-  window.downloadAPI.onDeletingPartsStarts(() =>
-    task.start(setMediaParts, "Deleting merged media's parts")
-  );
+    const DeletingPartsStartsEvent = window.downloadAPI.onDeletingPartsStarts(
+      () => task.start(setMediaParts, "Deleting merged media's parts")
+    );
 
-  window.downloadAPI.onDeletingPartsEnds(() =>
-    task.end(
+    const DeletingPartsEndsEvent = window.downloadAPI.onDeletingPartsEnds(() =>
+      task.end(
         setMediaParts,
-      "Media's merged parts had been deleted successfully"
-    )
-  );
+        "Media's merged parts had been deleted successfully"
+      )
+    );
 
-
+    return () => {
+      DeletingFragsStartsEvent;
+      DeletingFragsEndsEvent;
+      DeletingPartsStartsEvent;
+      DeletingPartsEndsEvent;
+    };
+  });
 
   return (
     <>

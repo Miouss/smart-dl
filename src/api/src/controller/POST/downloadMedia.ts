@@ -11,7 +11,7 @@ import { Request, Response } from "express";
 
 import getWindow from "../../../../index";
 
-export default async function streamDownload(req: Request, res: Response) {
+export default async function downloadMedia(req: Request, res: Response) {
   console.time("Operations Completed in ");
 
   const { outputPath } = await readFile("./src/api/config.json");
@@ -19,14 +19,14 @@ export default async function streamDownload(req: Request, res: Response) {
 
   const windowWebContents = getWindow().webContents;
 
-  let cancelDownload = false;
+  let cancel = false;
 
-  ipcMain.on("cancel-download", () => {
-    cancelDownload = true;
+  ipcMain.on("cancel-button-pressed", () => {
+    cancel = true;
   });
 
   function checkCancelStatus() {
-    if (cancelDownload) {
+    if (cancel) {
       throw new Error("cancel");
     }
   }
@@ -49,29 +49,41 @@ export default async function streamDownload(req: Request, res: Response) {
     let simultaneousDL = 10;
     let index = 0;
 
-    while(keepDownloading){
-      keepDownloading = await downloadVodFragments(videoUrlList, "ts", outputPath, index, simultaneousDL);
+    while (keepDownloading) {
+      keepDownloading = await downloadVodFragments(
+        videoUrlList,
+        "ts",
+        outputPath,
+        index,
+        simultaneousDL
+      );
       checkCancelStatus();
       index += simultaneousDL;
     }
 
     windowWebContents.send("download-steps-ends", "Video");
-  
+
     keepDownloading = true;
     simultaneousDL = 10;
     index = 0;
 
-    while(keepDownloading){
-      keepDownloading = await downloadVodFragments(audioUrlList, "aac", outputPath, index, simultaneousDL);
+    while (keepDownloading) {
+      keepDownloading = await downloadVodFragments(
+        audioUrlList,
+        "aac",
+        outputPath,
+        index,
+        simultaneousDL
+      );
       checkCancelStatus();
       index += simultaneousDL;
     }
     windowWebContents.send("download-steps-ends", "Audio");
 
-
     windowWebContents.send("downloading-frags-ends");
 
     windowWebContents.send("merging-starts");
+    checkCancelStatus();
 
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
     checkCancelStatus();
@@ -92,9 +104,9 @@ export default async function streamDownload(req: Request, res: Response) {
     res.json({ Download: true });
   } catch (error) {
     if (error.message === "cancel") {
-      windowWebContents.send("canceling-starts");
+      windowWebContents.send("cancel-starts");
       handleCanceling(outputPath);
-      windowWebContents.send("canceling-ends");
+      windowWebContents.send("cancel-ends");
 
       res.status(200);
       res.json({ Download: false });
