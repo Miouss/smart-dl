@@ -190,12 +190,12 @@ export default function App() {
 
                         {showPassword ? (
                           <VisibilityIcon
-                            onClick={() => setShowPassword(true)}
+                            onClick={() => setShowPassword(false)}
                             sx={VisibilityIconStyle}
                           />
                         ) : (
                           <VisibilityOffIcon
-                            onClick={() => setShowPassword(false)}
+                            onClick={() => setShowPassword(true)}
                             sx={VisibilityIconStyle}
                           />
                         )}
