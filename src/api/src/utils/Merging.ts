@@ -14,6 +14,4 @@ export default async function merging(command: string, option: Array<string>) {
   });
 
   await mergingProcess;
-
-  ipcMain.removeAllListeners("cancel-button-pressed");
 }
