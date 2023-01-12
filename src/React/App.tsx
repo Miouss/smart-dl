@@ -1,35 +1,34 @@
 import React, { useEffect, useState } from "react";
 import fetch, { Headers } from "cross-fetch";
 
-import { Stack, ThemeProvider } from "@mui/system";
 import MenuCard from "./components/MenuCard";
-import { Alert, Box, Collapse, FormControlLabel, Switch } from "@mui/material";
 
-import FolderIcon from "@mui/icons-material/Folder";
-import NearMeIcon from "@mui/icons-material/NearMe";
-
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { AlertColor, Collapse, Stack, ThemeProvider } from "@mui/material";
 
 import {
-  UrlInput,
+  StackCentered,
   CredentialsBox,
   PasswordBox,
   UsernameInput,
   PasswordInput,
   SubmitButton,
-  ChooseSaveLocationButton,
-} from "./components/Form/Form";
+} from "./components/Form/StyledComponents";
 
-import {
-  customTheme,
-  mainFrameStyle,
-  VisibilityIconStyle,
-} from "./components/styled/AppStyle";
+import UrlInputBox from "./components/Form/UrlInputBox";
+import PasswordVisibilityIcon from "./components/Form/PasswordVisibilityIcon";
+import TemporyAlert from "./components/Form/TemporyAlert";
+import CredentialsLabelSwitch from "./components/Form/CredentialsLabelSwitch";
+
+import { customTheme, mainFrameStyle } from "./components/styled/AppStyle";
 
 interface Account {
   username: string;
   password: string;
+}
+
+interface AlertMsg {
+  severity: AlertColor;
+  message: string;
 }
 
 export default function App() {
@@ -41,7 +40,7 @@ export default function App() {
   });
   const [saveCredentials, setSaveCredentials] = useState(false);
   const [useSavedCredentials, setUseSavedCredentials] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<undefined | string>(undefined);
+  const [alertMsg, setAlertMsg] = useState<undefined | AlertMsg>();
   const [backHome, setBackHome] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -71,9 +70,13 @@ export default function App() {
       const mediaSelection = await response.json();
 
       setData(mediaSelection);
+      setAlertMsg(undefined);
     } else {
       const message = await response.text();
-      setErrorMsg(message);
+      setAlertMsg({
+        severity: "error",
+        message: message,
+      });
     }
   }
 
@@ -81,7 +84,10 @@ export default function App() {
     e.preventDefault();
 
     if (showUrl === undefined || showUrl === "") {
-      setErrorMsg("No url link provided");
+      setAlertMsg({
+        severity: "error",
+        message: "No url link provided",
+      });
     } else {
       fetching(showUrl);
     }
@@ -100,11 +106,6 @@ export default function App() {
     });
   };
 
-  const chooseSaveLocation = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.fileSystemAPI.openFileSystemDialog();
-  };
-
   useEffect(
     function resetFields() {
       setData(null);
@@ -115,64 +116,42 @@ export default function App() {
       });
       setSaveCredentials(false);
       setUseSavedCredentials(false);
+      setAlertMsg(undefined);
+      setShowPassword(false);
     },
     [backHome]
   );
 
   useEffect(
     function handleAlertBoxSpawnDelay() {
-      if (errorMsg !== undefined) {
+      if (alertMsg !== undefined) {
         const timer = setTimeout(() => {
-          setErrorMsg(undefined);
+          setAlertMsg(undefined);
         }, 5000);
 
         return () => clearTimeout(timer);
       }
     },
-    [errorMsg]
+    [alertMsg]
   );
+
+  useEffect(
+    function handleCredentialsSavingConflict(){
+    if(useSavedCredentials === saveCredentials === true){
+      setSaveCredentials(false);
+    }
+  }, [useSavedCredentials])
 
   if (data === null) {
     return (
       <>
         <ThemeProvider theme={customTheme} key="">
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            spacing={5}
-            sx={mainFrameStyle}
-          >
-            {errorMsg === undefined ? (
-              <Box sx={{ height: "48px" }}></Box>
-            ) : (
-              <Alert
-                severity="error"
-                sx={{ width: "fit-content", height: "fit-content" }}
-              >
-                {errorMsg}
-              </Alert>
-            )}
+          <StackCentered spacing={5} sx={mainFrameStyle}>
+            <TemporyAlert alertMsg={alertMsg} />
 
             <form onSubmit={(e) => handleSubmit(e)}>
-              <Stack
-                justifyContent={"center"}
-                alignItems={"center"}
-                spacing={5}
-              >
-                <Stack
-                  direction={"row"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <UrlInput
-                    onChange={(event) => setShowUrl(event.target.value)}
-                  />
-                  <ChooseSaveLocationButton
-                    onClick={(e) => chooseSaveLocation(e)}
-                  >
-                    <FolderIcon style={{ color: "#fff" }} />
-                  </ChooseSaveLocationButton>
-                </Stack>
+              <StackCentered spacing={5}>
+                <UrlInputBox setShowUrl={setShowUrl} />
                 <Stack
                   direction={"column"}
                   width={"100%"}
@@ -188,52 +167,30 @@ export default function App() {
                           onChange={(e) => handleCredentials(e)}
                         />
 
-                        {showPassword ? (
-                          <VisibilityIcon
-                            onClick={() => setShowPassword(false)}
-                            sx={VisibilityIconStyle}
-                          />
-                        ) : (
-                          <VisibilityOffIcon
-                            onClick={() => setShowPassword(true)}
-                            sx={VisibilityIconStyle}
-                          />
-                        )}
+                        <PasswordVisibilityIcon
+                          setShowPassword={setShowPassword}
+                          visible={showPassword}
+                        />
                       </PasswordBox>
 
-                      <FormControlLabel
+                      <CredentialsLabelSwitch
                         id="saveCred"
-                        control={
-                          <Switch
-                            color="primary"
-                            onChange={() =>
-                              setSaveCredentials(!saveCredentials)
-                            }
-                          />
-                        }
                         label="Save Credentials"
+                        control={setSaveCredentials}
+                        checked={!useSavedCredentials && saveCredentials}
                       />
                     </CredentialsBox>
                   </Collapse>
-                  <FormControlLabel
+                  <CredentialsLabelSwitch
                     id="useSavedCred"
-                    control={
-                      <Switch
-                        color="primary"
-                        onChange={() =>
-                          setUseSavedCredentials(!useSavedCredentials)
-                        }
-                      />
-                    }
                     label="Use Saved Credentials"
+                    control={setUseSavedCredentials}
                   />
                 </Stack>
-                <SubmitButton>
-                  <NearMeIcon style={{ color: "#fff" }} />
-                </SubmitButton>
-              </Stack>
+                <SubmitButton />
+              </StackCentered>
             </form>
-          </Stack>
+          </StackCentered>
         </ThemeProvider>
       </>
     );
@@ -242,45 +199,17 @@ export default function App() {
       <ThemeProvider theme={customTheme}>
         <Stack spacing={5} sx={mainFrameStyle}>
           <form onSubmit={(e) => handleSubmit(e)}>
-            <Stack
-              justifyContent={"center"}
-              alignItems={"center"}
-              sx={{
-                marginTop: "5rem",
-              }}
-              spacing={5}
-            >
-              {errorMsg !== undefined && (
-                <Alert severity="error">{errorMsg}</Alert>
-              )}
-              <Stack
-                direction={"row"}
-                justifyContent={"center"}
-                alignItems={"center"}
-              >
-                <UrlInput
-                  onChange={(event) => setShowUrl(event.target.value)}
-                />
-                <ChooseSaveLocationButton
-                  onClick={(e) => chooseSaveLocation(e)}
-                >
-                  <FolderIcon style={{ color: "#fff" }} />
-                </ChooseSaveLocationButton>
-                <SubmitButton>
-                  <NearMeIcon style={{ color: "#fff" }} />
-                </SubmitButton>
-              </Stack>
-            </Stack>
+            <StackCentered marginTop={"3rem"} spacing={5}>
+              <TemporyAlert alertMsg={alertMsg} />
+
+              <UrlInputBox setShowUrl={setShowUrl} submit />
+            </StackCentered>
           </form>
-          <Stack width={"100%"} justifyContent={"center"} alignItems={"center"}>
-            <Stack
-              width={"720px"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
+          <StackCentered width={"100%"}>
+            <StackCentered width={"720px"}>
               <MenuCard setBackHome={setBackHome} vod={data} />
-            </Stack>
-          </Stack>
+            </StackCentered>
+          </StackCentered>
         </Stack>
       </ThemeProvider>
     );

@@ -1,5 +1,9 @@
-import { Stack, Input, Button, FormControlLabel } from "@mui/material";
+import React from "react";
+
+import { Stack, Input, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import NearMeIcon from "@mui/icons-material/NearMe";
 
 export const UrlInput = styled(Input)({});
 
@@ -14,18 +18,6 @@ CredentialsBox.defaultProps = {
   width: "100%",
   height: "100%",
   spacing: 2,
-};
-
-export const PasswordBox = styled(Stack)({
-  position: "relative",
-  borderBottom: "1px solid rgba(208, 2, 27, 1)",
-  boxShadow: "0px 1px 1px rgba(208, 2, 27, 0.25)",
-});
-
-PasswordBox.defaultProps = {
-  direction: "row",
-  width: "100%",
-  gap: "12px",
 };
 
 export const UsernameInput = styled(Input)({});
@@ -48,7 +40,17 @@ PasswordInput.defaultProps = {
   placeholder: "Password",
 };
 
-//export const SaveCredentialsSwitch = styled(FormControlLabel)
+export const PasswordBox = styled(Stack)({
+  position: "relative",
+  borderBottom: "1px solid rgba(208, 2, 27, 1)",
+  boxShadow: "0px 1px 1px rgba(208, 2, 27, 0.25)",
+});
+
+PasswordBox.defaultProps = {
+  direction: "row",
+  width: "100%",
+  gap: "12px",
+};
 
 export const ChooseSaveLocationButton = styled(Button)({
   background: "#4F4F4F",
@@ -70,4 +72,12 @@ SubmitButton.defaultProps = {
   type: "submit",
   variant: "contained",
   color: "success",
+  children: <NearMeIcon style={{ color: "#fff" }} />
 };
+
+
+export const StackCentered = styled(Stack)({});
+StackCentered.defaultProps = {
+  justifyContent: "center",
+  alignItems: "center",
+}

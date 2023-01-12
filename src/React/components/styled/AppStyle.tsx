@@ -65,4 +65,7 @@ export const mainFrameStyle = {
 export const VisibilityIconStyle = {
   color: "white",
   cursor: "pointer",
-}
+};
+
+export const ReservedBoxStyle = {height: "48px" };
+export const AlertStyle = { width: "fit-content", height: "fit-content" };
