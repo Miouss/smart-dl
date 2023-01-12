@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld("fileSystemAPI", {
 });
 
 contextBridge.exposeInMainWorld("downloadAPI", {
-  onCancelButtonPressed: () => {
+  sendCancelButtonPressed: () => {
     ipcRenderer.send("cancel-button-pressed");
   },
 

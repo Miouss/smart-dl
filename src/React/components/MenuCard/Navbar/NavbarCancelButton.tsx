@@ -8,7 +8,7 @@ export default function NavbarCancelButton() {
   return (
     <Button
       onClick={() => {
-        window.downloadAPI.onCancelButtonPressed();
+        window.downloadAPI.sendCancelButtonPressed();
       }}
       sx={{
         background: "rgba(208, 2, 27, 1)",
