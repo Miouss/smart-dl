@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld("fileSystemAPI", {
 });
 
 contextBridge.exposeInMainWorld("downloadAPI", {
-  cancelButtonPressed: () => {
+  onCancelButtonPressed: () => {
     ipcRenderer.send("cancel-button-pressed");
   },
 
@@ -19,7 +19,10 @@ contextBridge.exposeInMainWorld("downloadAPI", {
     ipcRenderer.once("cancel-starts", callback);
   },
   onCancelEnds: (callback: any) => {
-    ipcRenderer.once("cancel-ends", callback);
+    ipcRenderer.once("cancel-ends", () => {
+      callback();
+      cleanEventEmitter();
+    });
   },
   onDownloadFullyStarts: (callback: any) => {
     ipcRenderer.once("download-fully-starts", callback);
@@ -79,6 +82,38 @@ contextBridge.exposeInMainWorld("downloadAPI", {
     ipcRenderer.once("merging-ends", callback);
   },
   onDownloadFullyEnds: (callback: any) => {
-    ipcRenderer.once("download-fully-ends", callback);
+    ipcRenderer.once("download-fully-ends", () => {
+      callback();
+      cleanEventEmitter();
+    });
   },
 });
+
+function cleanEventEmitter() {
+  for (const channel in eventChannels) {
+    ipcRenderer.removeAllListeners(eventChannels[channel]);
+  }
+}
+
+const eventChannels = [
+  "download-fully-starts",
+  "recovering-frags-playlists-starts",
+  "recovering-frags-playlists-ends",
+  "downloading-frags-starts",
+  "update-download-steps",
+  "download-steps-ends",
+  "downloading-frags-ends",
+  "download-fully-ends",
+  "merging-starts",
+  "merging-ends",
+  "merging-video-starts",
+  "merging-video-ends",
+  "merging-audio-starts",
+  "merging-audio-ends",
+  "merging-parts-starts",
+  "merging-parts-ends",
+  "deleting-frags-starts",
+  "deleting-frags-ends",
+  "deleting-parts-starts",
+  "deleting-parts-ends",
+];

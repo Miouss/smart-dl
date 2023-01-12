@@ -21,7 +21,7 @@ export default async function downloadMedia(req: Request, res: Response) {
 
   let cancel = false;
 
-  ipcMain.on("cancel-button-pressed", () => {
+  ipcMain.once("cancel-button-pressed", () => {
     cancel = true;
   });
 
@@ -104,9 +104,11 @@ export default async function downloadMedia(req: Request, res: Response) {
     res.json({ Download: true });
   } catch (error) {
     if (error.message === "cancel") {
+      console.log("Canceling [started]");
       windowWebContents.send("cancel-starts");
-      handleCanceling(outputPath);
+      await handleCanceling(outputPath);
       windowWebContents.send("cancel-ends");
+      console.log("Canceling [completed]");
 
       res.status(200);
       res.json({ Download: false });

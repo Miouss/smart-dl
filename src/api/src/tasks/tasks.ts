@@ -8,10 +8,11 @@ export const mergingTask = async (
   endEvent: string
 ) => {
   const windowWebContents = getWindow().webContents;
-  console.log(taskTitle);
+  console.log(taskTitle + " [started]");
   windowWebContents.send(startEvent);
   await merging("ffmpeg", mergingInstruction);
   windowWebContents.send(endEvent);
+  console.log(taskTitle + " [completed]")
 };
 
 export const deletingTask = async (
@@ -22,8 +23,9 @@ export const deletingTask = async (
   endEvent: string
 ) => {
   const windowWebContents = getWindow().webContents;
-  console.log(taskTitle);
+  console.log(taskTitle + " [started]");
   windowWebContents.send(startEvent);
   await merging(`${mergingFile}.bat`, [`${outputPath}`]);
   windowWebContents.send(endEvent);
+  console.log(taskTitle + " [completed]");
 };

@@ -7,7 +7,9 @@ import { Stack } from "@mui/system";
 export default function NavbarCancelButton() {
   return (
     <Button
-      onClick={() => window.downloadAPI.cancelButtonPressed()}
+      onClick={() => {
+        window.downloadAPI.onCancelButtonPressed();
+      }}
       sx={{
         background: "rgba(208, 2, 27, 1)",
         "&:hover": {

@@ -19,11 +19,9 @@ import { task } from "../../../utils/task";
 
 type Media = "Video" | "Audio";
 
-interface Props {
-  activeStep: number;
-}
+export default function StepperSteps() {
+  const [activeStep, setActiveStep] = useState<number>(0);
 
-export default function StepperSteps({ activeStep }: Props) {
   const steps = [
     "Downloading Fragments",
     "Merging Fragments into Video and Audio Parts",
@@ -77,15 +75,15 @@ export default function StepperSteps({ activeStep }: Props) {
   };
 
   useEffect(() => {
-    const onMergingVideoStarts = window.downloadAPI.onMergingVideoStarts(
-      () => {
-        task.start(setVideoPart, "Merging video's fragments into single part");
-      }
+    const onMergingStarts = window.downloadAPI.onMergingStarts(() =>
+      setActiveStep(1)
     );
+    const onMergingVideoStarts = window.downloadAPI.onMergingVideoStarts(() => {
+      task.start(setVideoPart, "Merging video's fragments into single part");
+    });
 
-    const onMergingAudioStarts = window.downloadAPI.onMergingAudioStarts(
-      () =>
-        task.start(setAudioPart, "Merging audio's fragments into single part")
+    const onMergingAudioStarts = window.downloadAPI.onMergingAudioStarts(() =>
+      task.start(setAudioPart, "Merging audio's fragments into single part")
     );
 
     const onMergingVideoEnds = window.downloadAPI.onMergingVideoEnds(() =>
@@ -101,12 +99,17 @@ export default function StepperSteps({ activeStep }: Props) {
       )
     );
 
-    const onMergingPartsStarts = window.downloadAPI.onMergingPartsStarts(
-      () => task.start(setParts, "Merging video and audio parts into MP4 file")
-    );
-    const onMergingPartsEnds = window.downloadAPI.onMergingPartsEnds(() =>
-      task.end(setParts, "Video and audio parts merged sucessfully")
-    );
+    const onMergingPartsStarts = window.downloadAPI.onMergingPartsStarts(() => {
+      setActiveStep(2);
+      () => task.start(setParts, "Merging video and audio parts into MP4 file");
+    });
+    const onMergingPartsEnds = window.downloadAPI.onMergingPartsEnds(() => {
+      setActiveStep(3);
+      task.end(setParts, "Video and audio parts merged sucessfully");
+    });
+    const onDownloadFullyEnds = window.downloadAPI.onDownloadFullyEnds(() => {
+      setActiveStep(4);
+    });
 
     const onUpdateDownloadSteps = window.downloadAPI.onUpdateDownloadSteps(
       (_: unknown, taskTitle: string, mediaType: Media) => {
@@ -131,16 +134,19 @@ export default function StepperSteps({ activeStep }: Props) {
     );
 
     return () => {
+      onMergingStarts;
       onMergingVideoStarts;
       onMergingAudioStarts;
       onMergingVideoEnds;
       onMergingAudioEnds;
+      onDownloadFullyEnds;
       onMergingPartsStarts;
       onMergingPartsEnds;
       onUpdateDownloadSteps;
       onDownloadStepsEnds;
     };
   }, []);
+
   return (
     <>
       <Stepper

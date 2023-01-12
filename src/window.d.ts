@@ -7,7 +7,7 @@ export interface IFileSystemAPI {
 }
 
 export interface IDownloadAPI {
-  cancelButtonPressed: () => void;
+  onCancelButtonPressed: () => void;
   onCancelStarts: (callback) => void;
   onCancelEnds: (callback) => void; 
   onDownloadFullyStarts: (callback) => void;

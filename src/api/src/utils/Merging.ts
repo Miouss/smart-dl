@@ -7,11 +7,13 @@ export default async function merging(command: string, option: Array<string>) {
     shell: true,
   });
 
-  ipcMain.on("cancel-button-pressed", () => {
+  ipcMain.once("cancel-button-pressed", () => {
     if (mergingProcess) {
       mergingProcess.kill();
     }
   });
 
   await mergingProcess;
+
+  ipcMain.removeAllListeners("cancel-button-pressed");
 }

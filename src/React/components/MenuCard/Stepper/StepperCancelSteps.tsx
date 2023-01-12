@@ -17,11 +17,9 @@ import { customizedStepIcon } from "../../../utils/stepper";
 import { Task } from "../../../../types/Task";
 import { task } from "../../../utils/task";
 
-interface Props {
-  activeStep: number;
-}
+export default function StepperSteps() {
+  const [activeStep, setActiveStep] = useState<number>(0);
 
-export default function StepperSteps({ activeStep }: Props) {
   const steps = [
     "Download Canceled",
     "Deleting Media's Fragments",
@@ -52,21 +50,20 @@ export default function StepperSteps({ activeStep }: Props) {
     mediaFrags,
     mediaParts,
   };
-
   useEffect(() => {
-    const DeletingFragsStartsEvent = window.downloadAPI.onDeletingFragsStarts(
-      () => task.start(setMediaFrags, "Deleting downloaded media's fragments")
+    const onDeletingFragsStarts = window.downloadAPI.onDeletingFragsStarts(() =>
+      task.start(setMediaFrags, "Deleting downloaded media's fragments")
     );
 
-    const DeletingFragsEndsEvent = window.downloadAPI.onDeletingFragsEnds(() =>
+    const onDeletingFragsEnds = window.downloadAPI.onDeletingFragsEnds(() =>
       task.end(setMediaFrags, "Media's fragments had been deleted successfully")
     );
 
-    const DeletingPartsStartsEvent = window.downloadAPI.onDeletingPartsStarts(
-      () => task.start(setMediaParts, "Deleting merged media's parts")
+    const onDeletingPartsStarts = window.downloadAPI.onDeletingPartsStarts(() =>
+      task.start(setMediaParts, "Deleting merged media's parts")
     );
 
-    const DeletingPartsEndsEvent = window.downloadAPI.onDeletingPartsEnds(() =>
+    const onDeletingPartsEnds = window.downloadAPI.onDeletingPartsEnds(() =>
       task.end(
         setMediaParts,
         "Media's merged parts had been deleted successfully"
@@ -74,12 +71,37 @@ export default function StepperSteps({ activeStep }: Props) {
     );
 
     return () => {
-      DeletingFragsStartsEvent;
-      DeletingFragsEndsEvent;
-      DeletingPartsStartsEvent;
-      DeletingPartsEndsEvent;
+      onDeletingFragsStarts;
+      onDeletingFragsEnds;
+      onDeletingPartsStarts;
+      onDeletingPartsEnds;
     };
-  });
+  }, []);
+
+  useEffect(() => {
+    const onCancelStarts = window.downloadAPI.onCancelStarts(() => {
+      setActiveStep(1);
+    });
+
+    const onDeletingFragsEnds = window.downloadAPI.onDeletingFragsEnds(() => {
+      setActiveStep(2);
+    });
+
+    const onDeletingPartsEnds = window.downloadAPI.onDeletingPartsEnds(() => {
+      setActiveStep(3);
+    });
+
+    const onCancelEnds = window.downloadAPI.onCancelEnds(() => {
+      setActiveStep(4);
+    });
+
+    return () => {
+      onCancelStarts;
+      onDeletingFragsEnds;
+      onDeletingPartsEnds;
+      onCancelEnds;
+    };
+  }, []);
 
   return (
     <>
