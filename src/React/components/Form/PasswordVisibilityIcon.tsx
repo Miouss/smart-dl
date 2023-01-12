@@ -3,7 +3,6 @@ import React, { Dispatch, SetStateAction } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-import { VisibilityIconStyle } from "../styled/AppStyle";
 import styled from "@emotion/styled";
 
 interface Props {
@@ -17,6 +16,11 @@ export default function PasswordVisibilityIcon({
 }: Props) {
   const Icon = visible ? styled(VisibilityIcon)({}) : styled(VisibilityOffIcon)({});
 
+  const VisibilityIconStyle = {
+    color: "white",
+    cursor: "pointer",
+  };
+  
   return (
     <Icon onClick={() => setShowPassword((state) => !state)} sx={VisibilityIconStyle} />
   );

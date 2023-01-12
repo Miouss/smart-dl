@@ -76,7 +76,7 @@ export default function MenuCard({ setBackHome, vod }: Props) {
   useEffect(() => {
       setFetchMedia({ video: undefined, audio: undefined });
       setDownloadStarted(false);
-  }, [resetSelection]);
+  }, [vod, resetSelection]);
 
   return (
     <>

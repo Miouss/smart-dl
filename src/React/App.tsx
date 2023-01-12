@@ -3,7 +3,9 @@ import fetch, { Headers } from "cross-fetch";
 
 import MenuCard from "./components/MenuCard";
 
-import { AlertColor, Collapse, Stack, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
+import { Collapse, Stack, ThemeProvider } from "@mui/material";
 
 import {
   StackCentered,
@@ -12,6 +14,7 @@ import {
   UsernameInput,
   PasswordInput,
   SubmitButton,
+  LoginOptionsStack,
 } from "./components/Form/StyledComponents";
 
 import UrlInputBox from "./components/Form/UrlInputBox";
@@ -19,17 +22,14 @@ import PasswordVisibilityIcon from "./components/Form/PasswordVisibilityIcon";
 import TemporyAlert from "./components/Form/TemporyAlert";
 import CredentialsLabelSwitch from "./components/Form/CredentialsLabelSwitch";
 
-import { customTheme, mainFrameStyle } from "./components/styled/AppStyle";
+import { AlertMsg } from "../types/AlertMsg";
 
 interface Account {
   username: string;
   password: string;
 }
 
-interface AlertMsg {
-  severity: AlertColor;
-  message: string;
-}
+
 
 export default function App() {
   const [data, setData] = useState(null);
@@ -136,28 +136,87 @@ export default function App() {
   );
 
   useEffect(
-    function handleCredentialsSavingConflict(){
-    if(useSavedCredentials === saveCredentials === true){
-      setSaveCredentials(false);
-    }
-  }, [useSavedCredentials])
+    function handleCredentialsSavingConflict() {
+      if ((useSavedCredentials === saveCredentials) === true) {
+        setSaveCredentials(false);
+      }
+    },
+    [useSavedCredentials]
+  );
+
+  const mainFrameStyle = {
+    height: "100vh",
+    width: "100vw",
+  };
+
+  const customTheme = createTheme({
+    components: {
+      MuiInput: {
+        defaultProps: {
+          disableUnderline: true,
+        },
+        styleOverrides: {
+          root: {
+            borderBottom: "1px solid rgba(208, 2, 27, 1)",
+            boxShadow: "0px 1px 1px rgba(208, 2, 27, 0.25)",
+          },
+          input: {
+            color: "white",
+            "&::placeholder": {
+              color: "#828282",
+            },
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "& .MuiSwitch-switchBase": {
+              "&+ .MuiSwitch-track": {
+                backgroundColor: "red",
+                opacity: 1,
+              },
+              "&.Mui-checked": {
+                "+ .MuiSwitch-track": {
+                  backgroundColor: "green",
+                  opacity: 1,
+                },
+                "& .MuiSwitch-thumb": {
+                  color: "white",
+                },
+              },
+            },
+          },
+        },
+      },
+      MuiFormControlLabel: {
+        styleOverrides: {
+          root: {
+            "& .MuiFormControlLabel-label": {
+              color: "#E0E0E0",
+              fontFamily: "Roboto",
+              fontStyle: "normal",
+              fontWeight: "400",
+              fontSize: "18px",
+              lineHeight: "21px",
+            },
+          },
+        },
+      },
+    },
+  });
 
   if (data === null) {
     return (
       <>
-        <ThemeProvider theme={customTheme} key="">
+        <ThemeProvider theme={customTheme} key="home">
           <StackCentered spacing={5} sx={mainFrameStyle}>
             <TemporyAlert alertMsg={alertMsg} />
 
             <form onSubmit={(e) => handleSubmit(e)}>
               <StackCentered spacing={5}>
                 <UrlInputBox setShowUrl={setShowUrl} />
-                <Stack
-                  direction={"column"}
-                  width={"100%"}
-                  height={"100%"}
-                  spacing={2}
-                >
+                <LoginOptionsStack>
                   <Collapse in={!useSavedCredentials} orientation="vertical">
                     <CredentialsBox>
                       <UsernameInput onChange={(e) => handleCredentials(e)} />
@@ -166,13 +225,11 @@ export default function App() {
                           type={showPassword ? "text" : "password"}
                           onChange={(e) => handleCredentials(e)}
                         />
-
                         <PasswordVisibilityIcon
                           setShowPassword={setShowPassword}
                           visible={showPassword}
                         />
                       </PasswordBox>
-
                       <CredentialsLabelSwitch
                         id="saveCred"
                         label="Save Credentials"
@@ -186,7 +243,7 @@ export default function App() {
                     label="Use Saved Credentials"
                     control={setUseSavedCredentials}
                   />
-                </Stack>
+                </LoginOptionsStack>
                 <SubmitButton />
               </StackCentered>
             </form>
@@ -196,12 +253,11 @@ export default function App() {
     );
   } else {
     return (
-      <ThemeProvider theme={customTheme}>
+      <ThemeProvider theme={customTheme} key="menu">
         <Stack spacing={5} sx={mainFrameStyle}>
           <form onSubmit={(e) => handleSubmit(e)}>
             <StackCentered marginTop={"3rem"} spacing={5}>
               <TemporyAlert alertMsg={alertMsg} />
-
               <UrlInputBox setShowUrl={setShowUrl} submit />
             </StackCentered>
           </form>

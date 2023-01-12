@@ -8,8 +8,17 @@ import NearMeIcon from "@mui/icons-material/NearMe";
 export const UrlInput = styled(Input)({});
 
 UrlInput.defaultProps = {
-    placeholder: "Url Link",
-}
+  placeholder: "Url Link",
+};
+
+export const LoginOptionsStack = styled(Stack)({});
+
+LoginOptionsStack.defaultProps = {
+  direction: "column",
+  width: "100%",
+  height: "100%",
+  spacing: 2,
+};
 
 export const CredentialsBox = styled(Stack)({});
 
@@ -61,7 +70,7 @@ export const ChooseSaveLocationButton = styled(Button)({
 });
 
 ChooseSaveLocationButton.defaultProps = {
-    variant: "contained",
+  variant: "contained",
 };
 
 export const SubmitButton = styled(Button)({
@@ -72,12 +81,11 @@ SubmitButton.defaultProps = {
   type: "submit",
   variant: "contained",
   color: "success",
-  children: <NearMeIcon style={{ color: "#fff" }} />
+  children: <NearMeIcon style={{ color: "#fff" }} />,
 };
-
 
 export const StackCentered = styled(Stack)({});
 StackCentered.defaultProps = {
   justifyContent: "center",
   alignItems: "center",
-}
+};

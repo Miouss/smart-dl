@@ -65,8 +65,8 @@ export default function MediaMenuCardSelection({
       });
       setDownloadStarted(false);
       setMediaDownloaded(false);
-  }, [resetSelection]);
-
+  }, [vod, resetSelection]);
+  
   const styleTab = {
     "&.Mui-selected": { color: "#F2F2F2" },
   };
