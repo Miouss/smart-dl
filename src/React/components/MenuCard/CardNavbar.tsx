@@ -1,7 +1,6 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
-import { ButtonGroup } from "@mui/material";
-
+import NavbarButtonGroup from "./Navbar/NavbarButtonGroup";
 import NavbarHomeButton from "./Navbar/NavbarHomeButton";
 import NavbarRetryButton from "./Navbar/NavbarRetryButton";
 import NavbarDownloadButton from "./Navbar/NavbarDownloadButton";
@@ -35,19 +34,7 @@ export default function MediaMenuCardNavBar({
     : "";
 
   return (
-    <ButtonGroup
-      fullWidth
-      disableFocusRipple
-      disableRipple
-      variant="contained"
-      sx={{
-        gap: "20px",
-        justifyContent: "center",
-        "& .MuiButtonGroup-grouped:not(:last-of-type)": {
-          border: "none",
-        },
-      }}
-    >
+    <NavbarButtonGroup>
       {downloadStarted && !mediaDownloaded ? (
         <NavbarCancelButton />
       ) : (
@@ -68,6 +55,6 @@ export default function MediaMenuCardNavBar({
           )}
         </>
       )}
-    </ButtonGroup>
+    </NavbarButtonGroup>
   );
 }
