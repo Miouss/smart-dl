@@ -85,7 +85,9 @@ export const SubmitButton = styled(Button)(() => {
 
 export function SubmitButtonIcon({ submited }: { submited: boolean }) {
   return submited ? (
-    <CircularProgress style={{ color: "#fff", width: "24px", height: "24px"  }} />
+    <CircularProgress
+      style={{ color: "#fff", width: "24px", height: "24px" }}
+    />
   ) : (
     <NearMeIcon style={{ color: "#fff" }} />
   );

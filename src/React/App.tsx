@@ -5,13 +5,7 @@ import MenuCard from "./components/MenuCard";
 
 import { createTheme } from "@mui/material/styles";
 
-import {
-  CircularProgress,
-  Collapse,
-  Stack,
-  ThemeProvider,
-} from "@mui/material";
-import NearMeIcon from "@mui/icons-material/NearMe";
+import { Collapse, Stack, ThemeProvider } from "@mui/material";
 
 import {
   StackCentered,
@@ -135,7 +129,7 @@ export default function App() {
       if (alertMsg !== undefined) {
         const timer = setTimeout(() => {
           setAlertMsg(undefined);
-        }, 5000);
+        }, 3000);
 
         return () => clearTimeout(timer);
       }
@@ -155,6 +149,14 @@ export default function App() {
   useEffect(() => {
     submited && fetching(showUrl);
   }, [submited]);
+
+  useEffect(() => {
+    useSavedCredentials &&
+      setAlertMsg({
+        severity: "info",
+        message: "The account named 'Miouss' will be use",
+      });
+  }, [useSavedCredentials]);
 
   const mainFrameStyle = {
     height: "100vh",
@@ -222,12 +224,15 @@ export default function App() {
     return (
       <>
         <ThemeProvider theme={customTheme} key="home">
-          <StackCentered spacing={5} sx={mainFrameStyle}>
+          <StackCentered spacing={5} sx={mainFrameStyle} gap={"40px"}>
             <TemporyAlert alertMsg={alertMsg} />
 
             <form onSubmit={(e) => handleSubmit(e)}>
               <StackCentered spacing={5}>
-                <UrlInputBox setShowUrl={setShowUrl} />
+                <UrlInputBox
+                  setShowUrl={setShowUrl}
+                  setAlertMsg={setAlertMsg}
+                />
                 <LoginOptionsStack>
                   <Collapse in={!useSavedCredentials} orientation="vertical">
                     <CredentialsBox>
@@ -272,7 +277,12 @@ export default function App() {
           <form onSubmit={(e) => handleSubmit(e)}>
             <StackCentered marginTop={"2rem"} spacing={5}>
               <TemporyAlert alertMsg={alertMsg} />
-              <UrlInputBox setShowUrl={setShowUrl} submited={submited} withSubmit={true} />
+              <UrlInputBox
+                setShowUrl={setShowUrl}
+                setAlertMsg={setAlertMsg}
+                submited={submited}
+                withSubmit={true}
+              />
             </StackCentered>
           </form>
           <StackCentered width={"100%"}>
