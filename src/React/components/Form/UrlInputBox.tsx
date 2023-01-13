@@ -3,6 +3,7 @@ import {
   ChooseSaveLocationButton,
   StackCentered,
   SubmitButton,
+  SubmitButtonIcon,
   UrlInput,
 } from "./StyledComponents";
 
@@ -10,10 +11,11 @@ import FolderIcon from "@mui/icons-material/Folder";
 
 interface Props {
   setShowUrl: Dispatch<SetStateAction<string>>;
-  submit?: boolean;
+  submited?: boolean;
+  withSubmit?: boolean;
 }
 
-export default function UrlInputBox({ setShowUrl, submit }: Props) {
+export default function UrlInputBox({ setShowUrl, submited, withSubmit }: Props) {
   const chooseSaveLocation = (e: React.MouseEvent) => {
     e.preventDefault();
     window.fileSystemAPI.openFileSystemDialog();
@@ -25,7 +27,11 @@ export default function UrlInputBox({ setShowUrl, submit }: Props) {
       <ChooseSaveLocationButton onClick={(e) => chooseSaveLocation(e)}>
         <FolderIcon style={{ color: "#fff" }} />
       </ChooseSaveLocationButton>
-      {submit && <SubmitButton />}
+      {withSubmit && (
+        <SubmitButton>
+          <SubmitButtonIcon submited={submited} />
+        </SubmitButton>
+      )}
     </StackCentered>
   );
 }

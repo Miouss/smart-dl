@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Stack, Input, Button } from "@mui/material";
+import { Stack, Input, Button, CircularProgress } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
 import NearMeIcon from "@mui/icons-material/NearMe";
 
 export const UrlInput = styled(Input)({});
@@ -73,16 +72,24 @@ ChooseSaveLocationButton.defaultProps = {
   variant: "contained",
 };
 
-export const SubmitButton = styled(Button)({
-  marginLeft: "24px",
+export const SubmitButton = styled(Button)(() => {
+  SubmitButton.defaultProps = {
+    type: "submit",
+    variant: "contained",
+    color: "success",
+  };
+  return {
+    marginLeft: "24px",
+  };
 });
 
-SubmitButton.defaultProps = {
-  type: "submit",
-  variant: "contained",
-  color: "success",
-  children: <NearMeIcon style={{ color: "#fff" }} />,
-};
+export function SubmitButtonIcon({ submited }: { submited: boolean }) {
+  return submited ? (
+    <CircularProgress style={{ color: "#fff", width: "24px", height: "24px"  }} />
+  ) : (
+    <NearMeIcon style={{ color: "#fff" }} />
+  );
+}
 
 export const StackCentered = styled(Stack)({});
 StackCentered.defaultProps = {

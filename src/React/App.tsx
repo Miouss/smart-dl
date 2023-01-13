@@ -5,7 +5,13 @@ import MenuCard from "./components/MenuCard";
 
 import { createTheme } from "@mui/material/styles";
 
-import { Collapse, Stack, ThemeProvider } from "@mui/material";
+import {
+  CircularProgress,
+  Collapse,
+  Stack,
+  ThemeProvider,
+} from "@mui/material";
+import NearMeIcon from "@mui/icons-material/NearMe";
 
 import {
   StackCentered,
@@ -15,6 +21,7 @@ import {
   PasswordInput,
   SubmitButton,
   LoginOptionsStack,
+  SubmitButtonIcon,
 } from "./components/Form/StyledComponents";
 
 import UrlInputBox from "./components/Form/UrlInputBox";
@@ -29,8 +36,6 @@ interface Account {
   password: string;
 }
 
-
-
 export default function App() {
   const [data, setData] = useState(null);
   const [showUrl, setShowUrl] = useState<undefined | string>(undefined);
@@ -44,6 +49,7 @@ export default function App() {
   const [backHome, setBackHome] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [submited, setSubmited] = useState(false);
 
   async function fetching(showUrl: string) {
     const header = new Headers({
@@ -78,6 +84,8 @@ export default function App() {
         message: message,
       });
     }
+
+    setSubmited(false);
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -89,7 +97,7 @@ export default function App() {
         message: "No url link provided",
       });
     } else {
-      fetching(showUrl);
+      setSubmited(true);
     }
   };
 
@@ -143,6 +151,10 @@ export default function App() {
     },
     [useSavedCredentials]
   );
+
+  useEffect(() => {
+    submited && fetching(showUrl);
+  }, [submited]);
 
   const mainFrameStyle = {
     height: "100vh",
@@ -244,7 +256,9 @@ export default function App() {
                     control={setUseSavedCredentials}
                   />
                 </LoginOptionsStack>
-                <SubmitButton />
+                <SubmitButton>
+                  <SubmitButtonIcon submited={submited} />
+                </SubmitButton>
               </StackCentered>
             </form>
           </StackCentered>
@@ -258,7 +272,7 @@ export default function App() {
           <form onSubmit={(e) => handleSubmit(e)}>
             <StackCentered marginTop={"2rem"} spacing={5}>
               <TemporyAlert alertMsg={alertMsg} />
-              <UrlInputBox setShowUrl={setShowUrl} submit />
+              <UrlInputBox setShowUrl={setShowUrl} submited={submited} withSubmit={true} />
             </StackCentered>
           </form>
           <StackCentered width={"100%"}>
