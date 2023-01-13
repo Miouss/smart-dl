@@ -256,13 +256,13 @@ export default function App() {
       <ThemeProvider theme={customTheme} key="menu">
         <Stack spacing={5} sx={mainFrameStyle}>
           <form onSubmit={(e) => handleSubmit(e)}>
-            <StackCentered marginTop={"3rem"} spacing={5}>
+            <StackCentered marginTop={"2rem"} spacing={5}>
               <TemporyAlert alertMsg={alertMsg} />
               <UrlInputBox setShowUrl={setShowUrl} submit />
             </StackCentered>
           </form>
           <StackCentered width={"100%"}>
-            <StackCentered width={"720px"}>
+            <StackCentered width={"75%"} height={"100%"}>
               <MenuCard setBackHome={setBackHome} vod={data} />
             </StackCentered>
           </StackCentered>
