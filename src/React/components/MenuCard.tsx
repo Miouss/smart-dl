@@ -6,14 +6,14 @@ import { Stack } from "@mui/system";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import { Box } from "@mui/material";
-import { Media, MediaDetails, MediaUrls } from "../../types/Media";
+import { Media, MediaDetails, MediaFetched } from "../../types/Media";
 
 import CardSelect from "./MenuCard/CardSelect";
 import CardNavbar from "./MenuCard/CardNavbar";
 import CardStepper from "./MenuCard/CardStepper";
+import { VodDescription, VodTitle } from "./styled/Card";
 
 interface Props {
   setBackHome: Dispatch<SetStateAction<boolean>>;
@@ -28,12 +28,10 @@ export default function MenuCard({ setBackHome, vod }: Props) {
     resolution: undefined,
   });
 
-  const [fetchMedia, setFetchMedia] = useState<MediaUrls>({
-    audio: undefined,
-    video: undefined,
-  });
+  const [mediaFetched, setMediaFetched] = useState<undefined | MediaFetched>(
+    undefined
+  );
 
-  const [mediaSelected, setMediaSelected] = useState(false);
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [resetSelection, setResetSelection] = useState(false);
 
@@ -46,8 +44,8 @@ export default function MenuCard({ setBackHome, vod }: Props) {
       method: "POST",
       headers: header,
       body: JSON.stringify({
-        videoUrl: vod.prefix + fetchMedia.video,
-        audioUrl: vod.prefix + fetchMedia.audio,
+        videoUrl: vod.prefix + mediaFetched.video,
+        audioUrl: vod.prefix + mediaFetched.audio,
         vodTitle: vod.title,
       }),
     };
@@ -62,73 +60,62 @@ export default function MenuCard({ setBackHome, vod }: Props) {
   }
 
   useEffect(() => {
-    if (fetchMedia.audio !== undefined && fetchMedia.video !== undefined) {
-      setMediaSelected(true);
-    }
-  }, [fetchMedia]);
-
-  useEffect(() => {
     if (downloadStarted) {
       handleDownload();
     }
   }, [downloadStarted]);
 
   useEffect(() => {
-      setFetchMedia({ video: undefined, audio: undefined });
-      setDownloadStarted(false);
+    setMediaFetched({ video: undefined, audio: undefined });
+    setDownloadStarted(false);
   }, [vod, resetSelection]);
 
   return (
-    <>
-      <Card sx={{ background: "inherit", boxShadow: "none" }}>
-        <Box
-          sx={{
-            border: "2px solid #BDBDBD",
-          }}
-        >
-          <CardMedia
-            component="img"
-            src={vod.thumbnail}
-            alt={`"${vod.title}"'s thumbnail`}
-          />
-        </Box>
-
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div" color="#F2F2F2">
-            {vod.title}
-          </Typography>
-          <Typography variant="body2" color="#E0E0E0">
-            {vod.description}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Stack direction="column" width="100%" spacing={2}>
-            {downloadStarted ? (
-              <CardStepper />
-            ) : (
-              <CardSelect
-                setFetchMedia={setFetchMedia}
-                setMediaSelected={setMediaSelected}
-                setMediaDownloaded={setMediaDownloaded}
-                setDownloadStarted={setDownloadStarted}
-                setMediaDetails={setMediaDetails}
-                vod={vod}
-                resetSelection={resetSelection}
-              />
-            )}
-
-            <CardNavbar
-              setResetSelection={setResetSelection}
-              setDownloadStarted={setDownloadStarted}
-              setBackHome={setBackHome}
-              mediaSelected={mediaSelected}
-              downloadStarted={downloadStarted}
-              mediaDetails={mediaDetails}
-              mediaDownloaded={mediaDownloaded}
+      <Card sx={{ backgroundColor: "inherit", boxShadow: "none", maxWidth:"760px"}}>
+          <Box border={"2px solid #BDBDBD"} >
+            <CardMedia
+              component="img"
+              image={vod.thumbnail}
+              alt={`"${vod.title}"'s thumbnail`}
             />
-          </Stack>
-        </CardActions>
+          </Box>
+
+          <CardContent>
+            <VodTitle component={"div"}
+            >
+              {vod.title}
+            </VodTitle>
+            <VodDescription>
+              {vod.description}
+            </VodDescription>
+          </CardContent>
+          <CardActions>
+            <Stack direction="column" width="100%" spacing={2}>
+              {downloadStarted ? (
+                <CardStepper />
+              ) : (
+                <CardSelect
+                  setMediaFetched={setMediaFetched}
+                  setMediaDownloaded={setMediaDownloaded}
+                  setDownloadStarted={setDownloadStarted}
+                  setMediaDetails={setMediaDetails}
+                  vod={vod}
+                  resetSelection={resetSelection}
+                />
+              )}
+
+              <CardNavbar
+                setResetSelection={setResetSelection}
+                setDownloadStarted={setDownloadStarted}
+                setBackHome={setBackHome}
+                downloadStarted={downloadStarted}
+                mediaDetails={mediaDetails}
+                mediaDownloaded={mediaDownloaded}
+                mediaSelected={mediaFetched?.selected}
+              />
+            </Stack>
+          </CardActions>
+        
       </Card>
-    </>
   );
 }

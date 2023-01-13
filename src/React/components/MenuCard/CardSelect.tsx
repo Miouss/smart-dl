@@ -4,19 +4,15 @@ import SelectLanguage from "./Select/SelectLanguage";
 import SelectResolution from "./Select/SelectResolution";
 
 import { Stack } from "@mui/system";
-import {
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 
 import { MediaUrls, MediaDetails } from "../../../types/Media";
 import TabPanel from "../styled/TabPanel";
 
 interface Props {
-  setFetchMedia: Dispatch<SetStateAction<MediaUrls>>;
-  setMediaSelected: Dispatch<SetStateAction<boolean>>;
-  setMediaDownloaded:  Dispatch<SetStateAction<boolean>>;
-  setDownloadStarted:  Dispatch<SetStateAction<boolean>>;
+  setMediaFetched: Dispatch<SetStateAction<MediaUrls>>;
+  setMediaDownloaded: Dispatch<SetStateAction<boolean>>;
+  setDownloadStarted: Dispatch<SetStateAction<boolean>>;
   setMediaDetails: Dispatch<SetStateAction<MediaDetails>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   vod: any;
@@ -24,13 +20,12 @@ interface Props {
 }
 
 export default function MediaMenuCardSelection({
-  setFetchMedia,
-  setMediaSelected,
+  setMediaFetched,
   setMediaDownloaded,
   setDownloadStarted,
   setMediaDetails,
   vod,
-  resetSelection
+  resetSelection,
 }: Props) {
   const [audioSelected, setAudioSelected] = useState(undefined);
 
@@ -56,17 +51,17 @@ export default function MediaMenuCardSelection({
   }, [audioSelected]);
 
   useEffect(() => {
-      handleTabChange(0);
-      setAudioSelected(undefined);
-      setMediaSelected(false);
-      setMediaDetails({
-        lang: undefined,
-        resolution: undefined,
-      });
-      setDownloadStarted(false);
-      setMediaDownloaded(false);
+    handleTabChange(0);
+    setAudioSelected(undefined);
+    setMediaFetched((mediaFetched) => ({ ...mediaFetched, selected: false }));
+    setMediaDetails({
+      lang: undefined,
+      resolution: undefined,
+    });
+    setDownloadStarted(false);
+    setMediaDownloaded(false);
   }, [vod, resetSelection]);
-  
+
   const styleTab = {
     "&.Mui-selected": { color: "#F2F2F2" },
   };
@@ -102,13 +97,13 @@ export default function MediaMenuCardSelection({
             disabled={audioSelected === undefined ? true : false}
             sx={styleTab}
           />
-        </Tabs>
+        </Tabs> 
       </Stack>
       <TabPanel value={tabIndex} index={0}>
         <SelectResolution
           selection={vod.VideoSelection}
           setAudioSelected={setAudioSelected}
-          setFetchMedia={setFetchMedia}
+          setMediaFetched={setMediaFetched}
           setMediaDetails={setMediaDetails}
         />
       </TabPanel>
@@ -116,7 +111,7 @@ export default function MediaMenuCardSelection({
         <SelectLanguage
           selection={vod.AudioSelection[audioSelected]}
           setAudioSelected={setAudioSelected}
-          setFetchMedia={setFetchMedia}
+          setMediaFetched={setMediaFetched}
           setMediaDetails={setMediaDetails}
         />
       </TabPanel>

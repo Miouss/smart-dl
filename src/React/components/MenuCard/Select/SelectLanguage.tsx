@@ -4,32 +4,33 @@ import { Grid } from "@mui/material";
 
 import {
   AudioSelection,
-  MediaUrls,
+  MediaFetched,
   MediaDetails,
   LangSelection,
 } from "../../../../types/Media";
 import { Stack } from "@mui/system";
 
-import SelectButton from "../../styled/SelectButton"
+import SelectButton from "../../styled/SelectButton";
 
 interface Props {
   selection: AudioSelection | null;
   setAudioSelected: (audio: string) => void;
-  setFetchMedia: Dispatch<SetStateAction<MediaUrls>>;
+  setMediaFetched: Dispatch<SetStateAction<MediaFetched>>;
   setMediaDetails: Dispatch<SetStateAction<MediaDetails>>;
 }
 
 export default function SelectLanguage({
   selection,
-  setFetchMedia,
+  setMediaFetched,
   setMediaDetails,
 }: Props): JSX.Element {
   if (selection === null) return null;
 
   const handleClick = (langSelected: LangSelection) => {
-    setFetchMedia((prevState: MediaUrls) => ({
+    setMediaFetched((prevState: MediaFetched) => ({
       audio: langSelected.url as unknown as string,
       video: prevState.video,
+      selected: true,
     }));
 
     setMediaDetails((prevState: MediaDetails) => ({
@@ -43,7 +44,6 @@ export default function SelectLanguage({
     langBtns.push(
       <Grid item key={`${lang} Btn`}>
         <SelectButton
-          variant={"contained"}
           onClick={() =>
             handleClick(selection[lang] as unknown as LangSelection)
           }
@@ -59,10 +59,9 @@ export default function SelectLanguage({
       <Stack direction={"column"} width={"100%"} spacing={2}>
         <Grid
           container
+          columns={4}
           justifyContent="center"
           alignItems="center"
-          columns={4}
-          spacing={2}
         >
           {langBtns}
         </Grid>
