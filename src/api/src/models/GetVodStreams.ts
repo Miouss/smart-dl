@@ -2,7 +2,7 @@ import fetch from "cross-fetch";
 
 import { Parser } from "m3u8-parser";
 
-import onError from "../utilFcts/OnError";
+import onError from "../utils/OnError";
 
 import { PlaylistUrl } from "../../../types/PlaylistUrl";
 import { Media, VideoSelection, AudioSelection } from "../../../types/Media";

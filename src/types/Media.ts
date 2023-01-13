@@ -30,9 +30,15 @@ interface MediaUrls {
   video?: string,
 }
 
+interface MediaFetched {
+  audio?: string,
+  video?: string,
+  selected?: boolean,
+}
+
 interface MediaDetails {
   lang?: string,
   resolution?: string,
 }
 
-export { Media, VideoSelection, AudioSelection, LangSelection, MediaUrls, MediaDetails };
+export { Media, VideoSelection, AudioSelection, LangSelection, MediaUrls, MediaDetails, MediaFetched };

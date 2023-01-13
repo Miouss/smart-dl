@@ -1,6 +1,6 @@
-import express from "express";
-import streamDownload from "./api/src/controller/POST/downloadMedia";
-import streamPlaylist from "./api/src/controller/POST/streamPlaylist";
+import express, { Express } from "express";
+import downloadMedia from "./api/src/controller/POST/downloadMedia";
+import downloadPlaylist from "./api/src/controller/POST/downloadPlaylist";
 
 import cors from "cors";
 
@@ -15,10 +15,20 @@ appExpress.use(
 appExpress.use(express.urlencoded({ extended: true }));
 appExpress.use(express.json());
 
-appExpress.post("/stream/download", streamDownload);
-appExpress.post("/stream/playlist", streamPlaylist);
+appExpress.post("/stream/download", downloadMedia);
+appExpress.post("/stream/playlist", downloadPlaylist);
 
 export default appExpress;
+
+export function startServer(appExpress: Express){
+  return appExpress.listen(8000);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function stopServer(server: any){
+  server.close();
+}
+
 
 export function monitorPublicFolder(){
   appExpress.use(express.static('public'));

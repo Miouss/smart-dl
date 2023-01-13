@@ -3,6 +3,7 @@ body {
   margin: 0;
   background: #333333;
   overflow-x: hidden;
+  height: 100vh;
 }
 
 h1{

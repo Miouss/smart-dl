@@ -1,52 +1,120 @@
+import { ipcMain } from "electron";
+
 import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
 import downloadVodFragments from "../../models/DownloadVodFragments";
 import createMergeFile from "../../models/CreateMergeFile";
 import handleMerging from "../../models/HandleMerging";
+import handleCanceling from "../../models/HandleCanceling";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
 
-import mainWindow from "../../../../index";
+import getWindow from "../../../../index";
 
-export default async function streamDownload(req: Request, res: Response) {
+export default async function downloadMedia(req: Request, res: Response) {
   console.time("Operations Completed in ");
 
   const { outputPath } = await readFile("./src/api/config.json");
+  const vodTitle = req.body.vodTitle;
+
+  const windowWebContents = getWindow().webContents;
+
+  let cancel = false;
+
+  ipcMain.once("cancel-button-pressed", () => {
+    cancel = true;
+  });
+
+  function checkCancelStatus() {
+    if (cancel) {
+      throw new Error("cancel");
+    }
+  }
 
   try {
-    mainWindow.webContents.send("download-fully-starts");
+    windowWebContents.send("download-fully-starts");
 
-    mainWindow.webContents.send("recovering-frags-playlists-starts");
-    
+    windowWebContents.send("recovering-frags-playlists-starts");
+
     const videoUrlList = await downloadVodPlaylist(req.body.videoUrl);
+    checkCancelStatus();
     const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
+    checkCancelStatus();
 
-    mainWindow.webContents.send("recovering-frags-playlists-ends");
+    windowWebContents.send("recovering-frags-playlists-ends");
 
-    mainWindow.webContents.send("downloading-frags-starts");
+    windowWebContents.send("downloading-frags-starts");
 
-    await downloadVodFragments(videoUrlList, "ts", outputPath);
-    await downloadVodFragments(audioUrlList, "aac", outputPath);
+    let keepDownloading = true;
+    let simultaneousDL = 10;
+    let index = 0;
 
-    mainWindow.webContents.send("downloading-frags-ends");
+    while (keepDownloading) {
+      keepDownloading = await downloadVodFragments(
+        videoUrlList,
+        "ts",
+        outputPath,
+        index,
+        simultaneousDL
+      );
+      checkCancelStatus();
+      index += simultaneousDL;
+    }
 
-    mainWindow.webContents.send("merging-starts");
+    windowWebContents.send("download-steps-ends", "Video");
+
+    keepDownloading = true;
+    simultaneousDL = 10;
+    index = 0;
+
+    while (keepDownloading) {
+      keepDownloading = await downloadVodFragments(
+        audioUrlList,
+        "aac",
+        outputPath,
+        index,
+        simultaneousDL
+      );
+      checkCancelStatus();
+      index += simultaneousDL;
+    }
+    windowWebContents.send("download-steps-ends", "Audio");
+
+    windowWebContents.send("downloading-frags-ends");
+
+    windowWebContents.send("merging-starts");
+    checkCancelStatus();
 
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
+    checkCancelStatus();
+
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
+    checkCancelStatus();
 
-    await handleMerging(req.body.vodTitle, outputPath);
+    await handleMerging(vodTitle, outputPath);
+    checkCancelStatus();
 
-    mainWindow.webContents.send("merging-ends");
+    windowWebContents.send("merging-ends");
 
-    mainWindow.webContents.send("download-fully-completed");
+    windowWebContents.send("download-fully-ends");
 
     console.timeEnd("Operations Completed in ");
 
     res.status(200);
-    res.json({ "Download": true });
+    res.json({ Download: true });
   } catch (error) {
-    res.status(404);
-    res.json({ errorMessage: error });
+    if (error.message === "cancel") {
+      console.log("Canceling [started]");
+      windowWebContents.send("cancel-starts");
+      await handleCanceling(outputPath);
+      windowWebContents.send("cancel-ends");
+      console.log("Canceling [completed]");
+
+      res.status(200);
+      res.json({ Download: false });
+    } else {
+      res.status(404);
+      res.json({ errorMessage: error });
+    }
   }
 }

@@ -7,11 +7,15 @@ export interface IFileSystemAPI {
 }
 
 export interface IDownloadAPI {
+  sendCancelButtonPressed: () => void;
+  onCancelStarts: (callback) => void;
+  onCancelEnds: (callback) => void; 
   onDownloadFullyStarts: (callback) => void;
   onRecoveringFragsPlaylistsStarts: (callback) => void;
   onRecoveringFragsPlaylistsEnds: (callback) => void;
   onDownloadingFragsStarts: (callback) => void;
   onUpdateDownloadSteps: (callback) => void;
+  onDownloadStepsEnds: (callback) => void;
   onDownloadingFragsEnds: (callback) => void;
   onMergingStarts: (callback) => void;
   onMergingVideoStarts: (callback) => void;
