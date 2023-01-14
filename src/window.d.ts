@@ -4,6 +4,9 @@ export interface INotificationAPI {
 
 export interface IFileSystemAPI {
   openFileSystemDialog: () => void;
+  retrieveOutputPath: () => void;
+  onOutputPathAdded: (callback) => void;
+  onOutputPathRetrieved: (callback) => void;
 }
 
 export interface IDownloadAPI {
