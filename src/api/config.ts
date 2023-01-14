@@ -14,6 +14,7 @@ const configPath = "./src/api/config.json";
 
 ipcMain.on("open-filesystem-dialog", addOutputPath);
 ipcMain.on("retrieve-output-path", getOutputPath);
+ipcMain.on("retrieve-account", getAccount);
 
 async function addOutputPath() {
   const response = await dialog.showOpenDialog({
@@ -24,7 +25,8 @@ async function addOutputPath() {
 
   configData.outputPath = response.filePaths[0];
 
-  writeConfig(configData);
+  await writeConfig(configData);
+  getWindow().webContents.send("output-path-added", configData.outputPath);
 }
 
 async function getOutputPath() {
@@ -32,13 +34,18 @@ async function getOutputPath() {
   getWindow().webContents.send("output-path-retrieved", configData.outputPath);
 }
 
-async function readConfig() {
+async function getAccount() {
+  const configData = await readConfig();
+  getWindow().webContents.send("account-retrieved", configData.username);
+}
+
+
+export async function readConfig() {
   return await jsonfile.readFile(configPath);
 }
 
-async function writeConfig(configData: Config) {
+export async function writeConfig(configData: Config) {
   jsonfile.writeFile(configPath, configData, function (err) {
     if (err) console.error(err);
-    else getWindow().webContents.send("output-path-added", configData.outputPath);
   });
 }
