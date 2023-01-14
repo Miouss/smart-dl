@@ -14,6 +14,6 @@ export const TaskLabel = styled(Typography)<TaskState>((props) => {
     fontWeight: "400",
     fontSize: "14px",
     lineHeight: "18px",
-    color: props.done ? "green" : "#F2F2F2",
+    color: props.done ? "green" : "white",
   };
 });
