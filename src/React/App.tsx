@@ -21,7 +21,7 @@ import {
 import UrlInputBox from "./components/Form/UrlInputBox";
 import PasswordVisibilityIcon from "./components/Form/PasswordVisibilityIcon";
 import TemporyAlert from "./components/Form/TemporyAlert";
-import CredentialsLabelSwitch from "./components/Form/CredentialsLabelSwitch";
+import { SavedCredentialsSwitch, UseSavedCredentialsSwitch } from "./components/Form/CredentialsLabelSwitch";
 
 import { AlertMsg } from "../types/AlertMsg";
 
@@ -37,8 +37,8 @@ export default function App() {
     username: "",
     password: "",
   });
-  const [saveCredentials, setSaveCredentials] = useState(false);
-  const [useSavedCredentials, setUseSavedCredentials] = useState(false);
+  const [saveCredentialsCheckState, setSaveCredentialsCheckState] = useState(false);
+  const [useSavedCredentialsCheckState, setUseSavedCredentialsCheckState] = useState(false);
   const [alertMsg, setAlertMsg] = useState<undefined | AlertMsg>();
   const [backHome, setBackHome] = useState(false);
 
@@ -56,8 +56,8 @@ export default function App() {
       body: JSON.stringify({
         showUrl,
         account,
-        saveCredentials,
-        useSavedCredentials,
+        saveCredentialsCheckState,
+        useSavedCredentialsCheckState,
       }),
     };
 
@@ -116,8 +116,8 @@ export default function App() {
         username: "",
         password: "",
       });
-      setSaveCredentials(false);
-      setUseSavedCredentials(false);
+      setSaveCredentialsCheckState(false);
+      setUseSavedCredentialsCheckState(false);
       setAlertMsg(undefined);
       setShowPassword(false);
     },
@@ -137,26 +137,15 @@ export default function App() {
     [alertMsg]
   );
 
-  useEffect(
-    function handleCredentialsSavingConflict() {
-      if ((useSavedCredentials === saveCredentials) === true) {
-        setSaveCredentials(false);
-      }
-    },
-    [useSavedCredentials]
-  );
+  useEffect(() => {
+    if(saveCredentialsCheckState && !useSavedCredentialsCheckState && true){
+      setSaveCredentialsCheckState(false);
+    }
+  }, [useSavedCredentialsCheckState])
 
   useEffect(() => {
     submited && fetching(showUrl);
   }, [submited]);
-
-  useEffect(() => {
-    useSavedCredentials &&
-      setAlertMsg({
-        severity: "info",
-        message: "The account named 'Miouss' will be use",
-      });
-  }, [useSavedCredentials]);
 
   const mainFrameStyle = {
     height: "100vh",
@@ -234,7 +223,7 @@ export default function App() {
                   setAlertMsg={setAlertMsg}
                 />
                 <LoginOptionsStack>
-                  <Collapse in={!useSavedCredentials} orientation="vertical">
+                  <Collapse in={!useSavedCredentialsCheckState} orientation="vertical">
                     <CredentialsBox>
                       <UsernameInput onChange={(e) => handleCredentials(e)} />
                       <PasswordBox>
@@ -247,18 +236,21 @@ export default function App() {
                           visible={showPassword}
                         />
                       </PasswordBox>
-                      <CredentialsLabelSwitch
+                      <SavedCredentialsSwitch
+                        setAlertMsg={setAlertMsg}
+                        setCheckState={setSaveCredentialsCheckState}
+                        checked={saveCredentialsCheckState && !useSavedCredentialsCheckState}
                         id="saveCred"
                         label="Save Credentials"
-                        control={setSaveCredentials}
-                        checked={!useSavedCredentials && saveCredentials}
                       />
                     </CredentialsBox>
                   </Collapse>
-                  <CredentialsLabelSwitch
+                  <UseSavedCredentialsSwitch
+                    setAlertMsg={setAlertMsg}
+                    setCheckState={setUseSavedCredentialsCheckState}
                     id="useSavedCred"
                     label="Use Saved Credentials"
-                    control={setUseSavedCredentials}
+                    checked={useSavedCredentialsCheckState}
                   />
                 </LoginOptionsStack>
                 <SubmitButton>

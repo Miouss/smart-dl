@@ -17,6 +17,12 @@ contextBridge.exposeInMainWorld("fileSystemAPI", {
   onOutputPathRetrieved: (callback: any) => {
     ipcRenderer.on("output-path-retrieved", callback)
   },
+  retrieveAccount: () => {
+    ipcRenderer.send("retrieve-account");
+  },
+  onAccountRetrieved: (callback: any) => {
+    ipcRenderer.on("account-retrieved", callback)
+  }
 });
 
 contextBridge.exposeInMainWorld("downloadAPI", {

@@ -6,11 +6,11 @@ import StepConnector, {
 
 export const StyledStepConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
-      top: 22,
+      top: 24,
     },
     [`&.${stepConnectorClasses.active}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        backgroundColor: "rgba(255, 162, 0, 1)",
+        backgroundColor: "#2e7d32",
       },
     },
     [`&.${stepConnectorClasses.completed}`]: {
@@ -37,12 +37,15 @@ export  const StyledStepIconContainer = styled("div")<{
     borderRadius: "50%",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(153, 153, 153, 1)",
+    border: "solid 2px",
+    backgroundColor: "#333333",
+    borderColor: "white",
     ...(ownerState.active && {
-      backgroundColor: "rgba(255, 162, 0, 1)",
+      borderColor: "#2e7d32",
     }),
     ...(ownerState.completed && {
-      backgroundColor: "#2e7d32",
+      borderColor: "#2e7d32",
+      backgroundColor: "green",
     }),
   }));
 
@@ -53,10 +56,11 @@ export const StepLabelSx = {
     fontWeight: "400",
     fontSize: "14px",
     lineHeight: "18px",
+    color: "white"
   },
 
   "& .Mui-active.MuiStepLabel-alternativeLabel": {
-    color: "#F2F2F2",
+    color: "white",
   },
   "& .Mui-completed.MuiStepLabel-alternativeLabel": {
     color: "white",

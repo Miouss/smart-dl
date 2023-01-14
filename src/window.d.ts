@@ -7,12 +7,14 @@ export interface IFileSystemAPI {
   retrieveOutputPath: () => void;
   onOutputPathAdded: (callback) => void;
   onOutputPathRetrieved: (callback) => void;
+  retrieveAccount: () => void;
+  onAccountRetrieved: (callback) => void;
 }
 
 export interface IDownloadAPI {
   sendCancelButtonPressed: () => void;
   onCancelStarts: (callback) => void;
-  onCancelEnds: (callback) => void; 
+  onCancelEnds: (callback) => void;
   onDownloadFullyStarts: (callback) => void;
   onRecoveringFragsPlaylistsStarts: (callback) => void;
   onRecoveringFragsPlaylistsEnds: (callback) => void;
