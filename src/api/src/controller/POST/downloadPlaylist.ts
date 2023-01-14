@@ -14,6 +14,8 @@ import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 
 import ErrorWithStatusCode from "../../utils/ErrorWithStatusCode";
 
+import { writeConfig } from "../../../config";
+
 export default async function downloadPlaylist(req: Request, res: Response) {
   try {
     const configPath = "./src/api/config.json";
@@ -26,21 +28,12 @@ export default async function downloadPlaylist(req: Request, res: Response) {
     let username: string | undefined = undefined;
     let password: string | undefined = undefined;
 
-    if (req.body.saveCredentials) {
-      configData.username = req.body.account.username;
-      configData.password = req.body.account.password;
-
-      jsonfile.writeFile(configPath, configData, function (err) {
-        if (err) console.error(err);
-      });
-    } else if (req.body.useSavedCredentials) {
-      username = configData.username;
-      password = configData.password;
-    }
-
-    if (req.body.saveCredentials || !req.body.useSavedCredentials) {
+    if (req.body.saveCredentialsCheckState) {
       username = req.body.account.username;
       password = req.body.account.password;
+    } else if (req.body.useSavedCredentialsCheckState) {
+      username = configData.username;
+      password = configData.password;
     }
 
     let bearerToken: string,
@@ -51,13 +44,18 @@ export default async function downloadPlaylist(req: Request, res: Response) {
     const dataCollectList = new Listr([
       {
         title: "Checking Authentification",
-        task: async () =>
-          (bearerToken = await getBearerToken(
+        task: async () =>{
+          bearerToken = await getBearerToken(
             username,
             password,
             realm,
             apikey
-          )),
+          );
+
+          if (req.body.saveCredentialsCheckState){
+            writeConfig({...configData, username, password});
+          }
+        }
       },
       {
         title: "Getting VOD Identifier",
