@@ -43,7 +43,7 @@ export default function UrlInputBox({
     );
 
     const onOutputPathRetrieved = window.fileSystemAPI.onOutputPathRetrieved(
-      (_: unknown, outputPath: undefined | string) => {
+      (_: unknown, outputPath?: string) => {
        setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger))
       }
     );
