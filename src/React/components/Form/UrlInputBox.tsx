@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import {
   ChooseSaveLocationButton,
   StackCentered,
@@ -10,6 +10,7 @@ import {
 import FolderIcon from "@mui/icons-material/Folder";
 
 import { AlertMsg } from "../../../types/AlertMsg";
+import { alertMsgOutputPath } from "../../utils/alertMsg";
 
 interface Props {
   setShowUrl: Dispatch<SetStateAction<string>>;
@@ -29,17 +30,36 @@ export default function UrlInputBox({
     window.fileSystemAPI.openFileSystemDialog();
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.fileSystemAPI.retrieveOutputPath();
+  };
+
+  useEffect(() => {
+    const onOutputPathAdded = window.fileSystemAPI.onOutputPathAdded(
+      (_: unknown, outputPath: string) => {
+        setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger));
+      }
+    );
+
+    const onOutputPathRetrieved = window.fileSystemAPI.onOutputPathRetrieved(
+      (_: unknown, outputPath: undefined | string) => {
+       setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger))
+      }
+    );
+
+    return () => {
+      onOutputPathAdded;
+      onOutputPathRetrieved;
+    }
+  }, []);
+
   return (
     <StackCentered direction={"row"}>
       <UrlInput onChange={(event) => setShowUrl(event.target.value)} />
       <ChooseSaveLocationButton
-        onClick={(e) => chooseSaveLocation(e)}
-        onContextMenu={() =>
-          setAlertMsg({
-            severity: "info",
-            message: "Your save location is : 'C:/Users/Miouss/Desktop/'",
-          })
-        }
+        onClick={chooseSaveLocation}
+        onContextMenu={handleContextMenu}
       >
         <FolderIcon style={{ color: "#fff" }} />
       </ChooseSaveLocationButton>
