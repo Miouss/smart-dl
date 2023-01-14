@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { FormControlLabel, Switch } from "@mui/material";
 import { AlertMsg } from "../../../types/AlertMsg";
 import { alertMsgAccount } from "../../utils/alertMsg";
