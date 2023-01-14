@@ -6,7 +6,16 @@ import { ipcRenderer, contextBridge } from "electron";
 
 contextBridge.exposeInMainWorld("fileSystemAPI", {
   openFileSystemDialog: () => {
-    ipcRenderer.send("openFSDialogue");
+    ipcRenderer.send("open-filesystem-dialog");
+  },
+  retrieveOutputPath: () => {
+    ipcRenderer.send("retrieve-output-path");
+  },
+  onOutputPathAdded: (callback: any) => {
+    ipcRenderer.on("output-path-added", callback)
+  },
+  onOutputPathRetrieved: (callback: any) => {
+    ipcRenderer.on("output-path-retrieved", callback)
   },
 });
 
