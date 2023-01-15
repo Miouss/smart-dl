@@ -3,29 +3,29 @@ import { styled } from "@mui/material/styles";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
+import { MUIStepConnectorColor, MUIStepIconContainerColor, MUIStepLabelColor, MUIStepLabelIconColor } from "../../utils/style/colors";
 
-export const StyledStepConnector = styled(StepConnector)(({ theme }) => ({
+export const StyledStepConnector = styled(StepConnector)({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
       top: 24,
     },
-    [`&.${stepConnectorClasses.active}`]: {
+    [`&.${stepConnectorClasses.active} .${stepConnectorClasses.completed}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        backgroundColor: "#2e7d32",
+        backgroundColor: MUIStepConnectorColor.active,
       },
     },
     [`&.${stepConnectorClasses.completed}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        backgroundColor: "#2e7d32",
+        backgroundColor: MUIStepConnectorColor.done,
       },
     },
     [`& .${stepConnectorClasses.line}`]: {
       height: 3,
       border: 0,
-      backgroundColor:
-        theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
+      backgroundColor: MUIStepConnectorColor.waiting,
       borderRadius: 1,
     },
-  }));
+  });
 
 export  const StyledStepIconContainer = styled("div")<{
     ownerState: { completed?: boolean; active?: boolean };
@@ -38,31 +38,34 @@ export  const StyledStepIconContainer = styled("div")<{
     justifyContent: "center",
     alignItems: "center",
     border: "solid 2px",
-    backgroundColor: "#333333",
-    borderColor: "white",
+    backgroundColor: MUIStepIconContainerColor.bg,
+    borderColor: MUIStepIconContainerColor.border,
     ...(ownerState.active && {
-      borderColor: "#2e7d32",
+      borderColor: MUIStepIconContainerColor.active.border,
     }),
     ...(ownerState.completed && {
-      borderColor: "#2e7d32",
-      backgroundColor: "green",
+      backgroundColor: MUIStepIconContainerColor.done.bg,
+      borderColor: MUIStepIconContainerColor.done.border,
     }),
   }));
 
 export const StepLabelSx = {
   "& .MuiStepLabel-alternativeLabel": {
-    fontFamily: "Roboto Slab",
-    fontStyle: "normal",
-    fontWeight: "400",
-    fontSize: "14px",
-    lineHeight: "18px",
-    color: "white"
+    color: MUIStepLabelIconColor.waiting
+  },
+  "& .MuiStepLabel-alternativeLabel.Mui-active": {
+    color: MUIStepLabelIconColor.active,
+  },
+  "& .MuiStepLabel-alternativeLabel.Mui-completed": {
+    color: MUIStepLabelIconColor.done,
   },
 
-  "& .Mui-active.MuiStepLabel-alternativeLabel": {
-    color: "white",
-  },
-  "& .Mui-completed.MuiStepLabel-alternativeLabel": {
-    color: "white",
+  ".MuiStepLabel-label": {
+    fontFamily: "Roboto Slab",
+    fontStyle: "normal",
+    fontWeight: "400 !important",
+    fontSize: "14px",
+    lineHeight: "18px",
+    color: `${MUIStepLabelColor} !important`,
   },
 }

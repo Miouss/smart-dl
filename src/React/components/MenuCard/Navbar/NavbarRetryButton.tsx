@@ -4,6 +4,8 @@ import { Button } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
 
+import { RetryButtonColor } from "../../../utils/style/colors";
+
 interface Props {
   setResetSelection: Dispatch<SetStateAction<boolean>>;
 }
@@ -13,17 +15,13 @@ export default function NavbarRetryButton({ setResetSelection }: Props) {
     <Button
       onClick={() => setResetSelection((resetSelection) => !resetSelection)}
       sx={{
-        background: "rgba(208, 2, 27, 1)",
+        backgroundColor: `${RetryButtonColor.normal}`,
         "&:hover": {
-          background: "rgba(208, 2, 27, 0.7)",
+          backgroundColor: `${RetryButtonColor.hover}`,
         },
       }}
     >
-      <RefreshIcon
-        sx={{
-          color: "white",
-        }}
-      />
+      <RefreshIcon />
     </Button>
   );
 }

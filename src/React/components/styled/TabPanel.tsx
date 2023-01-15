@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
+import { TabPanelColor } from "../../utils/style/colors";
 
 interface Props {
   children?: React.ReactNode;
@@ -8,7 +9,21 @@ interface Props {
 }
 
 export default function TabPanel({ value, index, children, ...other }: Props) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const style = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "inherit",
+    color: `${TabPanelColor}`,
+    fontFamily: "Roboto Slab",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "14px",
+    lineHeight: "18px",
+    padding: value !== index ? 0 : "10px",
+    marginTop: "5px !important",
+    marginBottom: "5px !important",
+  };
 
   return (
     <Box
@@ -16,22 +31,7 @@ export default function TabPanel({ value, index, children, ...other }: Props) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      padding={value !== index ? 0 : "10px"}
-      marginTop={"5px !important"}
-      marginBottom={"5px !important"}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "inherit",
-        color: "#F2F2F2",
-        fontFamily: "Roboto Slab",
-        fontStyle: "normal",
-        fontWeight: "400",
-        fontSize: "14px",
-        lineHeight: "18px",
-      }}
-
+      sx={style}
       {...other}
     >
       {value === index && children}

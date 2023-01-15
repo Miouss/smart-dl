@@ -3,7 +3,7 @@ import fetch, { Headers } from "cross-fetch";
 
 import MenuCard from "./components/MenuCard";
 
-import { createTheme } from "@mui/material/styles";
+import customTheme from "./utils/style/theme";
 
 import { Collapse, Stack, ThemeProvider } from "@mui/material";
 
@@ -151,63 +151,6 @@ export default function App() {
     height: "100vh",
     width: "100vw",
   };
-
-  const customTheme = createTheme({
-    components: {
-      MuiInput: {
-        defaultProps: {
-          disableUnderline: true,
-        },
-        styleOverrides: {
-          root: {
-            borderBottom: "1px solid rgba(208, 2, 27, 1)",
-            boxShadow: "0px 1px 1px rgba(208, 2, 27, 0.25)",
-          },
-          input: {
-            color: "white",
-            "&::placeholder": {
-              color: "#828282",
-            },
-          },
-        },
-      },
-      MuiSwitch: {
-        styleOverrides: {
-          root: {
-            "& .MuiSwitch-switchBase": {
-              "&+ .MuiSwitch-track": {
-                backgroundColor: "red",
-                opacity: 1,
-              },
-              "&.Mui-checked": {
-                "+ .MuiSwitch-track": {
-                  backgroundColor: "green",
-                  opacity: 1,
-                },
-                "& .MuiSwitch-thumb": {
-                  color: "white",
-                },
-              },
-            },
-          },
-        },
-      },
-      MuiFormControlLabel: {
-        styleOverrides: {
-          root: {
-            "& .MuiFormControlLabel-label": {
-              color: "#E0E0E0",
-              fontFamily: "Roboto",
-              fontStyle: "normal",
-              fontWeight: "400",
-              fontSize: "18px",
-              lineHeight: "21px",
-            },
-          },
-        },
-      },
-    },
-  });
 
   if (data === null) {
     return (

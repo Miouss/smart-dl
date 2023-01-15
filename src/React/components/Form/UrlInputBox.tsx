@@ -61,7 +61,7 @@ export default function UrlInputBox({
         onClick={chooseSaveLocation}
         onContextMenu={handleContextMenu}
       >
-        <FolderIcon style={{ color: "#fff" }} />
+        <FolderIcon />
       </ChooseSaveLocationButton>
       {withSubmit && (
         <SubmitButton>

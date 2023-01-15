@@ -4,6 +4,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import styled from "@emotion/styled";
+import { PasswordVisibilityIconColor } from "../../utils/style/colors";
 
 interface Props {
   setShowPassword: Dispatch<SetStateAction<boolean>>;
@@ -17,7 +18,7 @@ export default function PasswordVisibilityIcon({
   const Icon = visible ? styled(VisibilityIcon)({}) : styled(VisibilityOffIcon)({});
 
   const VisibilityIconStyle = {
-    color: "white",
+    color: PasswordVisibilityIconColor,
     cursor: "pointer",
   };
   
