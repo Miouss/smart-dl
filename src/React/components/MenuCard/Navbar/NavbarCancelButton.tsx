@@ -4,6 +4,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import { Stack } from "@mui/system";
 
+import { CancelButtonColor } from "../../../utils/style/colors";
+
 export default function NavbarCancelButton() {
   return (
     <Button
@@ -11,9 +13,9 @@ export default function NavbarCancelButton() {
         window.downloadAPI.sendCancelButtonPressed();
       }}
       sx={{
-        background: "rgba(208, 2, 27, 1)",
+        backgroundColor: `${CancelButtonColor.normal}`,
         "&:hover": {
-          background: "rgba(208, 2, 27, 0.7)",
+          backgroundColor: `${CancelButtonColor.hover}`,
         },
       }}
     >

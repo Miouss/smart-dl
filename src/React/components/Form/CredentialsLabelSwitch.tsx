@@ -73,7 +73,6 @@ function CredentialsLabelSwitch({
       id={id}
       control={
         <Switch
-          color="primary"
           onChange={() => {
             setCheckState((state) => {
               state ? null : eventEmitter();

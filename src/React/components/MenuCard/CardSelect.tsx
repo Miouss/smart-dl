@@ -8,6 +8,7 @@ import { Tab, Tabs } from "@mui/material";
 
 import { MediaUrls, MediaDetails } from "../../../types/Media";
 import TabPanel from "../styled/TabPanel";
+import { TabColor, TabsColor, TabsIndicatorColor } from "../../utils/style/colors";
 
 interface Props {
   setMediaFetched: Dispatch<SetStateAction<MediaUrls>>;
@@ -63,8 +64,20 @@ export default function MediaMenuCardSelection({
   }, [vod, resetSelection]);
 
   const styleTab = {
-    "&.Mui-selected": { color: "#F2F2F2" },
+    "&.Mui-selected": { color: `${TabColor}` },
   };
+
+  const styleTabs = {
+    fontFamily: "Roboto Slab",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "14px",
+    lineHeight: "18px",
+    color: `${TabsColor}`,
+    ".MuiTabs-indicator": {
+      backgroundColor: `${TabsIndicatorColor}`,
+    },
+  }
 
   return (
     <Stack direction="column" width="100%" spacing={2}>
@@ -72,23 +85,12 @@ export default function MediaMenuCardSelection({
         direction="row"
         justifyContent="center"
         spacing="51px"
-        color="#F2F2F2"
       >
         <Tabs
           value={tabIndex}
           onChange={() => handleTabChange}
           aria-label="basic tabs example"
-          sx={{
-            fontFamily: "Roboto Slab",
-            fontStyle: "normal",
-            fontWeight: "400",
-            fontSize: "14px",
-            lineHeight: "18px",
-            color: "#F2F2F2",
-            ".MuiTabs-indicator": {
-              backgroundColor: "rgba(208, 2, 27, 1)",
-            },
-          }}
+          sx={styleTabs}
         >
           <Tab label="Quality" {...a11yProps(0)} sx={styleTab} />
           <Tab

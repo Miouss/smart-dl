@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@mui/material";
 
 import FileDownloadOffIcon from "@mui/icons-material/FileDownloadOff";
+import { DownloadDisabledButtonColor, DownloadDisabledButtonIconColor } from "../../../utils/style/colors";
 
 export default function NavbarDownloadDisabledButton() {
   return (
@@ -10,13 +11,13 @@ export default function NavbarDownloadDisabledButton() {
       disabled
       sx={{
         "&.Mui-disabled": {
-          backgroundColor: "rgb(255, 165, 0)",
+          backgroundColor: `${DownloadDisabledButtonColor}`,
         },
       }}
     >
       <FileDownloadOffIcon
         sx={{
-          color: "white",
+          color: `${DownloadDisabledButtonIconColor}`,
         }}
       />
     </Button>

@@ -2,7 +2,8 @@ import React, { Dispatch, SetStateAction } from "react";
 
 import { Button, Stack } from "@mui/material";
 
-import SimCardDownloadOutlinedIcon from '@mui/icons-material/SimCardDownloadOutlined';
+import SimCardDownloadOutlinedIcon from "@mui/icons-material/SimCardDownloadOutlined";
+import { DownloadButtonColor } from "../../../utils/style/colors";
 
 interface Props {
   setDownloadStarted: Dispatch<SetStateAction<boolean>>;
@@ -13,15 +14,15 @@ interface Props {
 
 export default function NavbarDownloadButton({
   setDownloadStarted,
-  children
-}: Props){
+  children,
+}: Props) {
   return (
     <Button
       onClick={() => setDownloadStarted(true)}
       sx={{
-        background: "rgba(39, 184, 71, 1)",
+        backgroundColor: `${DownloadButtonColor.normal}`,
         "&:hover": {
-          background: "rgba(39, 184, 71, 0.7)",
+          backgroundColor: `${DownloadButtonColor.hover}`,
         },
       }}
     >

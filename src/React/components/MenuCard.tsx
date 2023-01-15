@@ -14,6 +14,7 @@ import CardSelect from "./MenuCard/CardSelect";
 import CardNavbar from "./MenuCard/CardNavbar";
 import CardStepper from "./MenuCard/CardStepper";
 import { VodDescription, VodTitle } from "./styled/Card";
+import { CardColor, CardMediaBoxColor } from "../utils/style/colors";
 
 interface Props {
   setBackHome: Dispatch<SetStateAction<boolean>>;
@@ -71,8 +72,8 @@ export default function MenuCard({ setBackHome, vod }: Props) {
   }, [vod, resetSelection]);
 
   return (
-      <Card sx={{ backgroundColor: "inherit", boxShadow: "none", maxWidth:"760px"}}>
-          <Box border={"2px solid #BDBDBD"} >
+      <Card sx={{ backgroundColor: CardColor, maxWidth:"760px"}}>
+          <Box border={`2px solid ${CardMediaBoxColor}`} >
             <CardMedia
               component="img"
               image={vod.thumbnail}

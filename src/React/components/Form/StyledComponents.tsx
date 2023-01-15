@@ -3,6 +3,7 @@ import React from "react";
 import { Stack, Input, Button, CircularProgress } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import NearMeIcon from "@mui/icons-material/NearMe";
+import { SubmitButtonColor, SubmitButtonIconColor } from "../../utils/style/colors";
 
 export const UrlInput = styled(Input)({});
 
@@ -76,20 +77,22 @@ export const SubmitButton = styled(Button)(() => {
   SubmitButton.defaultProps = {
     type: "submit",
     variant: "contained",
-    color: "success",
   };
   return {
     marginLeft: "24px",
-  };
-});
+    backgroundColor: SubmitButtonColor.normal,
+    "&:hover" : {
+      backgroundColor: SubmitButtonColor.hover,
+    }
+}});
 
 export function SubmitButtonIcon({ submited }: { submited: boolean }) {
   return submited ? (
     <CircularProgress
-      style={{ color: "#fff", width: "24px", height: "24px" }}
+      style={{ color: SubmitButtonIconColor.active, width: "24px", height: "24px" }}
     />
   ) : (
-    <NearMeIcon style={{ color: "#fff" }} />
+    <NearMeIcon style={{ color: SubmitButtonIconColor.waiting }} />
   );
 }
 
