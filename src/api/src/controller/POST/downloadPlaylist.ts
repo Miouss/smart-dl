@@ -28,10 +28,10 @@ export default async function downloadPlaylist(req: Request, res: Response) {
     let username: string | undefined = undefined;
     let password: string | undefined = undefined;
 
-    if (req.body.saveCredentialsCheckState) {
+    if (req.body.saveCredentials) {
       username = req.body.account.username;
       password = req.body.account.password;
-    } else if (req.body.useSavedCredentialsCheckState) {
+    } else if (req.body.useSavedCredentials) {
       username = configData.username;
       password = configData.password;
     }
@@ -52,7 +52,7 @@ export default async function downloadPlaylist(req: Request, res: Response) {
             apikey
           );
 
-          if (req.body.saveCredentialsCheckState){
+          if (req.body.saveCredentials){
             writeConfig({...configData, username, password});
           }
         }
