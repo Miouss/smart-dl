@@ -13,7 +13,7 @@ import { Request, Response } from "express";
 
 import getWindow from "../../../../index";
 
-export default async function downloadMedia(req: Request, res: Response) {
+export default async function DownloadMedia(req: Request, res: Response) {
   console.time("Operations Completed in ");
 
   const { outputPath } = await readFile("./src/api/config.json");
