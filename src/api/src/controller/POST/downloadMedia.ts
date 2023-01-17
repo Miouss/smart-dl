@@ -5,8 +5,8 @@ import { promises } from "fs";
 import downloadVodPlaylist from "../../models/POST/DownloadMedia/DownloadVodPlaylist";
 import downloadVodFragments from "../../models/POST/DownloadMedia/DownloadVodFragments";
 import createMergeFile from "../../models/POST/DownloadMedia/CreateMergeFile";
-import handleMerging from "../../models/POST/DownloadMedia/utils/HandleMerging";
-import handleCanceling from "../../models/POST/DownloadMedia/utils/HandleCanceling";
+import mergeDownloadedFiles from "../../models/POST/DownloadMedia/utils/mergeDownloadedFiles";
+import cancelDownloadedFiles from "../../models/POST/DownloadMedia/utils/cancelDownloadedFiles";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
@@ -95,7 +95,7 @@ export default async function DownloadMedia(req: Request, res: Response) {
 
     await promises.writeFile(`./src/api/processing/number.txt`, `${audioUrlList.length}`, { flag: "w" });
 
-    await handleMerging(vodTitle, outputPath);
+    await mergeDownloadedFiles(vodTitle, outputPath);
     checkCancelStatus();
 
     windowWebContents.send("merging-ends");
@@ -109,7 +109,7 @@ export default async function DownloadMedia(req: Request, res: Response) {
     if (error.message === "cancel") {
       console.log("Canceling [started]");
       windowWebContents.send("cancel-starts");
-      await handleCanceling(outputPath, vodTitle);
+      await cancelDownloadedFiles(outputPath, vodTitle);
       windowWebContents.send("cancel-ends");
       console.log("Canceling [completed]");
 
