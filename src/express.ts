@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import downloadMedia from "./api/src/controller/POST/downloadMedia";
-import downloadPlaylist from "./api/src/controller/POST/RetrievePlaylist";
+import RetrievePlaylist from "./api/src/controller/POST/RetrievePlaylist";
 
 import cors from "cors";
 
@@ -16,7 +16,7 @@ appExpress.use(express.urlencoded({ extended: true }));
 appExpress.use(express.json());
 
 appExpress.post("/stream/download", downloadMedia);
-appExpress.post("/stream/playlist", downloadPlaylist);
+appExpress.post("/stream/playlist", RetrievePlaylist);
 
 export default appExpress;
 
