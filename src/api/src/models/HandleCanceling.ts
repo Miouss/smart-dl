@@ -1,18 +1,14 @@
-import { deletingTask } from "../tasks/tasks";
+import {
+  deleteFragsFiles,
+  deletePartsFiles,
+  deleteFullFile,
+} from "../utils/Merging";
 
-export default async function handleCanceling(outputPath: string) {
-  await deletingTask(
-    "Deleting Video & Audio Fragments",
-    "del-frags-src",
-    outputPath,
-    "deleting-frags-starts",
-    "deleting-frags-ends"
-  );
-  await deletingTask(
-    "Deleting Video & Audio Parts",
-    "del-parts-src",
-    outputPath,
-    "deleting-parts-starts",
-    "deleting-parts-ends"
-  );
+export default async function handleCanceling(
+  outputPath: string,
+  vodTitle: string
+) {
+  await deleteFragsFiles(outputPath);
+  await deletePartsFiles(outputPath);
+  await deleteFullFile(outputPath, vodTitle);
 }
