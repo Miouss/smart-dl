@@ -5,7 +5,7 @@ import {
 } from "./tasks/merging";
 import { deleteFragsFiles, deletePartsFiles } from "./tasks/deleting";
 
-export default async function handleMerging(
+export default async function mergeDownloadedFiles(
   vodTitle: string,
   outputPath: string
 ) {

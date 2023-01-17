@@ -4,7 +4,7 @@ import {
   deleteFullFile,
 } from "./tasks/deleting";
 
-export default async function handleCanceling(
+export default async function cancelDownloadedFiles(
   outputPath: string,
   vodTitle: string
 ) {
