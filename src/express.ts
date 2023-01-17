@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import downloadMedia from "./api/src/controller/POST/downloadMedia";
-import downloadPlaylist from "./api/src/controller/POST/downloadPlaylist";
+import downloadPlaylist from "./api/src/controller/POST/RetrievePlaylist";
 
 import cors from "cors";
 
