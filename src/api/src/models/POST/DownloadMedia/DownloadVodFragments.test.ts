@@ -1,3 +1,4 @@
+/*
 import downloadVodFragments from "./DownloadVodFragments";
 
 import fetch from "cross-fetch";
@@ -77,3 +78,4 @@ async function compareStreams(urlList: Array<string>) {
     })
   );
 }
+*/
