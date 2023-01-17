@@ -1,4 +1,6 @@
 import { ipcMain } from "electron";
+import { promises } from "fs";
+
 
 import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
 import downloadVodFragments from "../../models/DownloadVodFragments";
@@ -91,6 +93,8 @@ export default async function downloadMedia(req: Request, res: Response) {
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
     checkCancelStatus();
 
+    await promises.writeFile(`./src/api/processing/number.txt`, `${audioUrlList.length}`, { flag: "w" });
+
     await handleMerging(vodTitle, outputPath);
     checkCancelStatus();
 
@@ -99,14 +103,13 @@ export default async function downloadMedia(req: Request, res: Response) {
     windowWebContents.send("download-fully-ends");
 
     console.timeEnd("Operations Completed in ");
-
     res.status(200);
     res.json({ Download: true });
   } catch (error) {
     if (error.message === "cancel") {
       console.log("Canceling [started]");
       windowWebContents.send("cancel-starts");
-      await handleCanceling(outputPath);
+      await handleCanceling(outputPath, vodTitle);
       windowWebContents.send("cancel-ends");
       console.log("Canceling [completed]");
 
