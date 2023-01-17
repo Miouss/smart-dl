@@ -16,7 +16,7 @@ import ErrorWithStatusCode from "../../utils/ErrorWithStatusCode";
 
 import { writeConfig } from "../../../config";
 
-export default async function downloadPlaylist(req: Request, res: Response) {
+export default async function RetrievePlaylist(req: Request, res: Response) {
   try {
     const configPath = "./src/api/config.json";
     const configData = await jsonfile.readFile(configPath);
