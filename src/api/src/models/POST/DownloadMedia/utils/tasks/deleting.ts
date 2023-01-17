@@ -1,13 +1,10 @@
 import getWindow from "../../../../../../../index";
 import { promises } from "fs";
-import { FileHandle } from "fs/promises";
 
 export async function deleteFragsFiles(outputPath: string) {
-  const fileHandle = await promises.open("src/api/processing/number.txt");
-
-  const fileHandleData = await fileHandle.readFile({ encoding: "utf8" });
-
-  await fileHandle.close();
+  const file = await promises.open("src/api/processing/number.txt");
+  const fileHandleData = await file.readFile({ encoding: "utf8" });
+  await file.close();
 
   for (let i = 0; i < parseInt(fileHandleData); i++) {
     await deleteFiles(`${outputPath}/${i}.ts`, "frags");
@@ -27,18 +24,11 @@ export async function deleteFullFile(outputPath: string, vodTitle: string) {
 async function deleteFiles(filePath: string, event: string) {
   const windowWebContents = getWindow().webContents;
 
-  let fileHandle: FileHandle | undefined;
+  windowWebContents.send(`deleting-${event}-starts`);
 
-  try {
-    windowWebContents.send(`deleting-${event}-starts`);
+  const fileHandle = await promises.open(filePath, "w");
 
-    fileHandle = await promises.open(filePath, "w");
-    await promises.unlink(filePath);
-  } catch (err) {
-    console.log(err);
-  } finally {
-    await fileHandle?.close();
-    
-    windowWebContents.send(`deleting-${event}-ends`);
-  }
+  await fileHandle.close();
+  await promises.unlink(filePath);
+  windowWebContents.send(`deleting-${event}-ends`);
 }
