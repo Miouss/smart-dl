@@ -2,11 +2,11 @@ import { ipcMain } from "electron";
 import { promises } from "fs";
 
 
-import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
-import downloadVodFragments from "../../models/DownloadVodFragments";
-import createMergeFile from "../../models/CreateMergeFile";
-import handleMerging from "../../models/HandleMerging";
-import handleCanceling from "../../models/HandleCanceling";
+import downloadVodPlaylist from "../../models/POST/DownloadMedia/DownloadVodPlaylist";
+import downloadVodFragments from "../../models/POST/DownloadMedia/DownloadVodFragments";
+import createMergeFile from "../../models/POST/DownloadMedia/CreateMergeFile";
+import handleMerging from "../../models/POST/DownloadMedia/utils/HandleMerging";
+import handleCanceling from "../../models/POST/DownloadMedia/utils/HandleCanceling";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
