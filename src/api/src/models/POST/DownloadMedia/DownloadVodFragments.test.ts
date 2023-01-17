@@ -1,7 +1,7 @@
 import downloadVodFragments from "./DownloadVodFragments";
 
 import fetch from "cross-fetch";
-import appExpress, {startServer, stopServer, monitorPublicFolder} from "../../../express";
+import appExpress, {startServer, stopServer, monitorPublicFolder} from "../../../../../express";
 
 const outputPath = "./public/testData/downloadVodPlaylist/testOuput";
 

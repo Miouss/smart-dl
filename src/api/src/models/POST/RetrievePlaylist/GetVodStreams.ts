@@ -2,10 +2,10 @@ import fetch from "cross-fetch";
 
 import { Parser } from "m3u8-parser";
 
-import onError from "../utils/OnError";
+import onError from "../../../utils/OnError";
 
-import { PlaylistUrl } from "../../../types/PlaylistUrl";
-import { Media, VideoSelection, AudioSelection } from "../../../types/Media";
+import { PlaylistUrl } from "../../../../../types/PlaylistUrl";
+import { Media, VideoSelection, AudioSelection } from "../../../../../types/Media";
 
 export default async function getVodStreams(vodPlaylist: PlaylistUrl) {
   const response = await fetch(vodPlaylist.url);

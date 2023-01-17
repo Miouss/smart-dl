@@ -1,4 +1,4 @@
-import { mergingTask, deletingTask } from "../tasks/tasks";
+import { mergingTask, deletingTask } from "../../../../tasks/tasks";
 
 export default async function handleMerging(
   vodTitle: string,

@@ -1,8 +1,8 @@
 import fetch from "cross-fetch";
 
-import onError from "../utils/OnError";
+import onError from "../../../utils/OnError";
 
-import { Metadata } from "../../../types/Metadata";
+import { Metadata } from "../../../../../types/Metadata";
 
 export default async function getVodId(showUrl = "") {
   const path = showUrl.replace("https://watch.wwe.com", "");
