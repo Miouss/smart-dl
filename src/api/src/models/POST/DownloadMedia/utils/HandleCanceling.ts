@@ -2,7 +2,7 @@ import {
   deleteFragsFiles,
   deletePartsFiles,
   deleteFullFile,
-} from "../../../../utils/Merging";
+} from "./tasks/deleting";
 
 export default async function handleCanceling(
   outputPath: string,

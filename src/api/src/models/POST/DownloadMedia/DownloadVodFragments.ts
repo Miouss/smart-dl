@@ -2,7 +2,7 @@ import fetch from "cross-fetch";
 
 import { createWriteStream } from "fs";
 
-import getWindow from "../../../index";
+import getWindow from "../../../../../index";
 
 type MediaExtension = "ts" | "aac";
 

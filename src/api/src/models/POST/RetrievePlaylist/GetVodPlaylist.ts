@@ -1,6 +1,6 @@
 import fetch, { Headers } from "cross-fetch";
 
-import onError from "../utils/OnError";
+import onError from "../../../utils/OnError";
 
 interface PlaylistUrl {
   url: string;
