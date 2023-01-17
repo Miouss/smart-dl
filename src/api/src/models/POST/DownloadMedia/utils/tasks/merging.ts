@@ -17,7 +17,7 @@ export async function mergeVideoFrags(outputPath: string) {
     `${outputPath}\\output.ts`,
   ];
 
-  return merging(instruction, "video");
+  await merging(instruction, "video");
 }
 
 export async function mergeAudioFrags(outputPath: string) {
@@ -34,7 +34,7 @@ export async function mergeAudioFrags(outputPath: string) {
     `${outputPath}\\output.aac`,
   ];
 
-  return merging(instruction, "audio");
+  await merging(instruction, "audio");
 }
 
 export async function mergeVideoWithAudio(
@@ -56,7 +56,7 @@ export async function mergeVideoWithAudio(
       .replace(/[\/\\:*?"<>]/g, "")}".mp4`,
   ];
 
-  return merging(instruction, "parts");
+  await merging(instruction, "parts");
 }
 
 async function merging(option: string[], event: string) {
@@ -65,15 +65,29 @@ async function merging(option: string[], event: string) {
     shell: true,
   });
 
-  ipcMain.once("cancel-button-pressed", () => {
+  const killProcess = () => {
     if (mergingProcess) {
-      mergingProcess.kill();
+      mergingProcess.cancel();
     }
-  });
+  };
+
+  ipcMain.once("cancel-button-pressed", killProcess);
 
   const windowWebContents = getWindow().webContents;
 
-  windowWebContents.send(`merging-${event}-starts`);
-  await mergingProcess;
-  windowWebContents.send(`merging-${event}-ends`);
+  try {
+    windowWebContents.send(`merging-${event}-starts`);
+
+    await mergingProcess;
+
+    windowWebContents.send(`merging-${event}-ends`);
+  } catch (err) {
+    if (err.isCanceled) {
+      return Promise.reject(Error("cancel"));
+    }
+
+    return Promise.reject(err);
+  } finally {
+    ipcMain.removeListener("cancel-button-pressed", killProcess);
+  }
 }
