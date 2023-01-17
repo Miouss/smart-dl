@@ -9,13 +9,9 @@ export default async function mergeDownloadedFiles(
   vodTitle: string,
   outputPath: string
 ) {
-  try {
-    await mergeVideoFrags(outputPath);
-    await mergeAudioFrags(outputPath);
-    await deleteFragsFiles(outputPath);
-    await mergeVideoWithAudio(outputPath, vodTitle);
-    await deletePartsFiles(outputPath);
-  } catch (err) {
-    //
-  }
+  await mergeVideoFrags(outputPath);
+  await mergeAudioFrags(outputPath);
+  await deleteFragsFiles(outputPath);
+  await mergeVideoWithAudio(outputPath, vodTitle);
+  await deletePartsFiles(outputPath);
 }
