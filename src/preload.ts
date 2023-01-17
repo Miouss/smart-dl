@@ -93,6 +93,12 @@ contextBridge.exposeInMainWorld("downloadAPI", {
   onDeletingPartsEnds: (callback: any) => {
     ipcRenderer.once("deleting-parts-ends", callback);
   },
+  onDeletingSourceStarts: (callback: any) => {
+    ipcRenderer.once("deleting-source-starts", callback);
+  },
+  onDeletingSourceEnds: (callback: any) => {
+    ipcRenderer.once("deleting-source-ends", callback);
+  },
   onMergingEnds: (callback: any) => {
     ipcRenderer.once("merging-ends", callback);
   },
