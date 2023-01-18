@@ -2,139 +2,93 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-import { ipcRenderer, contextBridge } from "electron";
+import { contextBridge } from "electron";
+import FiringEvent from "./api/events/FiringEvent";
+import CatchingEvent from "./api/events/CatchingEvent";
+import CatchingOnceEvent from "./api/events/CatchingOnceEvent";
+
+import { EventCallback } from "./types/Event";
 
 contextBridge.exposeInMainWorld("fileSystemAPI", {
-  openFileSystemDialog: () => {
-    ipcRenderer.send("open-filesystem-dialog");
-  },
-  retrieveOutputPath: () => {
-    ipcRenderer.send("retrieve-output-path");
-  },
-  onOutputPathAdded: (callback: any) => {
-    ipcRenderer.on("output-path-added", callback)
-  },
-  onOutputPathRetrieved: (callback: any) => {
-    ipcRenderer.on("output-path-retrieved", callback)
-  },
-  retrieveAccount: () => {
-    ipcRenderer.send("retrieve-account");
-  },
-  onAccountRetrieved: (callback: any) => {
-    ipcRenderer.on("account-retrieved", callback)
-  }
+  openFileSystemDialog: createEvent(new FiringEvent("open-filesystem-dialog")),
+  retrieveOutputPath: createEvent(new FiringEvent("retrieve-output-path")),
+  retrieveAccount: createEvent(new FiringEvent("retrieve-account")),
+
+  onOutputPathAdded: createEvent(new CatchingEvent("output-path-added")),
+  onOutputPathRetrieved: createEvent(new CatchingEvent("output-path-retrieved")),
+  onAccountRetrieved: createEvent(new CatchingEvent("account-retrieved")),
 });
 
-contextBridge.exposeInMainWorld("downloadAPI", {
-  sendCancelButtonPressed: () => {
-    ipcRenderer.send("cancel-button-pressed");
-  },
+contextBridge.exposeInMainWorld("mediaAPI", {
+  sendCancelButtonClicked: createEvent(new FiringEvent("cancel-button-clicked")),
+  sendCleanUpListenersDone: createEvent(new FiringEvent("clean-up-listeners-done")),
 
-  onCancelStarts: (callback: any) => {
-    ipcRenderer.once("cancel-starts", callback);
-  },
-  onCancelEnds: (callback: any) => {
-    ipcRenderer.once("cancel-ends", () => {
-      callback();
-      cleanEventEmitter();
-    });
-  },
-  onDownloadFullyStarts: (callback: any) => {
-    ipcRenderer.once("download-fully-starts", callback);
-  },
-  onRecoveringFragsPlaylistsStarts: (callback: any) => {
-    ipcRenderer.once("recovering-frags-playlists-starts", callback);
-  },
-  onRecoveringFragsPlaylistsEnds: (callback: any) => {
-    ipcRenderer.once("recovering-frags-playlists-ends", callback);
-  },
-  onDownloadingFragsStarts: (callback: any) => {
-    ipcRenderer.once("downloading-frags-starts", callback);
-  },
-  onUpdateDownloadSteps: (callback: any) => {
-    ipcRenderer.on("update-download-steps", callback);
-  },
-  onDownloadStepsEnds: (callback: any) => {
-    ipcRenderer.once("download-steps-ends", callback);
-  },
-  onDownloadingFragsEnds: (callback: any) => {
-    ipcRenderer.once("downloading-frags-ends", callback);
-  },
-  onMergingStarts: (callback: any) => {
-    ipcRenderer.once("merging-starts", callback);
-  },
-  onMergingVideoStarts: (callback: any) => {
-    ipcRenderer.once("merging-video-starts", callback);
-  },
-  onMergingVideoEnds: (callback: any) => {
-    ipcRenderer.once("merging-video-ends", callback);
-  },
-  onMergingAudioStarts: (callback: any) => {
-    ipcRenderer.once("merging-audio-starts", callback);
-  },
-  onMergingAudioEnds: (callback: any) => {
-    ipcRenderer.once("merging-audio-ends", callback);
-  },
-  onDeletingFragsStarts: (callback: any) => {
-    ipcRenderer.once("deleting-frags-starts", callback);
-  },
-  onDeletingFragsEnds: (callback: any) => {
-    ipcRenderer.once("deleting-frags-ends", callback);
-  },
-  onMergingPartsStarts: (callback: any) => {
-    ipcRenderer.once("merging-parts-starts", callback);
-  },
-  onMergingPartsEnds: (callback: any) => {
-    ipcRenderer.once("merging-parts-ends", callback);
-  },
-  onDeletingPartsStarts: (callback: any) => {
-    ipcRenderer.once("deleting-parts-starts", callback);
-  },
-  onDeletingPartsEnds: (callback: any) => {
-    ipcRenderer.once("deleting-parts-ends", callback);
-  },
-  onDeletingSourceStarts: (callback: any) => {
-    ipcRenderer.once("deleting-source-starts", callback);
-  },
-  onDeletingSourceEnds: (callback: any) => {
-    ipcRenderer.once("deleting-source-ends", callback);
-  },
-  onMergingEnds: (callback: any) => {
-    ipcRenderer.once("merging-ends", callback);
-  },
-  onDownloadFullyEnds: (callback: any) => {
-    ipcRenderer.once("download-fully-ends", () => {
-      callback();
-      cleanEventEmitter();
-    });
-  },
+  onCancelStarts: createEvent(new CatchingOnceEvent("cancel-starts")),
+  onCancelEnds: createEvent(new CatchingOnceEvent("cancel-ends")),
+
+  onDownloadFullyStarts: createEvent(new CatchingOnceEvent("download-fully-starts")),
+  onDownloadFullyEnds: createEvent(new CatchingOnceEvent("download-fully-ends")),
+
+  onRecoveringFragsPlaylistsStarts: createEvent(new CatchingOnceEvent(
+    "recovering-frags-playlists-starts"
+  )),
+  onRecoveringFragsPlaylistsEnds: createEvent(new CatchingOnceEvent(
+    "recovering-frags-playlists-ends"
+  )),
+
+  onDownloadingFragsStarts: createEvent(new CatchingOnceEvent("downloading-frags-starts")),
+  onDownloadingFragsEnds: createEvent(new CatchingOnceEvent("downloading-frags-ends")),
+
+  onDownloadingVideoFragsStarts: createEvent(new CatchingOnceEvent(
+    "downloading-video-frags-starts"
+  )),
+  onDownloadingVideoFragsEnds: createEvent(new CatchingOnceEvent(
+    "downloading-video-frags-ends"
+  )),
+
+  onDownloadingAudioFragsStarts: createEvent(new CatchingOnceEvent(
+    "downloading-audio-frags-starts"
+  )),
+  onDownloadingAudioFragsEnds: createEvent(new CatchingOnceEvent(
+    "downloading-audio-frags-ends"
+  )),
+
+  onUpdateVideoFragsSteps: createEvent(new CatchingEvent("update-video-frags-steps")),
+  onUpdateAudioFragsSteps: createEvent(new CatchingEvent("update-audio-frags-steps")),
+
+  onMergingStarts: createEvent(new CatchingOnceEvent("merging-starts")),
+  onMergingEnds: createEvent(new CatchingOnceEvent("merging-ends")),
+
+  onMergingVideoStarts: createEvent(new CatchingOnceEvent("merging-video-starts")),
+  onMergingVideoEnds: createEvent(new CatchingOnceEvent("merging-video-ends")),
+
+  onMergingAudioStarts: createEvent(new CatchingOnceEvent("merging-audio-starts")),
+  onMergingAudioEnds: createEvent(new CatchingOnceEvent("merging-audio-ends")),
+
+  onMergingPartsStarts: createEvent(new CatchingOnceEvent("merging-parts-starts")),
+  onMergingPartsEnds: createEvent(new CatchingOnceEvent("merging-parts-ends")),
+
+  onDeletingFragsStarts: createEvent(new CatchingOnceEvent("deleting-frags-starts")),
+  onDeletingFragsEnds: createEvent(new CatchingOnceEvent("deleting-frags-ends")),
+
+  onDeletingPartsStarts: createEvent(new CatchingOnceEvent("deleting-parts-starts")),
+  onDeletingPartsEnds: createEvent(new CatchingOnceEvent("deleting-parts-ends")),
+
+  onDeletingSourceEnds: createEvent(new CatchingOnceEvent("deleting-source-ends")),
+  onDeletingSourceStarts: createEvent(new CatchingOnceEvent("deleting-source-starts")),
 });
 
-function cleanEventEmitter() {
-  for (const channel in eventChannels) {
-    ipcRenderer.removeAllListeners(eventChannels[channel]);
-  }
+function createEvent(event: CatchingEvent | CatchingOnceEvent | FiringEvent) {
+  return {
+    ...(event instanceof FiringEvent
+      ? {
+          fire: () => event.fire(),
+        }
+      : {
+          do: (callback: EventCallback) => {
+            event.listener(callback);
+          },
+        }),
+    removeAllListeners: () => event.removeAllListeners(),
+  };
 }
-
-const eventChannels = [
-  "download-fully-starts",
-  "recovering-frags-playlists-starts",
-  "recovering-frags-playlists-ends",
-  "downloading-frags-starts",
-  "update-download-steps",
-  "download-steps-ends",
-  "downloading-frags-ends",
-  "download-fully-ends",
-  "merging-starts",
-  "merging-ends",
-  "merging-video-starts",
-  "merging-video-ends",
-  "merging-audio-starts",
-  "merging-audio-ends",
-  "merging-parts-starts",
-  "merging-parts-ends",
-  "deleting-frags-starts",
-  "deleting-frags-ends",
-  "deleting-parts-starts",
-  "deleting-parts-ends",
-];

@@ -27,32 +27,34 @@ export default function FormSearchBar({
   submited,
   withSubmitButton,
 }: Props) {
+  const api = window.fileSystemAPI;
+
   const chooseSaveLocation = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.fileSystemAPI.openFileSystemDialog();
+    api.openFileSystemDialog.fire();
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.fileSystemAPI.retrieveOutputPath();
+    api.retrieveOutputPath.fire();
   };
 
   useEffect(() => {
-    const onOutputPathAdded = window.fileSystemAPI.onOutputPathAdded(
-      (_: unknown, outputPath: string) => {
+    api.onOutputPathAdded.do(
+      (outputPath: string) => {
         setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger));
       }
     );
 
-    const onOutputPathRetrieved = window.fileSystemAPI.onOutputPathRetrieved(
-      (_: unknown, outputPath?: string) => {
+    api.onOutputPathRetrieved.do(
+      (outputPath?: string) => {
         setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger));
       }
     );
 
     return () => {
-      onOutputPathAdded;
-      onOutputPathRetrieved;
+      api.onOutputPathAdded.removeAllListeners();
+      api.onOutputPathRetrieved.removeAllListeners();
     };
   }, []);
 

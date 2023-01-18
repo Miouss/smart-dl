@@ -1,7 +1,7 @@
 import { ipcMain, dialog } from "electron";
 import jsonfile from "jsonfile";
 
-import getWindow from "../index";
+import fireEvent from "../index";
 
 interface Config {
   realm: string;
@@ -26,17 +26,17 @@ async function addOutputPath() {
   configData.outputPath = response.filePaths[0];
 
   await writeConfig(configData);
-  getWindow().webContents.send("output-path-added", configData.outputPath);
+  fireEvent("output-path-added", configData.outputPath);
 }
 
 async function getOutputPath() {
   const configData = await readConfig();
-  getWindow().webContents.send("output-path-retrieved", configData.outputPath);
+  fireEvent("output-path-retrieved", configData.outputPath);
 }
 
 async function getAccount() {
   const configData = await readConfig();
-  getWindow().webContents.send("account-retrieved", configData.username);
+  fireEvent("account-retrieved", configData.username);
 }
 
 

@@ -42,11 +42,7 @@ export default function Form({
     const header = new Headers({
       "Content-Type": "application/json",
     });
-    console.log(JSON.stringify({
-      showUrl,
-      ...optionBody,
-    }));
-
+    
     const options = {
       method: "POST",
       headers: header,

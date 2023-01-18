@@ -1,123 +1,93 @@
 import { ipcMain } from "electron";
 import { promises } from "fs";
 
-
-import downloadVodPlaylist from "../../models/DownloadVodPlaylist";
-import downloadVodFragments from "../../models/DownloadVodFragments";
-import createMergeFile from "../../models/CreateMergeFile";
-import handleMerging from "../../models/HandleMerging";
-import handleCanceling from "../../models/HandleCanceling";
+import downloadVodPlaylist from "../../models/POST/DownloadMedia/DownloadVodPlaylist";
+import {
+  downloadVideoFrags,
+  downloadAudioFrags,
+} from "../../models/POST/DownloadMedia/DownloadVodFragments";
+import createMergeFile from "../../models/POST/DownloadMedia/CreateMergeFile";
+import mergeDownloadedFiles from "../../models/POST/DownloadMedia/utils/mergeDownloadedFiles";
+import cancelDownloadedFiles from "../../models/POST/DownloadMedia/utils/cancelDownloadedFiles";
 import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
 
-import getWindow from "../../../../index";
+import fireEvent from "../../../../index";
 
-export default async function downloadMedia(req: Request, res: Response) {
-  console.time("Operations Completed in ");
-
+export default async function DownloadMedia(req: Request, res: Response) {
   const { outputPath } = await readFile("./src/api/config.json");
   const vodTitle = req.body.vodTitle;
 
-  const windowWebContents = getWindow().webContents;
+  let isCanceled = false;
 
-  let cancel = false;
-
-  ipcMain.once("cancel-button-pressed", () => {
-    cancel = true;
+  ipcMain.once("cancel-button-clicked", () => {
+    isCanceled = true;
   });
 
-  function checkCancelStatus() {
-    if (cancel) {
-      throw new Error("cancel");
+  const verifyCancelation = () => {
+    if (isCanceled) {
+      throw Error("cancel");
     }
-  }
+  };
 
   try {
-    windowWebContents.send("download-fully-starts");
+    console.time("Operations Completed in ");
 
-    windowWebContents.send("recovering-frags-playlists-starts");
+    fireEvent("download-fully-starts");
 
     const videoUrlList = await downloadVodPlaylist(req.body.videoUrl);
-    checkCancelStatus();
+    verifyCancelation();
     const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
-    checkCancelStatus();
+    verifyCancelation();
 
-    windowWebContents.send("recovering-frags-playlists-ends");
+    await downloadVideoFrags(videoUrlList, outputPath);
+    verifyCancelation();
 
-    windowWebContents.send("downloading-frags-starts");
-
-    let keepDownloading = true;
-    let simultaneousDL = 10;
-    let index = 0;
-
-    while (keepDownloading) {
-      keepDownloading = await downloadVodFragments(
-        videoUrlList,
-        "ts",
-        outputPath,
-        index,
-        simultaneousDL
-      );
-      checkCancelStatus();
-      index += simultaneousDL;
-    }
-
-    windowWebContents.send("download-steps-ends", "Video");
-
-    keepDownloading = true;
-    simultaneousDL = 10;
-    index = 0;
-
-    while (keepDownloading) {
-      keepDownloading = await downloadVodFragments(
-        audioUrlList,
-        "aac",
-        outputPath,
-        index,
-        simultaneousDL
-      );
-      checkCancelStatus();
-      index += simultaneousDL;
-    }
-    windowWebContents.send("download-steps-ends", "Audio");
-
-    windowWebContents.send("downloading-frags-ends");
-
-    windowWebContents.send("merging-starts");
-    checkCancelStatus();
+    await downloadAudioFrags(audioUrlList, outputPath);
+    verifyCancelation();
 
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
-    checkCancelStatus();
+    verifyCancelation();
 
     await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
-    checkCancelStatus();
+    verifyCancelation();
 
-    await promises.writeFile(`./src/api/processing/number.txt`, `${audioUrlList.length}`, { flag: "w" });
+    await promises.writeFile(
+      `./src/api/processing/number.txt`,
+      `${audioUrlList.length}`,
+      { flag: "w" }
+    );
+    verifyCancelation();
 
-    await handleMerging(vodTitle, outputPath);
-    checkCancelStatus();
+    await mergeDownloadedFiles(vodTitle, outputPath);
+    verifyCancelation();
 
-    windowWebContents.send("merging-ends");
+    fireEvent("download-fully-ends");
 
-    windowWebContents.send("download-fully-ends");
-
-    console.timeEnd("Operations Completed in ");
     res.status(200);
     res.json({ Download: true });
-  } catch (error) {
-    if (error.message === "cancel") {
-      console.log("Canceling [started]");
-      windowWebContents.send("cancel-starts");
-      await handleCanceling(outputPath, vodTitle);
-      windowWebContents.send("cancel-ends");
-      console.log("Canceling [completed]");
+  } catch (err) {
+    console.log(`[ERROR] : \n ${err.message}`);
+
+    if (err.message === "cancel") {
+      console.log("Cancel [starts]");
+      fireEvent("cancel-starts");
+      try {
+        await cancelDownloadedFiles(outputPath, vodTitle);
+      } catch (err) {
+        console.log(err);
+      }
+      fireEvent("cancel-ends");
+      console.log("Cancel [completed]");
 
       res.status(200);
       res.json({ Download: false });
     } else {
       res.status(404);
-      res.json({ errorMessage: error });
+      res.json({ errorMessage: err });
     }
+  } finally {
+    console.timeEnd("Operations Completed in ");
   }
 }

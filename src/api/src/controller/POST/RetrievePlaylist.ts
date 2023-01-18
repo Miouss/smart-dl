@@ -1,10 +1,10 @@
 import Listr from "listr";
 import jsonfile from "jsonfile";
 
-import getBearerToken from "../../models/GetBearerToken";
-import getVodId from "../../models/GetVodId";
-import getVodPlaylist from "../../models/GetVodPlaylist";
-import getVodStreams from "../../models/GetVodStreams";
+import getBearerToken from "../../models/POST/RetrievePlaylist/GetBearerToken";
+import getVodId from "../../models/POST/RetrievePlaylist/GetVodId";
+import getVodPlaylist from "../../models/POST/RetrievePlaylist/GetVodPlaylist";
+import getVodStreams from "../../models/POST/RetrievePlaylist/GetVodStreams";
 
 import { Request, Response } from "express";
 
@@ -16,7 +16,7 @@ import ErrorWithStatusCode from "../../utils/ErrorWithStatusCode";
 
 import { writeConfig } from "../../../config";
 
-export default async function downloadPlaylist(req: Request, res: Response) {
+export default async function RetrievePlaylist(req: Request, res: Response) {
   try {
     const configPath = "./src/api/config.json";
     const configData = await jsonfile.readFile(configPath);

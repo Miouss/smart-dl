@@ -9,12 +9,13 @@ export default function MediaMenuStepper() {
   const [isCanceled, setIsCanceled] = useState(false);
 
   useEffect(() => {
-    const onCancelStarts = window.downloadAPI.onCancelStarts(() => {
+    const onCancelStarts = window.mediaAPI.onCancelStarts.do(() => {
       setIsCanceled(true);
     });
 
     return () => {
       onCancelStarts;
+
     };
   }, [isCanceled]);
 
