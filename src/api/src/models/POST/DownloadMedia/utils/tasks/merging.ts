@@ -1,9 +1,9 @@
 import { ipcMain } from "electron";
 import execa from "execa";
 
-import getWindow from "../../../../../../../index";
+import fireEvent from "../../../../../../../index";
 
-export async function mergeVideoFrags(outputPath: string) {
+export async function mergeVideo(outputPath: string) {
   const instruction = [
     "-y",
     "-safe",
@@ -17,10 +17,12 @@ export async function mergeVideoFrags(outputPath: string) {
     `${outputPath}\\output.ts`,
   ];
 
-  await merging(instruction, "video");
+  fireEvent("merging-video-starts");
+  await merging(instruction);
+  fireEvent("merging-video-ends");
 }
 
-export async function mergeAudioFrags(outputPath: string) {
+export async function mergeAudio(outputPath: string) {
   const instruction = [
     "-y",
     "-safe",
@@ -34,13 +36,12 @@ export async function mergeAudioFrags(outputPath: string) {
     `${outputPath}\\output.aac`,
   ];
 
-  await merging(instruction, "audio");
+  fireEvent("merging-audio-starts");
+  await merging(instruction);
+  fireEvent("merging-audio-ends");
 }
 
-export async function mergeVideoWithAudio(
-  outputPath: string,
-  vodTitle: string
-) {
+export async function mergeParts(outputPath: string, vodTitle: string) {
   const instruction = [
     "-y",
     "-i",
@@ -56,38 +57,32 @@ export async function mergeVideoWithAudio(
       .replace(/[\/\\:*?"<>]/g, "")}".mp4`,
   ];
 
-  await merging(instruction, "parts");
+  fireEvent("merging-parts-starts");
+  await merging(instruction);
+  fireEvent("merging-parts-ends");
 }
 
-async function merging(option: string[], event: string) {
+async function merging(option: string[]) {
   const mergingProcess = execa("ffmpeg", option, {
     cwd: "./src/api/processing/",
     shell: true,
   });
 
-  const killProcess = () => {
+  const cancelProcess = () => {
     if (mergingProcess) {
-      mergingProcess.cancel();
+      mergingProcess.kill();
     }
   };
 
-  ipcMain.once("cancel-button-pressed", killProcess);
-
-  const windowWebContents = getWindow().webContents;
+  ipcMain.once("cancel-button-clicked", cancelProcess);
 
   try {
-    windowWebContents.send(`merging-${event}-starts`);
-
     await mergingProcess;
-
-    windowWebContents.send(`merging-${event}-ends`);
   } catch (err) {
-    if (err.isCanceled) {
+    if (err.killed) {
       return Promise.reject(Error("cancel"));
     }
 
-    return Promise.reject(err);
-  } finally {
-    ipcMain.removeListener("cancel-button-pressed", killProcess);
+    return Promise.reject(Error(`[MERGING ERROR] : ${err.message}`));
   }
 }

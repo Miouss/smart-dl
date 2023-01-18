@@ -15,9 +15,9 @@ export default function StepsTasks({ task }: Props) {
     <TaskLabel
       component="span"
       variant="h6"
-      started={task.started ? 1 : 0}
-      active={task.started && !task.done ? 1 : 0}
-      done={task.done ? 1 : 0}
+      started={task.started.isStarted ? 1 : 0}
+      active={task.started.isStarted && !task.done.isDone ? 1 : 0}
+      done={task.done.isDone ? 1 : 0}
     >
       <Task task={task} />
     </TaskLabel>

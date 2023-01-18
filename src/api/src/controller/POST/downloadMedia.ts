@@ -13,17 +13,15 @@ import { readFile } from "jsonfile";
 
 import { Request, Response } from "express";
 
-import getWindow from "../../../../index";
+import fireEvent from "../../../../index";
 
 export default async function DownloadMedia(req: Request, res: Response) {
   const { outputPath } = await readFile("./src/api/config.json");
   const vodTitle = req.body.vodTitle;
 
-  const windowWebContents = getWindow().webContents;
-
   let isCanceled = false;
 
-  ipcMain.once("cancel-button-pressed", () => {
+  ipcMain.once("cancel-button-clicked", () => {
     isCanceled = true;
   });
 
@@ -36,27 +34,18 @@ export default async function DownloadMedia(req: Request, res: Response) {
   try {
     console.time("Operations Completed in ");
 
-    windowWebContents.send("download-fully-starts");
-    windowWebContents.send("recovering-frags-playlists-starts");
+    fireEvent("download-fully-starts");
 
     const videoUrlList = await downloadVodPlaylist(req.body.videoUrl);
     verifyCancelation();
     const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
     verifyCancelation();
 
-    windowWebContents.send("recovering-frags-playlists-ends");
-
-    windowWebContents.send("downloading-frags-starts");
-
     await downloadVideoFrags(videoUrlList, outputPath);
     verifyCancelation();
 
     await downloadAudioFrags(audioUrlList, outputPath);
     verifyCancelation();
-
-    windowWebContents.send("downloading-frags-ends");
-
-    windowWebContents.send("merging-starts");
 
     await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
     verifyCancelation();
@@ -74,25 +63,23 @@ export default async function DownloadMedia(req: Request, res: Response) {
     await mergeDownloadedFiles(vodTitle, outputPath);
     verifyCancelation();
 
-    windowWebContents.send("merging-ends");
-
-    windowWebContents.send("download-fully-ends");
+    fireEvent("download-fully-ends");
 
     res.status(200);
     res.json({ Download: true });
   } catch (err) {
-    console.log(`[ERROR] : ${err.message}`);
+    console.log(`[ERROR] : \n ${err.message}`);
 
     if (err.message === "cancel") {
-      console.log("Canceling [started]");
-      windowWebContents.send("cancel-starts");
+      console.log("Cancel [starts]");
+      fireEvent("cancel-starts");
       try {
         await cancelDownloadedFiles(outputPath, vodTitle);
       } catch (err) {
         console.log(err);
       }
-      windowWebContents.send("cancel-ends");
-      console.log("Canceling [completed]");
+      fireEvent("cancel-ends");
+      console.log("Cancel [completed]");
 
       res.status(200);
       res.json({ Download: false });
@@ -101,7 +88,6 @@ export default async function DownloadMedia(req: Request, res: Response) {
       res.json({ errorMessage: err });
     }
   } finally {
-    ipcMain.removeAllListeners("cancel-button-pressed");
     console.timeEnd("Operations Completed in ");
   }
 }

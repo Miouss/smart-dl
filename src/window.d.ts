@@ -1,54 +1,61 @@
-export interface INotificationAPI {
-  sendNotification: () => void;
+import {
+  FiringEventInstance,
+  CatchingEventInstance,
+  CatchingOnceEventInstance,
+} from "./types/Event";
+
+export interface FileSystemAPI {
+  openFileSystemDialog: FiringEventInstance;
+  retrieveOutputPath: FiringEventInstance;
+  retrieveAccount: FiringEventInstance;
+  onOutputPathAdded: CatchingEventInstance;
+  onOutputPathRetrieved: CatchingEventInstance;
+  onAccountRetrieved: CatchingEventInstance;
 }
 
-export interface IFileSystemAPI {
-  openFileSystemDialog: () => void;
-  retrieveOutputPath: () => void;
-  onOutputPathAdded: (callback) => void;
-  onOutputPathRetrieved: (callback) => void;
-  retrieveAccount: () => void;
-  onAccountRetrieved: (callback) => void;
+export interface MediaAPI {
+  sendCancelButtonClicked: FiringEventInstance;
+  sendCleanUpListenersDone: FiringEventInstance;
+
+  sendCleanUpListeners: FiringEventInstance;
+
+  onCancelStarts: CatchingOnceEventInstance;
+  onCancelEnds: CatchingOnceEventInstance;
+
+  onDownloadFullyStarts: CatchingOnceEventInstance;
+  onDownloadFullyEnds: CatchingOnceEventInstance;
+
+  onDownloadingFragsStarts: CatchingOnceEventInstance;
+  onDownloadingVideoFragsStarts: CatchingOnceEventInstance;
+  onDownloadingAudioFragsStarts: CatchingOnceEventInstance;
+
+  onUpdateVideoFragsSteps: CatchingEventInstance;
+  onUpdateAudioFragsSteps: CatchingEventInstance;
+
+  onDownloadingVideoFragsEnds: CatchingOnceEventInstance;
+  onDownloadingAudioFragsEnds: CatchingOnceEventInstance;
+  onDownloadingFragsEnds: CatchingOnceEventInstance;
+
+  onMergingStarts: CatchingOnceEventInstance;
+  onMergingVideoStarts: CatchingOnceEventInstance;
+  onMergingVideoEnds: CatchingOnceEventInstance;
+  onMergingAudioStarts: CatchingOnceEventInstance;
+  onMergingAudioEnds: CatchingOnceEventInstance;
+  onMergingPartsStarts: CatchingOnceEventInstance;
+  onMergingPartsEnds: CatchingOnceEventInstance;
+  onMergingEnds: CatchingOnceEventInstance;
+
+  onDeletingFragsStarts: CatchingOnceEventInstance;
+  onDeletingFragsEnds: CatchingOnceEventInstance;
+  onDeletingPartsStarts: CatchingOnceEventInstance;
+  onDeletingPartsEnds: CatchingOnceEventInstance;
+  onDeletingSourceStarts: CatchingOnceEventInstance;
+  onDeletingSourceEnds: CatchingOnceEventInstance;
 }
-
-export interface IDownloadAPI {
-  sendCancelButtonPressed: () => void;
-
-  onCancelStarts: (callback) => void;
-  onCancelEnds: (callback) => void;
-
-  onDownloadFullyStarts: (callback) => void;
-  onDownloadFullyEnds: (callback) => void;
-
-  onRecoveringFragsPlaylistsStarts: (callback) => void;
-  onRecoveringFragsPlaylistsEnds: (callback) => void;
-
-  onDownloadingFragsStarts: (callback) => void;
-  onUpdateDownloadSteps: (callback) => void;
-  onDownloadStepsEnds: (callback) => void;
-  onDownloadingFragsEnds: (callback) => void;
-  onMergingStarts: (callback) => void;
-  
-  onMergingVideoStarts: (callback) => void;
-  onMergingVideoEnds: (callback) => void;
-  onMergingAudioStarts: (callback) => void;
-  onMergingAudioEnds: (callback) => void;
-  onMergingPartsStarts: (callback) => void;
-  onMergingPartsEnds: (callback) => void;
-  onMergingEnds: (callback) => void;
-
-  onDeletingFragsStarts: (callback) => void;
-  onDeletingFragsEnds: (callback) => void;
-  onDeletingPartsStarts: (callback) => void;
-  onDeletingPartsEnds: (callback) => void;
-  onDeletingSourceStarts: (callback) => void;
-  onDeletingSourceEnds: (callback) => void;
-  }
 
 declare global {
   interface Window {
-    notificationAPI: INotificationAPI;
-    fileSystemAPI: IFileSystemAPI;
-    downloadAPI: IDownloadAPI;
+    fileSystemAPI: FileSystemAPI;
+    mediaAPI: MediaAPI;
   }
 }

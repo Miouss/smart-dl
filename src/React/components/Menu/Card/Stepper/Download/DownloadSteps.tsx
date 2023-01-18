@@ -7,32 +7,40 @@ import { TaskProps } from "../../../../../../types/Task";
 interface Props {
   activeStep: number;
   tasks: {
-    videoFrags: TaskProps;
-    audioFrags: TaskProps;
-    videoPart: TaskProps;
-    audioPart: TaskProps;
-    parts: TaskProps;
+    downloadVideoFrags: TaskProps;
+    downloadAudioFrags: TaskProps;
+    mergeVideoFrags: TaskProps;
+    mergeAudioFrags: TaskProps;
+    deleteFrags: TaskProps;
+    mergeParts: TaskProps;
+    deleteParts: TaskProps;
   };
 }
 
 export default function DownloadSteps({ activeStep, tasks }: Props) {
   switch (activeStep) {
-    case 0:
-      return (
-        <>
-          <StepsTask task={tasks.videoFrags} />
-          <StepsTask task={tasks.audioFrags} />
-        </>
-      );
     case 1:
       return (
         <>
-          <StepsTask task={tasks.videoPart} />
-          <StepsTask task={tasks.audioPart} />
+          <StepsTask task={tasks.downloadVideoFrags} />
+          <StepsTask task={tasks.downloadAudioFrags} />
         </>
       );
     case 2:
-      return <StepsTask task={tasks.parts} />;
+      return (
+        <>
+          <StepsTask task={tasks.mergeVideoFrags} />
+          <StepsTask task={tasks.mergeAudioFrags} />
+          <StepsTask task={tasks.deleteFrags} />
+        </>
+      );
+    case 3:
+      return (
+        <>
+          <StepsTask task={tasks.mergeParts} />{" "}
+          <StepsTask task={tasks.deleteParts} />
+        </>
+      );
     default:
       return null;
   }

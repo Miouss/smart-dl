@@ -58,10 +58,10 @@ app.on("activate", () => {
   }
 });
 
-export default function getWindow() {
-  return mainWindow; // Return the instance of the window
+export default function fireEvent(event: string, ...args: unknown[]) {
+  console.log(`event: '${event}' has been fired.`);
+  mainWindow.webContents.send(event, ...args);
 }
-
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

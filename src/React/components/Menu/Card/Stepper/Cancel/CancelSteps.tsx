@@ -7,17 +7,20 @@ import { TaskProps } from "../../../../../../types/Task";
 interface Props {
   activeStep: number;
   tasks: {
-    mediaFrags: TaskProps;
-    mediaParts: TaskProps;
+    deleteFrags: TaskProps;
+    deleteParts: TaskProps;
+    deleteSource: TaskProps;
   };
 }
 
 export default function CancelSteps({ activeStep, tasks }: Props) {
   switch (activeStep) {
-    case 0:
-      return <StepsTask task={tasks.mediaFrags} />;
     case 1:
-      return <StepsTask task={tasks.mediaParts} />;
+      return <StepsTask task={tasks.deleteFrags} />;
+    case 2:
+      return <StepsTask task={tasks.deleteParts} />;
+    case 3:
+      return <StepsTask task={tasks.deleteSource} />;
     default:
       return null;
   }

@@ -15,9 +15,9 @@ export default function Task({ task }: Props) {
     <>
       <Stack direction={"row"} marginLeft={"3rem"} spacing={"0.5rem"}>
         <Box>
-          {task.done ? (
+          {task.done.isDone ? (
             <DoneIcon fontSize="small" />
-          ) : task.started ? (
+          ) : task.started.isStarted ? (
             <CircularProgress size="1rem" />
           ) : (
             <HourglassEmptyIcon fontSize="small" />

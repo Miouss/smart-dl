@@ -1,14 +1,14 @@
 import {
-  deleteFragsFiles,
-  deletePartsFiles,
-  deleteFullFile,
+  deleteFrags,
+  deleteParts,
+  deleteSource,
 } from "./tasks/deleting";
 
 export default async function cancelDownloadedFiles(
   outputPath: string,
   vodTitle: string
 ) {
-  await deleteFragsFiles(outputPath);
-  await deletePartsFiles(outputPath);
-  await deleteFullFile(outputPath, vodTitle);
+  await deleteFrags(outputPath);
+  await deleteParts(outputPath);
+  await deleteSource(outputPath, vodTitle);
 }

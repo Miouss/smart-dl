@@ -1,7 +1,7 @@
 import fetch from "cross-fetch";
 import { createWriteStream } from "fs";
 
-import getWindow from "../../../../../index";
+import fireEvent from "../../../../../index";
 import { ipcMain } from "electron";
 
 type MediaExtension = "ts" | "aac";
@@ -27,12 +27,12 @@ async function startDownload(
   outputPath: string,
   extension: MediaExtension
 ) {
-  const windowWebContents = getWindow().webContents;
-  const simultaneousDL = 50;
+  const simultaneousDL = 10;
+  const mediaTypeLowerCase = mediaType.toLowerCase();
+
+  fireEvent(`downloading-${mediaTypeLowerCase}-frags-starts`);
 
   ipcMain.setMaxListeners(simultaneousDL + 1);
-  
-  windowWebContents.send("download-steps-starts", mediaType);
 
   for (let i = 0; i < urlList.length; i += simultaneousDL) {
     const interval =
@@ -43,18 +43,19 @@ async function startDownload(
     }-${i + interval}/${urlList.length}`;
 
     const nbFileDownloading = Array(interval).fill(0);
-    
-    windowWebContents.send("update-download-steps", taskTitle, mediaType);
+
+    fireEvent(`update-${mediaTypeLowerCase}-frags-steps`, taskTitle);
 
     await Promise.all(
-      nbFileDownloading.map(async (value, j) => {
+      nbFileDownloading.map(async (_, j) => {
         await downloadingProcess(urlList, outputPath, extension, i + j);
       })
     );
 
     console.log(`Fragment ${i + 1} to ${i + interval} downloaded`);
   }
-  windowWebContents.send("download-steps-ends", mediaType);
+
+  fireEvent(`downloading-${mediaTypeLowerCase}-frags-ends`);
 }
 
 async function downloadingProcess(
@@ -69,7 +70,7 @@ async function downloadingProcess(
     const cancelDownload = () => {
       writeStream.destroy(Error("cancel"));
       writeStream.end();
-    }
+    };
 
     const writeStream = createWriteStream(
       `${outputPath}\\${currentInterval}.${extension}`
@@ -79,15 +80,15 @@ async function downloadingProcess(
     // @ts-ignore
     request.body.pipe(writeStream);
 
-    ipcMain.once("cancel-button-pressed", cancelDownload);
+    ipcMain.on("cancel-button-clicked", cancelDownload);
 
     writeStream.on("error", (err) => {
-      ipcMain.removeListener("cancel-button-pressed", cancelDownload);
+      ipcMain.removeListener("cancel-button-clicked", cancelDownload);
       reject(err);
     });
 
     writeStream.on("finish", () => {
-      ipcMain.removeListener("cancel-button-pressed", cancelDownload);
+      ipcMain.removeListener("cancel-button-clicked", cancelDownload);
       resolve();
     });
   });

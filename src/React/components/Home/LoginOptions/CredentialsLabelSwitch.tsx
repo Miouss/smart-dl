@@ -17,10 +17,11 @@ export function UseSavedCredentialsSwitch({
   checked,
   setAlertMsg,
 }: Props) {
-  const eventEmitter = () => window.fileSystemAPI.retrieveAccount();
+  const api = window.fileSystemAPI;
+  const eventEmitter = () => api.retrieveAccount.fire();
 
   useEffect(() => {
-    window.fileSystemAPI.onAccountRetrieved((_: unknown, username?: string) => {
+    api.onAccountRetrieved.do((username: string) => {
       setAlertMsg((prevState) => alertMsgAccount(username, prevState?.trigger));
       username === "" ? setIsChecked(false) : setIsChecked(true);
     });
