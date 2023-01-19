@@ -9,8 +9,8 @@ import { Stack } from "@mui/material";
 
 import StackCentered from "./styles/components/global/StackCentered";
 
-import { AlertMsg } from "../types/AlertMsg";
-import { BodyOptions } from "../types/Data";
+import type { AlertMsg } from "../types/AlertMsg";
+import type { BodyOptions } from "../types/Data";
 
 export default function App() {
   const [data, setData] = useState(null);

@@ -4,7 +4,7 @@ import Task from "./StepsTask/Task";
 
 import { TaskLabel } from "../../../../../styles/components/specific/Stepper";
 
-import { TaskProps } from "../../../../../../types/Task";
+import type { TaskProps } from "../../../../../../types/Task";
 
 interface Props {
   task: TaskProps;

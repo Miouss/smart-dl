@@ -7,8 +7,8 @@ import StackCentered from "../styles/components/global/StackCentered";
 
 import { Stack } from "@mui/material";
 
-import { AlertMsg } from "../../types/AlertMsg";
-import { BodyOptions } from "../../types/Data";
+import type { AlertMsg } from "../../types/AlertMsg";
+import type { BodyOptions } from "../../types//Data";
 
 interface Props {
   setData: Dispatch<SetStateAction<unknown>>;

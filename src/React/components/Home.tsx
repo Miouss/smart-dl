@@ -5,8 +5,8 @@ import Form from "./Form/Form";
 
 import StackCentered from "../styles/components/global/StackCentered";
 
-import { AlertMsg } from "../../types/AlertMsg";
-import { Account, BodyOptions } from "../../types/Data";
+import type { AlertMsg } from "../../types/AlertMsg";
+import type { Account, BodyOptions } from "../../types/Data";
 
 interface Props {
   setData: Dispatch<SetStateAction<unknown>>;

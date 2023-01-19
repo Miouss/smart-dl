@@ -58,7 +58,7 @@ export default function Form({
       "http://localhost:8000/stream/playlist",
       options
     );
-
+    
     if (response.ok) {
       const mediaSelection = await response.json();
       setData(mediaSelection);

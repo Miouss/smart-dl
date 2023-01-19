@@ -21,7 +21,7 @@ import {
 
 import { CardColor, CardMediaBoxColor } from "../../styles/colors";
 
-import { Media, MediaDetails, MediaFetched } from "../../../types/Media";
+import type { Media, MediaDetails, MediaFetched } from "../../../types/Media";
 
 interface Props {
   setBackHome: Dispatch<SetStateAction<boolean>>;

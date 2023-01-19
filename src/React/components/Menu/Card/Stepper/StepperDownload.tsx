@@ -11,7 +11,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import StepperCustom from "./utils/StepperCustom";
 import { action, createTask } from "./utils/task";
 
-import { TaskProps } from "../../../../../types/Task";
+import type { TaskProps } from "../../../../../types/Task";
 
 export default function StepperSteps() {
   const api = window.mediaAPI;

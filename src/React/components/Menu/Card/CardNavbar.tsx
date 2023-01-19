@@ -5,7 +5,7 @@ import NavbarDownloadButtonGroup from "./Navbar/NavbarDownloadButtonGroup";
 
 import { NavbarButtonGroup } from "../../../styles/components/specific/Navbar";
 
-import { MediaDetails } from "../../../../types/Media";
+import type { MediaDetails } from "../../../../types/Media";
 
 interface Props {
   setResetSelection: Dispatch<SetStateAction<boolean>>;

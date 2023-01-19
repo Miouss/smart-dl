@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { TaskProps } from "../../../../../../types/Task";
+import type { TaskProps } from "../../../../../../types/Task";
 
 const start = (setter: Dispatch<SetStateAction<TaskProps>>) => {
   setter((prevState: TaskProps) => ({

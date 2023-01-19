@@ -9,7 +9,7 @@ import {
   StepIconProps,
 } from "@mui/material";
 
-import { StyledStepIconContainer } from "../../../../../styles/components/specific/Stepper";
+import { StyledStepIconContainer } from "../../../../../styles/components/specific/Stepper"
 
 interface Props {
   steps: string[];
