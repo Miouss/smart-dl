@@ -1,9 +1,8 @@
-import Listr from "listr";
 import jsonfile from "jsonfile";
 
-import getBearerToken from "../../models/POST/RetrievePlaylist/GetBearerToken";
-import getVodId from "../../models/POST/RetrievePlaylist/GetVodId";
-import getVodPlaylist from "../../models/POST/RetrievePlaylist/GetVodPlaylist";
+import GetAuthToken from "../../models/POST/RetrievePlaylist/GetAuthToken";
+import GetVodDetails from "../../models/POST/RetrievePlaylist/GetVodDetails";
+import GetVodPlaylistUrl from "../../models/POST/RetrievePlaylist/GetVodPlaylistUrl";
 import getVodStreams from "../../models/POST/RetrievePlaylist/GetVodStreams";
 
 import { Request, Response } from "express";
@@ -18,7 +17,6 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
   try {
     const configPath = "./src/Node/config.json";
     const configData = await jsonfile.readFile(configPath);
-    console.log(configData);
 
     const realm: string = configData.realm;
     const apikey: string = configData.apikey;
@@ -33,55 +31,22 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
       password = configData.password;
     }
 
-    let bearerToken: string,
-      vodData: Metadata,
-      vodPlaylist: PlaylistUrl,
-      mediaSelection: Media;
+    const authToken = await GetAuthToken(username, password, realm, apikey);
 
-    const dataCollectList = new Listr([
-      {
-        title: "Checking Authentification",
-        task: async () =>{
-          bearerToken = await getBearerToken(
-            username,
-            password,
-            realm,
-            apikey
-          );
+    if (req.body.saveCredentials) {
+      writeConfig({ ...configData, username, password });
+    }
 
-          if (req.body.saveCredentials){
-            writeConfig({...configData, username, password});
-          }
-        }
-      },
-      {
-        title: "Getting VOD Identifier",
-        task: async () => (vodData = await getVodId(req.body.url)),
-      },
-      {
-        title: "Retrieving VOD's Fragments Playlist",
-        task: async () =>
-          (vodPlaylist = await getVodPlaylist(
-            bearerToken,
-            vodData.vodId,
-            realm,
-            apikey
-          )),
-      },
-      {
-        title: "Collecting VOD's Available Resolutions",
-        task: async () => (mediaSelection = await getVodStreams(vodPlaylist)),
-      },
-    ]);
+    const vodDetails : Metadata = await GetVodDetails(req.body.url);
 
-    const dataCollect = new Listr([
-      {
-        title: "Collecting VOD's data",
-        task: () => dataCollectList,
-      },
-    ]);
+    const vodPlaylistUrl : PlaylistUrl = await GetVodPlaylistUrl(
+      authToken,
+      vodDetails.vodId,
+      realm,
+      apikey
+    );
 
-    await dataCollect.run();
+    const mediaSelection : Media = await getVodStreams(vodPlaylistUrl);
 
     mediaSelection.VideoSelection.sort((a, b) => {
       return parseInt(a["Average-Bandwidth"]) >=
@@ -90,9 +55,9 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
         : 1;
     });
 
-    mediaSelection.title = vodData.title;
-    mediaSelection.thumbnail = vodData.thumbnail;
-    mediaSelection.description = vodData.description;
+    mediaSelection.title = vodDetails.title;
+    mediaSelection.thumbnail = vodDetails.thumbnail;
+    mediaSelection.description = vodDetails.description;
 
     res.status(200);
     res.json(mediaSelection);

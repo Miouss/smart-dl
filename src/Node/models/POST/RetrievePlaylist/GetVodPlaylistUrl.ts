@@ -1,13 +1,11 @@
 import fetch, { Headers } from "cross-fetch";
 
-import onError from "../../../utils/OnError";
-
 interface PlaylistUrl {
   url: string;
   prefix: string,
 }
 
-export default async function getVodPlaylist(
+export default async function GetVodPlaylistUrl(
   bearerToken: string,
   vodId: string,
   realm: string,
@@ -28,13 +26,13 @@ export default async function getVodPlaylist(
     options
   );
 
-  onError(response, `Request to retrieve url playlists  of vod id ${vodId} failed`);
+  if (!response.ok) throw new Error(`Request to retrieve url playlists of vod id ${vodId} failed`);
 
   const data = await response.json();
 
   const response2 = await fetch(data.playerUrlCallback);
 
-  onError(response2, "Can't access list of available m3u8 playlist");
+  if(!response2.ok) throw new Error(`Can't access list of available m3u8 playlist`);
 
   const data2 = await response2.json();
 

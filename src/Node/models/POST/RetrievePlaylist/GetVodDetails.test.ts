@@ -1,20 +1,20 @@
-import getVodId from "./GetVodId";
+import GetVodDetails from "./GetVodDetails";
 import fetch from "cross-fetch";
 
 jest.mock("cross-fetch");
 
 const fetchMock = fetch as jest.Mock;
 
-describe("getVodId", () => {
+describe("GetVodDetails", () => {
   describe("it should throw an error when", () => {
     it("link provided is incorrect", async () => {
-        fetchMock.mockReturnValue({
-            ok: false,
-        });
+      fetchMock.mockReturnValue({
+        ok: false,
+      });
 
-      await expect(() =>
-        getVodId("bad link")
-      ).rejects.toThrow("Can't retrieve data");
+      await expect(() => GetVodDetails("bad link")).rejects.toThrow(
+        "Can't retrieve data"
+      );
     });
   });
 
@@ -28,7 +28,7 @@ describe("getVodId", () => {
           {
             item: {
               images: {
-                wallpaper: "VOD Thumbnail"
+                wallpaper: "VOD Thumbnail",
               },
               shortDescription: "VOD Description",
               customFields: {
@@ -39,7 +39,7 @@ describe("getVodId", () => {
         ],
       }),
     });
-    const metadata = await getVodId("any");
+    const metadata = await GetVodDetails("any");
 
     expect(metadata).toMatchObject({
       vodId: "VOD Id",

@@ -1,13 +1,11 @@
 import fetch, { Headers } from "cross-fetch";
 
-import onError from "../../../utils/OnError";
-
 interface Tokens {
   authorisationToken: string,
   refreshToken: string
 }
 
-export default async function getBearerToken(
+export default async function GetAuthToken(
   username: string,
   password: string,
   realm: string,
@@ -29,8 +27,7 @@ export default async function getBearerToken(
     "https://dce-frontoffice.imggaming.com/api/v2/login",
     options
   );
-
-  onError(response, "Credentials incorrect");
+    if(!response.ok) throw new Error("Credentials incorrect");
 
   const data : Tokens = await response.json();
 

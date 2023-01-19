@@ -1,4 +1,4 @@
-import getBearerToken from "./GetBearerToken";
+import GetAuthToken from "./GetAuthToken";
 import fetch from "cross-fetch";
 
 jest.mock("cross-fetch", () => ({
@@ -15,7 +15,7 @@ const badPassword = "xd";
 const realm = "dce.wwe";
 const apikey = "cca51ea0-7837-40df-a055-75eb6347b2e7";
 
-describe("GetBearerToken", () => {
+describe("GetAuthToken", () => {
   describe("it should throw an error when", () => {
     it("Credentials are incorrect", async() => {
       fetchMock.mockReturnValue({
@@ -23,7 +23,7 @@ describe("GetBearerToken", () => {
       });
 
       await expect(() =>
-        getBearerToken(badUsername, badPassword, realm, apikey)
+      GetAuthToken(badUsername, badPassword, realm, apikey)
       ).rejects.toThrow("Credentials incorrect");
     });
   });
@@ -36,7 +36,7 @@ describe("GetBearerToken", () => {
       }),
     });
 
-    const result = await getBearerToken(
+    const result = await GetAuthToken(
       badUsername,
       badPassword,
       realm,
