@@ -9,29 +9,29 @@ type MediaType = "Video" | "Audio";
 
 export async function downloadVideoFrags(
   urlList: string[],
-  outputPath: string
+  saveLocation: string
 ) {
-  await startDownload(urlList, "Video", outputPath, "ts");
+  await startDownload(urlList, "Video", saveLocation, "ts");
 }
 
 export async function downloadAudioFrags(
   urlList: string[],
-  outputPath: string
+  saveLocation: string
 ) {
-  await startDownload(urlList, "Audio", outputPath, "aac");
+  await startDownload(urlList, "Audio", saveLocation, "aac");
 }
 
 async function startDownload(
   urlList: string[],
   mediaType: MediaType,
-  outputPath: string,
+  saveLocation: string,
   extension: MediaExtension
 ) {
   const simultaneousDL = 10;
   const mediaTypeLowerCase = mediaType.toLowerCase();
 
   fireEvent(`downloading-${mediaTypeLowerCase}-frags-starts`);
-
+  
   ipcMain.setMaxListeners(simultaneousDL + 1);
 
   for (let i = 0; i < urlList.length; i += simultaneousDL) {
@@ -48,7 +48,7 @@ async function startDownload(
 
     await Promise.all(
       nbFileDownloading.map(async (_, j) => {
-        await downloadingProcess(urlList, outputPath, extension, i + j);
+        await downloadingProcess(urlList, saveLocation, extension, i + j);
       })
     );
 
@@ -60,7 +60,7 @@ async function startDownload(
 
 async function downloadingProcess(
   urlList: string[],
-  outputPath: string,
+  saveLocation: string,
   extension: MediaExtension,
   currentInterval: number
 ) {
@@ -73,7 +73,7 @@ async function downloadingProcess(
     };
 
     const writeStream = createWriteStream(
-      `${outputPath}\\${currentInterval}.${extension}`
+      `${saveLocation}/${currentInterval}.${extension}`
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

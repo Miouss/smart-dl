@@ -17,10 +17,11 @@ import ErrorWithStatusCode from "../../utils/ErrorWithStatusCode";
 import { writeConfig } from "../../../config";
 
 export default async function RetrievePlaylist(req: Request, res: Response) {
+  console.log(req.body);
   try {
     const configPath = "./src/api/config.json";
     const configData = await jsonfile.readFile(configPath);
-    if (configData.outputPath === undefined) {
+    if (configData.saveLocation === undefined) {
       throw new ErrorWithStatusCode("Please choose a save location", 403);
     }
     const realm: string = configData.realm;
@@ -59,7 +60,7 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
       },
       {
         title: "Getting VOD Identifier",
-        task: async () => (vodData = await getVodId(req.body.showUrl)),
+        task: async () => (vodData = await getVodId(req.body.url)),
       },
       {
         title: "Retrieving VOD's Fragments Playlist",

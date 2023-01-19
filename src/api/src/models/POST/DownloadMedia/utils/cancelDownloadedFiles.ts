@@ -5,10 +5,10 @@ import {
 } from "./tasks/deleting";
 
 export default async function cancelDownloadedFiles(
-  outputPath: string,
+  saveLocation: string,
   vodTitle: string
 ) {
-  await deleteFrags(outputPath);
-  await deleteParts(outputPath);
-  await deleteSource(outputPath, vodTitle);
+  await deleteFrags(saveLocation);
+  await deleteParts(saveLocation);
+  await deleteSource(saveLocation, vodTitle);
 }

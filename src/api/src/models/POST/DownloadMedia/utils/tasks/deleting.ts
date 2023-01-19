@@ -1,7 +1,7 @@
 import fireEvent from "../../../../../../../index";
 import { promises } from "fs";
 
-export async function deleteFrags(outputPath: string) {
+export async function deleteFrags(saveLocation: string) {
   const file = await promises.open("src/api/processing/number.txt");
   const fileHandleData = await file.readFile({ encoding: "utf8" });
   await file.close();
@@ -12,19 +12,19 @@ export async function deleteFrags(outputPath: string) {
 
   await Promise.allSettled(
     nbFiles.map(async (_, i) => {
-      await deleteFiles(`${outputPath}/${i}.ts`);
-      await deleteFiles(`${outputPath}/${i}.aac`);
+      await deleteFiles(`${saveLocation}/${i}.ts`);
+      await deleteFiles(`${saveLocation}/${i}.aac`);
     })
   );
 
   fireEvent("deleting-frags-ends");
 }
 
-export async function deleteParts(outputPath: string) {
+export async function deleteParts(saveLocation: string) {
   fireEvent("deleting-parts-starts");
   const deletePromises = [
-    deleteFiles(`${outputPath}/output.ts`),
-    deleteFiles(`${outputPath}/output.aac`),
+    deleteFiles(`${saveLocation}/output.ts`),
+    deleteFiles(`${saveLocation}/output.aac`),
   ];
 
   await Promise.allSettled(deletePromises.map(async (promise) => await promise));
@@ -32,18 +32,18 @@ export async function deleteParts(outputPath: string) {
   fireEvent("deleting-parts-ends");
 }
 
-export async function deleteSource(outputPath: string, vodTitle: string) {
+export async function deleteSource(saveLocation: string, vodTitle: string) {
   fireEvent("deleting-source-starts");
-  await deleteFiles(`${outputPath}/${vodTitle}.mp4`);
+  await deleteFiles(`${saveLocation}/${vodTitle}.mp4`);
   fireEvent("deleting-source-ends");
 }
 
 async function deleteFiles(filePath: string) {
   try {
     const file = await promises.open(filePath, "w");
-    promises.unlink(filePath);
-    file.close();
+    await file.close();
+    await promises.unlink(filePath);
   } catch (err) {
-    console.log(err);
+    console.log(`Error deleting file at ${filePath} : ${err}`);
   }
 }
