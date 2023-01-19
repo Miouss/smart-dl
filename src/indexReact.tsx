@@ -14,6 +14,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ThemeProvider theme={customTheme}>
-    <App />
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
   </ThemeProvider>
 );
