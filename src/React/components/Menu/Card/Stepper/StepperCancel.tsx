@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import CancelSteps from "./Cancel/CancelSteps";
+import CancelSteps from "./StepperCancel/CancelSteps";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -11,7 +11,7 @@ import { action, createTask } from "./utils/task";
 
 import type { TaskProps } from "../../../../../types/Task";
 
-export default function StepperSteps() {
+export default function StepperCancel() {
   const api = window.mediaAPI;
 
   const [activeStep, setActiveStep] = useState<number>(0);

@@ -97,7 +97,6 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
     res.status(200);
     res.json(mediaSelection);
   } catch (err) {
-    res.status(err.code);
     res.send(err.message);
   }
 }

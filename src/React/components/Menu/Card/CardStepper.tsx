@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import StepperDownloadSteps from "./Stepper/StepperDownload";
-import StepperCancelSteps from "./Stepper/StepperCancel";
+import StepperDownload from "./Stepper/StepperDownload";
+import StepperCancel from "./Stepper/StepperCancel";
 
 import { Box } from "@mui/material";
 
@@ -21,7 +21,7 @@ export default function MediaMenuStepper() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {isCanceled ? <StepperCancelSteps /> : <StepperDownloadSteps />}
+      {isCanceled ? <StepperCancel /> : <StepperDownload />}
     </Box>
   );
 }

@@ -96,3 +96,6 @@ src/api/config.json
 public/testData/downloadVodPlaylist/testOuput
 src/api/config.json
 src/processing/ffmpeg.exe
+src/processing/listAudio.txt
+src/processing/listVideo.txt
+src/processing/number.txt

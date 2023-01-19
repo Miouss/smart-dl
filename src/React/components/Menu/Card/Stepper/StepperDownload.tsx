@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import DownloadSteps from "./Download/DownloadSteps";
+import DownloadSteps from "./StepperDownload/DownloadSteps";
 
 import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
@@ -13,7 +13,7 @@ import { action, createTask } from "./utils/task";
 
 import type { TaskProps } from "../../../../../types/Task";
 
-export default function StepperSteps() {
+export default function StepperDownload() {
   const api = window.mediaAPI;
 
   const [activeStep, setActiveStep] = useState<number>(1);
