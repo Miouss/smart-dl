@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import StackCentered from "../../styles/components/global/StackCentered";
 import {
@@ -10,68 +10,74 @@ import {
 
 import FolderIcon from "@mui/icons-material/Folder";
 
-import { alertMsgOutputPath } from "../../utils/Alert/functions";
+import { warningAlert, infoAlert } from "../../utils/Alert";
 
 import { AlertMsg } from "../../../types/AlertMsg";
 
 interface Props {
-  setShowUrl: Dispatch<SetStateAction<string>>;
   setAlertMsg: Dispatch<SetStateAction<AlertMsg>>;
   submited?: boolean;
   withSubmitButton?: boolean;
 }
 
-export default function FormSearchBar({
-  setShowUrl,
-  setAlertMsg,
-  submited,
-  withSubmitButton,
-}: Props) {
-  const api = window.fileSystemAPI;
+const FormSearchBar = React.forwardRef(
+  (
+    { setAlertMsg, submited, withSubmitButton }: Props,
+    refUrlInput: React.Ref<HTMLInputElement>
+  ) => {
+    const api = window.fileSystemAPI;
 
-  const chooseSaveLocation = (e: React.MouseEvent) => {
-    e.preventDefault();
-    api.openFileSystemDialog.fire();
-  };
+    const [saveLocation, setSaveLocation] = useState<string>();
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-    api.retrieveOutputPath.fire();
-  };
+    const alertMsg = () =>
+      saveLocation
+        ? setAlertMsg(infoAlert(`Your save location is ${saveLocation}`))
+        : setAlertMsg(warningAlert("You didn't choose a save location yet"));
 
-  useEffect(() => {
-    api.onOutputPathAdded.do(
-      (outputPath: string) => {
-        setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger));
+    const chooseSaveLocation = async (e: React.MouseEvent) => {
+      e.preventDefault();
+      const saveLocationChosen = await api.chooseSaveLocationDialog();
+
+      if (saveLocationChosen) {
+        setSaveLocation(saveLocationChosen);
       }
-    );
-
-    api.onOutputPathRetrieved.do(
-      (outputPath?: string) => {
-        setAlertMsg((state) => alertMsgOutputPath(outputPath, state?.trigger));
-      }
-    );
-
-    return () => {
-      api.onOutputPathAdded.removeAllListeners();
-      api.onOutputPathRetrieved.removeAllListeners();
     };
-  }, []);
 
-  return (
-    <StackCentered direction={"row"}>
-      <UrlInput onChange={(event) => setShowUrl(event.target.value)} />
-      <ChooseSaveLocationButton
-        onClick={chooseSaveLocation}
-        onContextMenu={handleContextMenu}
-      >
-        <FolderIcon />
-      </ChooseSaveLocationButton>
-      {withSubmitButton && (
-        <SubmitButton>
-          <SubmitButtonIcon submited={submited} />
-        </SubmitButton>
-      )}
-    </StackCentered>
-  );
-}
+    const getSaveLocation = async () => {
+      const saveLocationStored = await api.getSaveLocation();
+      saveLocationStored && setSaveLocation(saveLocationStored);
+    };
+
+    const handleContextMenu = (e: React.MouseEvent) => {
+      e.preventDefault();
+      alertMsg();
+    };
+
+    useEffect(() => {
+      saveLocation && alertMsg();
+    }, [saveLocation]);
+
+    useEffect(() => {
+      getSaveLocation();
+    }, []);
+
+    return (
+      <StackCentered direction={"row"}>
+        <UrlInput inputRef={refUrlInput} />
+        <ChooseSaveLocationButton
+          onClick={chooseSaveLocation}
+          onContextMenu={handleContextMenu}
+        >
+          <FolderIcon />
+        </ChooseSaveLocationButton>
+        {withSubmitButton && (
+          <SubmitButton>
+            <SubmitButtonIcon submited={submited} />
+          </SubmitButton>
+        )}
+      </StackCentered>
+    );
+  }
+);
+
+export default FormSearchBar;

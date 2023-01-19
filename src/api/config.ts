@@ -1,44 +1,44 @@
 import { ipcMain, dialog } from "electron";
 import jsonfile from "jsonfile";
 
-import fireEvent from "../index";
-
 interface Config {
   realm: string;
   apikey: string;
   username: string;
   password: string;
-  outputPath: string;
+  saveLocation: string;
 }
 const configPath = "./src/api/config.json";
 
-ipcMain.on("open-filesystem-dialog", addOutputPath);
-ipcMain.on("retrieve-output-path", getOutputPath);
-ipcMain.on("retrieve-account", getAccount);
+ipcMain.handle("choose-save-location-dialog", chooseSaveLocationDialog);
+ipcMain.handle("get-saved-credentials", getSavedCredentials);
+ipcMain.handle("get-save-location", getSaveLocation);
 
-async function addOutputPath() {
+async function chooseSaveLocationDialog() {
   const response = await dialog.showOpenDialog({
     properties: ["openDirectory"],
   });
 
   const configData = await readConfig();
 
-  configData.outputPath = response.filePaths[0];
+  configData.saveLocation = response.filePaths[0];
 
   await writeConfig(configData);
-  fireEvent("output-path-added", configData.outputPath);
+
+  return configData.saveLocation;
 }
 
-async function getOutputPath() {
+async function getSavedCredentials() {
   const configData = await readConfig();
-  fireEvent("output-path-retrieved", configData.outputPath);
+
+  return configData.username;
 }
 
-async function getAccount() {
+async function getSaveLocation() {
   const configData = await readConfig();
-  fireEvent("account-retrieved", configData.username);
-}
 
+  return configData.saveLocation;
+}
 
 export async function readConfig() {
   return await jsonfile.readFile(configPath);
