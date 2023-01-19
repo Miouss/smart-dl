@@ -1,4 +1,6 @@
 type EventCallback = (...args: string[]) => void;
+type PromiseEvent = (eventName: string) => Promise<unknown>;
+
 
 interface FiringEventInstance {
     fire: () => void;
@@ -15,4 +17,4 @@ interface FiringEventInstance {
     removeAllListeners: () => void;
   }
 
-export { EventCallback, FiringEventInstance, CatchingEventInstance, CatchingOnceEventInstance };
+export { EventCallback, FiringEventInstance, CatchingEventInstance, CatchingOnceEventInstance, PromiseEvent };

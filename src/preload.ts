@@ -2,7 +2,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import FiringEvent from "./api/events/FiringEvent";
 import CatchingEvent from "./api/events/CatchingEvent";
 import CatchingOnceEvent from "./api/events/CatchingOnceEvent";
@@ -10,13 +10,9 @@ import CatchingOnceEvent from "./api/events/CatchingOnceEvent";
 import { EventCallback } from "./types/Event";
 
 contextBridge.exposeInMainWorld("fileSystemAPI", {
-  openFileSystemDialog: createEvent(new FiringEvent("open-filesystem-dialog")),
-  retrieveOutputPath: createEvent(new FiringEvent("retrieve-output-path")),
-  retrieveAccount: createEvent(new FiringEvent("retrieve-account")),
-
-  onOutputPathAdded: createEvent(new CatchingEvent("output-path-added")),
-  onOutputPathRetrieved: createEvent(new CatchingEvent("output-path-retrieved")),
-  onAccountRetrieved: createEvent(new CatchingEvent("account-retrieved")),
+  chooseSaveLocationDialog: twoWaysEvent("choose-save-location-dialog"),
+  getSaveLocation: twoWaysEvent("get-save-location"),
+  getSavedCredentials: twoWaysEvent("get-saved-credentials"),
 });
 
 contextBridge.exposeInMainWorld("mediaAPI", {
@@ -91,4 +87,8 @@ function createEvent(event: CatchingEvent | CatchingOnceEvent | FiringEvent) {
         }),
     removeAllListeners: () => event.removeAllListeners(),
   };
+}
+
+function twoWaysEvent(eventName: string) {
+  return () => ipcRenderer.invoke(eventName);
 }

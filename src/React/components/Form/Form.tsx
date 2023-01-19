@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState, useRef } from "react";
 
 import FormSearchBar from "./FormSearchBar";
 
@@ -9,6 +9,7 @@ import {
 } from "../../styles/components/specific/Form";
 
 import { AlertMsg } from "../../../types/AlertMsg";
+import { errorAlert } from "../../utils/Alert";
 
 interface Account {
   username: string;
@@ -23,7 +24,7 @@ interface OptionBody {
 interface Props {
   setData: Dispatch<SetStateAction<unknown>>;
   setAlertMsg: Dispatch<SetStateAction<AlertMsg>>;
-  optionBody?: OptionBody;
+  bodyOptions: OptionBody;
   withSubmitButton?: boolean;
   children?: React.ReactNode;
 }
@@ -31,24 +32,25 @@ interface Props {
 export default function Form({
   setData,
   setAlertMsg,
-  optionBody,
+  bodyOptions,
   withSubmitButton,
   children,
 }: Props) {
-  const [showUrl, setShowUrl] = useState<undefined | string>(undefined);
   const [submited, setSubmited] = useState(false);
 
-  async function fetching(showUrl: string) {
+  const refUrlInput = useRef<HTMLInputElement | null>(null)
+
+  async function fetching(url: string) {
     const header = new Headers({
       "Content-Type": "application/json",
     });
-    
+
     const options = {
       method: "POST",
       headers: header,
       body: JSON.stringify({
-        showUrl,
-        ...optionBody,
+        url,
+        ...bodyOptions,
       }),
     };
 
@@ -59,15 +61,11 @@ export default function Form({
 
     if (response.ok) {
       const mediaSelection = await response.json();
-
       setData(mediaSelection);
       setAlertMsg(undefined);
     } else {
       const message = await response.text();
-      setAlertMsg({
-        severity: "error",
-        message: message,
-      });
+      setAlertMsg(errorAlert(message));
     }
 
     setSubmited(false);
@@ -76,14 +74,13 @@ export default function Form({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (showUrl === undefined || showUrl === "") {
-      setAlertMsg({
-        severity: "error",
-        message: "No url link provided",
-      });
+    const url = refUrlInput.current.value;
+
+    if (url === undefined || url === "") {
+      setAlertMsg(errorAlert("No url provided"));
     } else {
       setSubmited(true);
-      fetching(showUrl);
+      fetching(url);
     }
   };
 
@@ -91,7 +88,7 @@ export default function Form({
     <form onSubmit={(e) => handleSubmit(e)}>
       <StackCentered spacing={5}>
         <FormSearchBar
-          setShowUrl={setShowUrl}
+          ref={refUrlInput}
           setAlertMsg={setAlertMsg}
           submited={submited}
           withSubmitButton={withSubmitButton ?? false}

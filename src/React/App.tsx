@@ -3,16 +3,18 @@ import React, { useEffect, useState } from "react";
 import Home from "./components/Home";
 import Menu from "./components/Menu";
 
-import { TemporyAlert } from "./utils/Alert/component";
+import { TemporyAlert } from "./utils/Alert";
 
 import { Stack } from "@mui/material";
 
 import StackCentered from "./styles/components/global/StackCentered";
 
 import { AlertMsg } from "../types/AlertMsg";
+import { BodyOptions } from "../types/Data";
 
 export default function App() {
   const [data, setData] = useState(null);
+  const [bodyOptions, setBodyOptions] = useState<BodyOptions>();
   const [alertMsg, setAlertMsg] = useState<undefined | AlertMsg>();
 
   useEffect(
@@ -32,7 +34,7 @@ export default function App() {
     return (
       <StackCentered spacing={5}>
         <TemporyAlert alertMsg={alertMsg} />
-        <Home setData={setData} setAlertMsg={setAlertMsg} />
+        <Home setData={setData} setAlertMsg={setAlertMsg} setBodyOptions={setBodyOptions} bodyOptions={bodyOptions} />
       </StackCentered>
     );
   } else {
@@ -41,7 +43,7 @@ export default function App() {
         <StackCentered marginTop={"2rem"}>
           <TemporyAlert alertMsg={alertMsg} />
         </StackCentered>
-        <Menu setData={setData} setAlertMsg={setAlertMsg} data={data} />;
+        <Menu setData={setData} setAlertMsg={setAlertMsg} data={data} bodyOptions={bodyOptions} />;
       </Stack>
     );
   }

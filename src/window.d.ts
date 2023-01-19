@@ -4,13 +4,11 @@ import {
   CatchingOnceEventInstance,
 } from "./types/Event";
 
+
 export interface FileSystemAPI {
-  openFileSystemDialog: FiringEventInstance;
-  retrieveOutputPath: FiringEventInstance;
-  retrieveAccount: FiringEventInstance;
-  onOutputPathAdded: CatchingEventInstance;
-  onOutputPathRetrieved: CatchingEventInstance;
-  onAccountRetrieved: CatchingEventInstance;
+  chooseSaveLocationDialog: PromiseEvent;
+  getSaveLocation: PromiseEvent;
+  getSavedCredentials: PromiseEvent;
 }
 
 export interface MediaAPI {

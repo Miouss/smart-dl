@@ -5,7 +5,7 @@ type MediaExtension = "ts" | "aac";
 export default async function createMergeFile(
   fileName: string,
   urlList: Array<string>,
-  outputPath: string,
+  saveLocation: string,
   extension: MediaExtension,
   testPath = false
 ) {
@@ -19,7 +19,7 @@ export default async function createMergeFile(
   for (let i = 0; i < urlList.length; i++) {
     await promises.writeFile(
       mergeFilePath,
-      `file '${outputPath}/${i}.${extension}'\n`,
+      `file '${saveLocation}/${i}.${extension}'\n`,
       { flag: "a" }
     );
   }

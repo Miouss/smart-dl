@@ -1,8 +1,8 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { FormControlLabel, Switch } from "@mui/material";
 
-import { alertMsgAccount } from "../../../utils/Alert/functions";
+import { infoAlert, warningAlert } from "../../../utils/Alert";
 
 import { AlertMsg } from "../../../../types/AlertMsg";
 
@@ -18,14 +18,25 @@ export function UseSavedCredentialsSwitch({
   setAlertMsg,
 }: Props) {
   const api = window.fileSystemAPI;
-  const eventEmitter = () => api.retrieveAccount.fire();
+  const [username, setUsername] = useState<string>("");
+
+  const alertMsg = () =>
+    username
+      ? setAlertMsg(infoAlert(`The account '${username}' will be use`))
+      : setAlertMsg(warningAlert("No account saved yet"));
+
+  const getSavedCredentials = async () => {
+    const usernameFetched = await api.getSavedCredentials();
+
+    if (usernameFetched !== "") {
+      setIsChecked(true);
+      setUsername(usernameFetched);
+    }
+  };
 
   useEffect(() => {
-    api.onAccountRetrieved.do((username: string) => {
-      setAlertMsg((prevState) => alertMsgAccount(username, prevState?.trigger));
-      username === "" ? setIsChecked(false) : setIsChecked(true);
-    });
-  }, []);
+    checked && alertMsg();
+  }, [username, checked]);
 
   return (
     <FormControlLabel
@@ -33,10 +44,8 @@ export function UseSavedCredentialsSwitch({
       control={
         <Switch
           onChange={(e, checked) => {
-            checked ? eventEmitter() : null;
-            setIsChecked(checked as unknown as boolean);
+            checked ? getSavedCredentials() : setIsChecked(checked);
           }}
-          checked={checked}
         />
       }
       label={"Use Saved Credentials"}
@@ -49,10 +58,7 @@ export function SavedCredentialsSwitch({ setIsChecked, checked }: Props) {
     <FormControlLabel
       id={"saveCred"}
       control={
-        <Switch
-          onChange={(e, checked) => setIsChecked(checked as unknown as boolean)}
-          checked={checked}
-        />
+        <Switch onChange={() => setIsChecked((prevState) => !prevState)} />
       }
       label={"Save Credentials"}
     />

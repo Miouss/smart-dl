@@ -16,7 +16,7 @@ import { Request, Response } from "express";
 import fireEvent from "../../../../index";
 
 export default async function DownloadMedia(req: Request, res: Response) {
-  const { outputPath } = await readFile("./src/api/config.json");
+  const { saveLocation } = await readFile("./src/api/config.json");
   const vodTitle = req.body.vodTitle;
 
   let isCanceled = false;
@@ -41,18 +41,6 @@ export default async function DownloadMedia(req: Request, res: Response) {
     const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
     verifyCancelation();
 
-    await downloadVideoFrags(videoUrlList, outputPath);
-    verifyCancelation();
-
-    await downloadAudioFrags(audioUrlList, outputPath);
-    verifyCancelation();
-
-    await createMergeFile("listVideo", videoUrlList, outputPath, "ts");
-    verifyCancelation();
-
-    await createMergeFile("listAudio", audioUrlList, outputPath, "aac");
-    verifyCancelation();
-
     await promises.writeFile(
       `./src/api/processing/number.txt`,
       `${audioUrlList.length}`,
@@ -60,7 +48,19 @@ export default async function DownloadMedia(req: Request, res: Response) {
     );
     verifyCancelation();
 
-    await mergeDownloadedFiles(vodTitle, outputPath);
+    await downloadVideoFrags(videoUrlList, saveLocation);
+    verifyCancelation();
+
+    await downloadAudioFrags(audioUrlList, saveLocation);
+    verifyCancelation();
+
+    await createMergeFile("listVideo", videoUrlList, saveLocation, "ts");
+    verifyCancelation();
+
+    await createMergeFile("listAudio", audioUrlList, saveLocation, "aac");
+    verifyCancelation();
+
+    await mergeDownloadedFiles(vodTitle, saveLocation);
     verifyCancelation();
 
     fireEvent("download-fully-ends");
@@ -74,7 +74,7 @@ export default async function DownloadMedia(req: Request, res: Response) {
       console.log("Cancel [starts]");
       fireEvent("cancel-starts");
       try {
-        await cancelDownloadedFiles(outputPath, vodTitle);
+        await cancelDownloadedFiles(saveLocation, vodTitle);
       } catch (err) {
         console.log(err);
       }
@@ -84,7 +84,7 @@ export default async function DownloadMedia(req: Request, res: Response) {
       res.status(200);
       res.json({ Download: false });
     } else {
-      res.status(404);
+      res.status(500);
       res.json({ errorMessage: err });
     }
   } finally {
