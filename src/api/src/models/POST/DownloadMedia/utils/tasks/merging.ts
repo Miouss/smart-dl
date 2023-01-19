@@ -1,9 +1,9 @@
 import { ipcMain } from "electron";
-import execa from "execa";
+import child_process from "child_process";
 
 import fireEvent from "../../../../../../../index";
 
-export async function mergeVideo(outputPath: string) {
+export async function mergeVideo(saveLocation: string) {
   const instruction = [
     "-y",
     "-safe",
@@ -14,7 +14,7 @@ export async function mergeVideo(outputPath: string) {
     "listVideo.txt",
     "-c",
     "copy",
-    `${outputPath}\\output.ts`,
+    `${saveLocation}\\output.ts`,
   ];
 
   fireEvent("merging-video-starts");
@@ -22,7 +22,7 @@ export async function mergeVideo(outputPath: string) {
   fireEvent("merging-video-ends");
 }
 
-export async function mergeAudio(outputPath: string) {
+export async function mergeAudio(saveLocation: string) {
   const instruction = [
     "-y",
     "-safe",
@@ -33,7 +33,7 @@ export async function mergeAudio(outputPath: string) {
     "listAudio.txt",
     "-c",
     "copy",
-    `${outputPath}\\output.aac`,
+    `${saveLocation}\\output.aac`,
   ];
 
   fireEvent("merging-audio-starts");
@@ -41,20 +41,16 @@ export async function mergeAudio(outputPath: string) {
   fireEvent("merging-audio-ends");
 }
 
-export async function mergeParts(outputPath: string, vodTitle: string) {
+export async function mergeParts(saveLocation: string, vodTitle: string) {
   const instruction = [
     "-y",
     "-i",
-    `${outputPath}\\output.ts`,
+    `${saveLocation}\\output.ts`,
     "-i",
-    `${outputPath}\\output.aac`,
+    `${saveLocation}\\output.aac`,
     "-c",
     "copy",
-    `"${outputPath}\\${vodTitle
-      // eslint-disable-next-line no-useless-escape
-      .replace(/[\/]/g, "-")
-      // eslint-disable-next-line no-useless-escape
-      .replace(/[\/\\:*?"<>]/g, "")}".mp4`,
+    `${saveLocation}\\${vodTitle}.mp4`,
   ];
 
   fireEvent("merging-parts-starts");
@@ -62,27 +58,28 @@ export async function mergeParts(outputPath: string, vodTitle: string) {
   fireEvent("merging-parts-ends");
 }
 
-async function merging(option: string[]) {
-  const mergingProcess = execa("ffmpeg", option, {
+async function merging(options: string[]) {
+  const mergingProcess = child_process.execFile("ffmpeg.exe", options, {
     cwd: "./src/api/processing/",
-    shell: true,
   });
 
-  const cancelProcess = () => {
-    if (mergingProcess) {
+  await new Promise<void>((resolve, reject) => {
+    mergingProcess;
+
+    ipcMain.once("cancel-button-clicked", () => {
       mergingProcess.kill();
-    }
-  };
+    });
 
-  ipcMain.once("cancel-button-clicked", cancelProcess);
-
-  try {
-    await mergingProcess;
-  } catch (err) {
-    if (err.killed) {
-      return Promise.reject(Error("cancel"));
-    }
-
-    return Promise.reject(Error(`[MERGING ERROR] : ${err.message}`));
-  }
+    mergingProcess.on("exit", (code) => {
+      if (mergingProcess.killed) {
+        console.log("Merging process killed");
+        reject(Error("cancel"));
+      }
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(Error(`Merge process exited with code ${code}`));
+      }
+    });
+  });
 }
