@@ -36,9 +36,11 @@ export default function Form({
   withSubmitButton,
   children,
 }: Props) {
+  const api = window.fileSystemAPI;
+
   const [submited, setSubmited] = useState(false);
 
-  const refUrlInput = useRef<HTMLInputElement | null>(null)
+  const refUrlInput = useRef<HTMLInputElement | null>(null);
 
   async function fetching(url: string) {
     const header = new Headers({
@@ -58,7 +60,7 @@ export default function Form({
       "http://localhost:8000/stream/playlist",
       options
     );
-    
+
     if (response.ok) {
       const mediaSelection = await response.json();
       setData(mediaSelection);
@@ -71,17 +73,26 @@ export default function Form({
     setSubmited(false);
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const url = refUrlInput.current.value;
+    const urlProvided = refUrlInput.current.value;
+    const credentialsProvided =
+      (bodyOptions.account.username && bodyOptions.account.password) || bodyOptions.useSavedCredentials;
+    const saveLocationProvided = await api.getSaveLocation();
 
-    if (url === undefined || url === "") {
-      setAlertMsg(errorAlert("No url provided"));
-    } else {
-      setSubmited(true);
-      fetching(url);
-    }
+    if (!urlProvided) return setAlertMsg(errorAlert("No url provided"));
+
+    if (!credentialsProvided)
+      return setAlertMsg(errorAlert("Please provide a username and password"));
+
+    if (!saveLocationProvided)
+      return setAlertMsg(
+        errorAlert("Please choose a save location to proceed")
+      );
+
+    setSubmited(true);
+    fetching(urlProvided);
   };
 
   return (
