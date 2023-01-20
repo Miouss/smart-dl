@@ -39,25 +39,24 @@ const FormSearchBar = React.forwardRef(
       const saveLocationChosen = await api.chooseSaveLocationDialog();
 
       if (saveLocationChosen) {
+        setAlertMsg(infoAlert(`Your save location is ${saveLocationChosen}`));
         setSaveLocation(saveLocationChosen);
       }
     };
 
     const getSaveLocation = async () => {
       const saveLocationStored = await api.getSaveLocation();
-
-      saveLocationStored && setSaveLocation(saveLocationStored);
+      setSaveLocation(saveLocationStored);
     };
 
     const handleContextMenu = (e: React.MouseEvent) => {
       e.preventDefault();
-      getSaveLocation();
+      alertMsg();
     };
 
     useEffect(() => {
-      saveLocation && alertMsg();
-    }, [saveLocation]);
-
+      getSaveLocation();
+    }, []);
 
     return (
       <StackCentered direction={"row"}>

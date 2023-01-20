@@ -1,5 +1,6 @@
 import { ipcMain } from "electron";
 import { promises } from "fs";
+import { Request, Response } from "express";
 
 import downloadVodPlaylist from "../../models/POST/DownloadMedia/DownloadVodPlaylist";
 import {
@@ -9,14 +10,13 @@ import {
 import createMergeFile from "../../models/POST/DownloadMedia/CreateMergeFile";
 import mergeDownloadedFiles from "../../models/POST/DownloadMedia/utils/mergeDownloadedFiles";
 import cancelDownloadedFiles from "../../models/POST/DownloadMedia/utils/cancelDownloadedFiles";
-import { readFile } from "jsonfile";
 
-import { Request, Response } from "express";
+import { readConfig } from "../../../Electron/events/handler";
 
 import fireEvent from "../../../Electron/index";
 
 export default async function DownloadMedia(req: Request, res: Response) {
-  const { saveLocation } = await readFile("./src/Node/config.json");
+  const { saveLocation } = await readConfig();
   const vodTitle = req.body.vodTitle;
 
   let isCanceled = false;
