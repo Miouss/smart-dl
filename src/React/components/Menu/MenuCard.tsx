@@ -79,7 +79,7 @@ export default function MenuCard({ setBackHome, vod }: Props) {
   }, [vod, resetSelection]);
 
   return (
-    <Card sx={{ backgroundColor: CardColor, maxWidth: "760px" }}>
+    <Card sx={{ backgroundColor: CardColor, maxWidth: "720px", boxShadow: "none" }}>
       <Box border={`2px solid ${CardMediaBoxColor}`}>
         <CardMedia
           component="img"
