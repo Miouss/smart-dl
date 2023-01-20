@@ -1,4 +1,4 @@
-import GetVodStreams from "./GetVodStreams";
+import getVodStreams from "./getVodStreams";
 import fetch from "cross-fetch";
 import fsPromises from "fs/promises";
 
@@ -6,14 +6,14 @@ jest.mock("cross-fetch");
 
 const fetchMock = fetch as jest.Mock;
 
-describe("GetVodStreams", () => {
+describe("getVodStreams", () => {
   describe("it should throw an error when", () => {
     it("fetching vodPlaylist.url fails", async() => {
       fetchMock.mockReturnValue({
         ok: false,
       });
 
-      await expect(() => GetVodStreams({
+      await expect(() => getVodStreams({
         url: "invalid url",
         prefix: "invalid prefix",
       })).rejects.toThrowError("Can't get playlist url");
@@ -31,7 +31,7 @@ describe("GetVodStreams", () => {
       text: () => vodPlaylistUrlData,
     });
 
-    const result = await GetVodStreams({
+    const result = await getVodStreams({
       url: "valid url",
       prefix: "valid prefix",
     });

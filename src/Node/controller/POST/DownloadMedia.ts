@@ -1,15 +1,16 @@
 import { ipcMain } from "electron";
-import { promises } from "fs";
 import { Request, Response } from "express";
 
-import downloadVodPlaylist from "../../models/POST/DownloadMedia/DownloadVodPlaylist";
+import downloadVodPlaylist from "../../models/POST/DownloadMedia/downloadVodPlaylist";
 import {
   downloadVideoFrags,
   downloadAudioFrags,
-} from "../../models/POST/DownloadMedia/DownloadVodFragments";
-import createMergeFile from "../../models/POST/DownloadMedia/CreateMergeFile";
+} from "../../models/POST/DownloadMedia/downloadVodFragments";
+import createMergeFile from "../../models/POST/DownloadMedia/createMergeFile";
 import mergeDownloadedFiles from "../../models/POST/DownloadMedia/utils/mergeDownloadedFiles";
 import cancelDownloadedFiles from "../../models/POST/DownloadMedia/utils/cancelDownloadedFiles";
+import saveNbFiles from "../../models/POST/DownloadMedia/saveNbFiles";
+
 
 import { readConfig } from "../../../Electron/events/handler";
 
@@ -41,11 +42,7 @@ export default async function DownloadMedia(req: Request, res: Response) {
     const audioUrlList = await downloadVodPlaylist(req.body.audioUrl);
     verifyCancelation();
 
-    await promises.writeFile(
-      `./src/processing/number.txt`,
-      `${audioUrlList.length}`,
-      { flag: "w" }
-    );
+    await saveNbFiles(audioUrlList.length);
     verifyCancelation();
 
     await downloadVideoFrags(videoUrlList, saveLocation);

@@ -8,7 +8,7 @@ interface Tokens {
   refreshToken: string
 }
 
-export default async function GetAuthToken(
+export default async function getAuthToken(
   username: string,
   password: string,
   realm: string,
