@@ -34,7 +34,12 @@ export default function App() {
     return (
       <StackCentered spacing={5}>
         <TemporyAlert alertMsg={alertMsg} />
-        <Home setData={setData} setAlertMsg={setAlertMsg} setBodyOptions={setBodyOptions} bodyOptions={bodyOptions} />
+        <Home
+          setData={setData}
+          setAlertMsg={setAlertMsg}
+          setBodyOptions={setBodyOptions}
+          bodyOptions={bodyOptions}
+        />
       </StackCentered>
     );
   } else {
@@ -43,7 +48,13 @@ export default function App() {
         <StackCentered marginTop={"2rem"}>
           <TemporyAlert alertMsg={alertMsg} />
         </StackCentered>
-        <Menu setData={setData} setAlertMsg={setAlertMsg} data={data} bodyOptions={bodyOptions} />;
+        <Menu
+          setData={setData}
+          setAlertMsg={setAlertMsg}
+          data={data}
+          bodyOptions={bodyOptions}
+        />
+        ;
       </Stack>
     );
   }

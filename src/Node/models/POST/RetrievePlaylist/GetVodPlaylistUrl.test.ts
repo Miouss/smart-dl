@@ -1,4 +1,4 @@
-import getVodPlaylist from "./GetVodPlaylistUrl";
+import getVodPlaylist from "./getVodPlaylistUrl";
 import fetch from "cross-fetch";
 
 jest.mock("cross-fetch");

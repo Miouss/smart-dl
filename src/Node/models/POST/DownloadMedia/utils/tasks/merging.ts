@@ -3,6 +3,9 @@ import child_process from "child_process";
 
 import fireEvent from "../../../../../../Electron/index";
 
+import { PROCESSING_FOLDER } from "../../../../../constants/PROCESSING_FOLDER";
+
+
 export async function mergeVideo(saveLocation: string) {
   const instruction = [
     "-y",
@@ -59,8 +62,8 @@ export async function mergeParts(saveLocation: string, vodTitle: string) {
 }
 
 async function merging(options: string[]) {
-  const mergingProcess = child_process.execFile("ffmpeg.exe", options, {
-    cwd: "./src/processing/",
+  const mergingProcess = child_process.execFile("ffmpeg", options, {
+    cwd: `${PROCESSING_FOLDER}`,
   });
 
   await new Promise<void>((resolve, reject) => {

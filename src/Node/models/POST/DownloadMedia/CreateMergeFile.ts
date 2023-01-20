@@ -1,5 +1,7 @@
 import { truncate, promises } from "fs";
 
+import { PROCESSING_FOLDER } from "../../../constants/PROCESSING_FOLDER";
+
 type MediaExtension = "ts" | "aac";
 
 export default async function createMergeFile(
@@ -11,7 +13,7 @@ export default async function createMergeFile(
 ) {
   const mergeFilePath = testPath
     ? `src/api/src/testData/downloadVodPlaylist/${fileName}.txt`
-    : `./src/processing/${fileName}.txt`;
+    : `${PROCESSING_FOLDER}/${fileName}.txt`;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   truncate(mergeFilePath, 0, () => {});

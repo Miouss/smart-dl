@@ -2,7 +2,7 @@ import {
   FiringEventInstance,
   CatchingEventInstance,
   CatchingOnceEventInstance,
-} from "../types/Event";
+} from "./types/Event";
 
 
 export interface FileSystemAPI {

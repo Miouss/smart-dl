@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-import GetAuthToken from "../../models/POST/RetrievePlaylist/GetAuthToken";
-import GetVodDetails from "../../models/POST/RetrievePlaylist/GetVodDetails";
-import GetVodPlaylistUrl from "../../models/POST/RetrievePlaylist/GetVodPlaylistUrl";
-import getVodStreams from "../../models/POST/RetrievePlaylist/GetVodStreams";
+import getAuthToken from "../../models/POST/RetrievePlaylist/getAuthToken";
+import getVodDetails from "../../models/POST/RetrievePlaylist/getVodDetails";
+import getVodPlaylistUrl from "../../models/POST/RetrievePlaylist/getVodPlaylistUrl";
+import getVodStreams from "../../models/POST/RetrievePlaylist/getVodStreams";
 
 import logProgress from "../../utils/logProgress";
 
@@ -33,15 +33,15 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
       password = req.body.account.password;
     }
 
-    const authToken = await GetAuthToken(username, password, realm, apikey);
+    const authToken = await getAuthToken(username, password, realm, apikey);
 
     if (req.body.saveCredentials) {
       writeConfig({ ...configData, username, password });
     }
 
-    const vodDetails: Metadata = await GetVodDetails(req.body.url);
+    const vodDetails: Metadata = await getVodDetails(req.body.url);
 
-    const vodPlaylistUrl: PlaylistUrl = await GetVodPlaylistUrl(
+    const vodPlaylistUrl: PlaylistUrl = await getVodPlaylistUrl(
       authToken,
       vodDetails.vodId,
       realm,

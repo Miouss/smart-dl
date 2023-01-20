@@ -1,18 +1,18 @@
-import GetVodDetails from "./GetVodDetails";
+import getAuthToken from "./getVodDetails";
 import fetch from "cross-fetch";
 
 jest.mock("cross-fetch");
 
 const fetchMock = fetch as jest.Mock;
 
-describe("GetVodDetails", () => {
+describe("getAuthToken", () => {
   describe("it should throw an error when", () => {
     it("link provided is incorrect", async () => {
       fetchMock.mockReturnValue({
         ok: false,
       });
 
-      await expect(() => GetVodDetails("bad link")).rejects.toThrow(
+      await expect(() => getAuthToken("bad link")).rejects.toThrow(
         "Can't retrieve data"
       );
     });
@@ -39,7 +39,7 @@ describe("GetVodDetails", () => {
         ],
       }),
     });
-    const metadata = await GetVodDetails("any");
+    const metadata = await getAuthToken("any");
 
     expect(metadata).toMatchObject({
       vodId: "VOD Id",
