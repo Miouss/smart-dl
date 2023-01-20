@@ -45,21 +45,19 @@ const FormSearchBar = React.forwardRef(
 
     const getSaveLocation = async () => {
       const saveLocationStored = await api.getSaveLocation();
+
       saveLocationStored && setSaveLocation(saveLocationStored);
     };
 
     const handleContextMenu = (e: React.MouseEvent) => {
       e.preventDefault();
-      alertMsg();
+      getSaveLocation();
     };
 
     useEffect(() => {
       saveLocation && alertMsg();
     }, [saveLocation]);
 
-    useEffect(() => {
-      getSaveLocation();
-    }, []);
 
     return (
       <StackCentered direction={"row"}>

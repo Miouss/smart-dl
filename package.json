@@ -99,7 +99,6 @@
     "fs": "^0.0.1-security",
     "jest": "^29.0.2",
     "jsonfile": "^6.1.0",
-    "listr": "^0.14.3",
     "m3u8-parser": "^5.0.0",
     "node-loader": "^2.0.0",
     "node-notifier": "^10.0.1",

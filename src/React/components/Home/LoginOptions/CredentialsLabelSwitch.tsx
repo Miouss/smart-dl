@@ -31,6 +31,8 @@ export function UseSavedCredentialsSwitch({
     if (usernameFetched !== "") {
       setIsChecked(true);
       setUsername(usernameFetched);
+    }else{
+      alertMsg();
     }
   };
 
@@ -49,11 +51,20 @@ export function UseSavedCredentialsSwitch({
         />
       }
       label={"Use Saved Credentials"}
+      checked={checked}
     />
   );
 }
 
-export function SavedCredentialsSwitch({ setIsChecked, checked }: Props) {
+export function SavedCredentialsSwitch({
+  setAlertMsg,
+  setIsChecked,
+  checked,
+}: Props) {
+  useEffect(() => {
+    checked && setAlertMsg(infoAlert("The credentials provided will be saved"));
+  }, [checked]);
+
   return (
     <FormControlLabel
       id={"saveCred"}
@@ -61,6 +72,7 @@ export function SavedCredentialsSwitch({ setIsChecked, checked }: Props) {
         <Switch onChange={() => setIsChecked((prevState) => !prevState)} />
       }
       label={"Save Credentials"}
+      checked={checked}
     />
   );
 }

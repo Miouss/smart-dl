@@ -72,15 +72,16 @@ export default function HomeLogin({
             />
           </PasswordBox>
           <SavedCredentialsSwitch
+            setAlertMsg={setAlertMsg}
             setIsChecked={setSaveCredentials}
             checked={saveCredentials}
           />
         </CredentialsBox>
       </Collapse>
       <UseSavedCredentialsSwitch
+        setAlertMsg={setAlertMsg}
         setIsChecked={setUseSavedCredentials}
         checked={useSavedCredentials}
-        setAlertMsg={setAlertMsg}
       />
     </Stack>
   );

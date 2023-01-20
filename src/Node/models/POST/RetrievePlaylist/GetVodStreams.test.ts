@@ -1,4 +1,4 @@
-import getVodStreams from "./GetVodStreams";
+import GetVodStreams from "./GetVodStreams";
 import fetch from "cross-fetch";
 import fsPromises from "fs/promises";
 
@@ -13,7 +13,7 @@ describe("GetVodStreams", () => {
         ok: false,
       });
 
-      await expect(() => getVodStreams({
+      await expect(() => GetVodStreams({
         url: "invalid url",
         prefix: "invalid prefix",
       })).rejects.toThrowError("Can't get playlist url");
@@ -31,7 +31,7 @@ describe("GetVodStreams", () => {
       text: () => vodPlaylistUrlData,
     });
 
-    const result = await getVodStreams({
+    const result = await GetVodStreams({
       url: "valid url",
       prefix: "valid prefix",
     });

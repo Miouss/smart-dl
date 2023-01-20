@@ -1,18 +1,22 @@
 import fetch, { Headers } from "cross-fetch";
 
-import onError from "../../../utils/OnError";
+import logProgress from "../../../utils/logProgress";
+import checkFetchError from "../../../utils/checkFetchError";
 
 interface Tokens {
   authorisationToken: string,
   refreshToken: string
 }
 
-export default async function getBearerToken(
+export default async function GetAuthToken(
   username: string,
   password: string,
   realm: string,
   apikey: string
 ) {
+  const progressMessage = "Authentification";
+  logProgress(progressMessage, "start");
+
   const header = new Headers({
     "Content-Type": "application/json",
     "x-api-key": apikey,
@@ -29,8 +33,8 @@ export default async function getBearerToken(
     "https://dce-frontoffice.imggaming.com/api/v2/login",
     options
   );
-
-  onError(response, "Credentials incorrect");
+  checkFetchError(response.ok, "Credentials incorrect");
+  logProgress(progressMessage, "success");
 
   const data : Tokens = await response.json();
 
