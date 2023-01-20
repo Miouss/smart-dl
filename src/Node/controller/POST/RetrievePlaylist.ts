@@ -1,4 +1,3 @@
-import jsonfile from "jsonfile";
 import { Request, Response } from "express";
 
 import GetAuthToken from "../../models/POST/RetrievePlaylist/GetAuthToken";
@@ -12,15 +11,14 @@ import { Media } from "../../../types/Media";
 import { Metadata } from "../../../types/Metadata";
 import { PlaylistUrl } from "../../../types/PlaylistUrl";
 
-import { writeConfig } from "../../../Electron/events/handler";
+import { readConfig, writeConfig } from "../../../Electron/events/handler";
 
 export default async function RetrievePlaylist(req: Request, res: Response) {
   const logProgressMessage = "Collecting VOD's data";
   logProgress(logProgressMessage, "start", false);
 
   try {
-    const configPath = "./src/Node/config.json";
-    const configData = await jsonfile.readFile(configPath);
+    const configData = await readConfig();
 
     const realm: string = configData.realm;
     const apikey: string = configData.apikey;

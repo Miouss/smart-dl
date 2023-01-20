@@ -8,7 +8,8 @@ interface Config {
   password: string;
   saveLocation: string;
 }
-const configPath = "./src/Node/config.json";
+
+const configPath = "./public/config.json";
 
 ipcMain.handle("choose-save-location-dialog", chooseSaveLocationDialog);
 ipcMain.handle("get-saved-credentials", getSavedCredentials);
