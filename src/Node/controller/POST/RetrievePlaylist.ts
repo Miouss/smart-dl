@@ -1,11 +1,12 @@
 import jsonfile from "jsonfile";
+import { Request, Response } from "express";
 
 import GetAuthToken from "../../models/POST/RetrievePlaylist/GetAuthToken";
 import GetVodDetails from "../../models/POST/RetrievePlaylist/GetVodDetails";
 import GetVodPlaylistUrl from "../../models/POST/RetrievePlaylist/GetVodPlaylistUrl";
 import getVodStreams from "../../models/POST/RetrievePlaylist/GetVodStreams";
 
-import { Request, Response } from "express";
+import logProgress from "../../utils/logProgress";
 
 import { Media } from "../../../types/Media";
 import { Metadata } from "../../../types/Metadata";
@@ -14,6 +15,9 @@ import { PlaylistUrl } from "../../../types/PlaylistUrl";
 import { writeConfig } from "../../../Electron/events/handler";
 
 export default async function RetrievePlaylist(req: Request, res: Response) {
+  const logProgressMessage = "Collecting VOD's data";
+  logProgress(logProgressMessage, "start", false);
+
   try {
     const configPath = "./src/Node/config.json";
     const configData = await jsonfile.readFile(configPath);
@@ -23,12 +27,12 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
     let username: string | undefined = undefined;
     let password: string | undefined = undefined;
 
-    if (req.body.saveCredentials) {
-      username = req.body.account.username;
-      password = req.body.account.password;
-    } else if (req.body.useSavedCredentials) {
+    if (req.body.useSavedCredentials) {
       username = configData.username;
       password = configData.password;
+    } else {
+      username = req.body.account.username;
+      password = req.body.account.password;
     }
 
     const authToken = await GetAuthToken(username, password, realm, apikey);
@@ -37,16 +41,16 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
       writeConfig({ ...configData, username, password });
     }
 
-    const vodDetails : Metadata = await GetVodDetails(req.body.url);
+    const vodDetails: Metadata = await GetVodDetails(req.body.url);
 
-    const vodPlaylistUrl : PlaylistUrl = await GetVodPlaylistUrl(
+    const vodPlaylistUrl: PlaylistUrl = await GetVodPlaylistUrl(
       authToken,
       vodDetails.vodId,
       realm,
       apikey
     );
 
-    const mediaSelection : Media = await getVodStreams(vodPlaylistUrl);
+    const mediaSelection: Media = await getVodStreams(vodPlaylistUrl);
 
     mediaSelection.VideoSelection.sort((a, b) => {
       return parseInt(a["Average-Bandwidth"]) >=
@@ -59,9 +63,12 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
     mediaSelection.thumbnail = vodDetails.thumbnail;
     mediaSelection.description = vodDetails.description;
 
+    logProgress(logProgressMessage, "success", false);
+
     res.status(200);
     res.json(mediaSelection);
   } catch (err) {
+    res.status(500);
     res.send(err.message);
   }
 }
