@@ -35,9 +35,8 @@ export default async function RetrievePlaylist(req: Request, res: Response) {
 
     const authToken = await getAuthToken(username, password, realm, apikey);
 
-    if (req.body.saveCredentials) {
-      writeConfig({ ...configData, username, password });
-    }
+    req.body.saveCredentials && writeConfig({ ...configData, username, password });
+    
 
     const vodDetails: Metadata = await getVodDetails(req.body.url);
 
