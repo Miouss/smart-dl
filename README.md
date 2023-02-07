@@ -1,5 +1,5 @@
 # wwe-dl
-Download contents from WWE Network with many options 
+Download contents from the WWE Network
 
 ## Testing
 
