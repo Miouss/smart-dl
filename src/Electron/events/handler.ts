@@ -1,6 +1,7 @@
-import { ipcMain, dialog } from "electron";
+import electron, { ipcMain, dialog } from "electron";
 import jsonfile from "jsonfile";
 import { promises as fs } from "fs";
+import { API_KEY, REALM, CONFIG_PATH } from "../../constants/constants";
 
 interface Config {
   realm: string;
@@ -9,10 +10,6 @@ interface Config {
   password: string;
   saveLocation: string;
 }
-const API_KEY = "cca51ea0-7837-40df-a055-75eb6347b2e7";
-const REALM = "dce.wwe";
-
-const configPath = `${process.execPath}/../config.json`;
 
 ipcMain.handle("choose-save-location-dialog", chooseSaveLocationDialog);
 ipcMain.handle("get-saved-credentials", getSavedCredentials);
@@ -54,19 +51,22 @@ export async function createConfig() {
   };
   try {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    fs.mkdir(`${process.execPath}/../processing`).then().catch(() => {});
-    await fs.access(configPath);
+    await fs.mkdir(`${electron.app.getAppPath()}/processing`);
+    await fs.access(CONFIG_PATH);
   } catch (err) {
-    await writeConfig(configData);
+    writeConfig(configData);
   }
 }
 
 export async function readConfig() {
-  return await jsonfile.readFile(configPath);
+  return await jsonfile.readFile(CONFIG_PATH);
 }
 
 export async function writeConfig(configData: Config) {
-  jsonfile.writeFile(configPath, configData, function (err) {
-    if (err) console.error(err);
-  });
+  try {
+    await jsonfile.writeFile(CONFIG_PATH, configData);
+  } catch (err) {
+    console.log("Coucou erreur");
+    console.error(err);
+  }
 }

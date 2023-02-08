@@ -3,7 +3,7 @@ import child_process from "child_process";
 
 import fireEvent from "../../../../../../Electron/index";
 
-import { PROCESSING_FOLDER } from "../../../../../constants/PROCESSING_FOLDER";
+import { PROCESSING_FOLDER } from "../../../../../../constants/constants";
 
 
 export async function mergeVideo(saveLocation: string) {

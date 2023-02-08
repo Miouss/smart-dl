@@ -1,6 +1,6 @@
 import { truncate, promises } from "fs";
 
-import { PROCESSING_FOLDER } from "../../../constants/PROCESSING_FOLDER";
+import { PROCESSING_FOLDER } from "../../../../constants/constants";
 
 type MediaExtension = "ts" | "aac";
 

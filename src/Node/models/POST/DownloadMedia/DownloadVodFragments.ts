@@ -31,7 +31,7 @@ async function startDownload(
   const mediaTypeLowerCase = mediaType.toLowerCase();
 
   fireEvent(`downloading-${mediaTypeLowerCase}-frags-starts`);
-  
+
   ipcMain.setMaxListeners(simultaneousDL + 1);
 
   for (let i = 0; i < urlList.length; i += simultaneousDL) {
