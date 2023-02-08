@@ -63,7 +63,7 @@ async function downloadingProcess(
   saveLocation: string,
   extension: MediaExtension,
   currentInterval: number
-) {
+): Promise<void> {
   try {
     const request = await fetch(urlList[currentInterval]);
 
@@ -94,8 +94,8 @@ async function downloadingProcess(
       });
     });
   } catch (err) {
-    console.log("BEGIN TERRIBLE ERROR");
-    console.log(err);
-    console.log("END TERRIBLE ERROR");
+    if(err.message === "cancel") throw new Error("cancel");
+    console.log(`Error downloading file ${currentInterval} : ${err}, retrying...`);
+    return await downloadingProcess(urlList, saveLocation, extension, currentInterval);
   }
 }
