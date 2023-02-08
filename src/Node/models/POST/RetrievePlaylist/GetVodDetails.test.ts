@@ -1,4 +1,4 @@
-import getAuthToken from "./getVodDetails";
+import getAuthToken from "./GetVodDetails";
 import fetch from "cross-fetch";
 
 jest.mock("cross-fetch");

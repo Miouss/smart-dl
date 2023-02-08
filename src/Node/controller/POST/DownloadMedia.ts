@@ -1,12 +1,12 @@
 import { ipcMain } from "electron";
 import { Request, Response } from "express";
 
-import downloadVodPlaylist from "../../models/POST/DownloadMedia/downloadVodPlaylist";
+import downloadVodPlaylist from "../../models/POST/DownloadMedia/DownloadVodPlaylist";
 import {
   downloadVideoFrags,
   downloadAudioFrags,
-} from "../../models/POST/DownloadMedia/downloadVodFragments";
-import createMergeFile from "../../models/POST/DownloadMedia/createMergeFile";
+} from "../../models/POST/DownloadMedia/DownloadVodFragments";
+import createMergeFile from "../../models/POST/DownloadMedia/CreateMergeFile";
 import mergeDownloadedFiles from "../../models/POST/DownloadMedia/utils/mergeDownloadedFiles";
 import cancelDownloadedFiles from "../../models/POST/DownloadMedia/utils/cancelDownloadedFiles";
 import saveNbFiles from "../../models/POST/DownloadMedia/saveNbFiles";

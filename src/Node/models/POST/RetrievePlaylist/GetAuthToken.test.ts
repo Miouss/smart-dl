@@ -1,4 +1,4 @@
-import getAuthToken from "./getAuthToken";
+import getAuthToken from "./GetAuthToken";
 import fetch from "cross-fetch";
 
 jest.mock("cross-fetch", () => ({

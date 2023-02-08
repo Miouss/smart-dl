@@ -1,4 +1,4 @@
-import downloadVodPlaylist from "./downloadVodPlaylist";
+import downloadVodPlaylist from "./DownloadVodPlaylist";
 import fsPromises from "fs/promises";
 
 import fetch from "cross-fetch";

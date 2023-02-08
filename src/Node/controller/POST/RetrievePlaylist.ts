@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-import getAuthToken from "../../models/POST/RetrievePlaylist/getAuthToken";
-import getVodDetails from "../../models/POST/RetrievePlaylist/getVodDetails";
-import getVodPlaylistUrl from "../../models/POST/RetrievePlaylist/getVodPlaylistUrl";
-import getVodStreams from "../../models/POST/RetrievePlaylist/getVodStreams";
+import getAuthToken from "../../models/POST/RetrievePlaylist/GetAuthToken";
+import getVodDetails from "../../models/POST/RetrievePlaylist/GetVodDetails";
+import getVodPlaylistUrl from "../../models/POST/RetrievePlaylist/GetVodPlaylistUrl";
+import getVodStreams from "../../models/POST/RetrievePlaylist/GetVodStreams";
 
 import logProgress from "../../utils/logProgress";
 

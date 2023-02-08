@@ -1,4 +1,4 @@
-import createMergeFile from "./createMergeFile";
+import createMergeFile from "./CreateMergeFile";
 import fsPromises from "fs/promises";
 
 type MediaExtension = "ts" | "aac";

@@ -1,4 +1,4 @@
-import getVodStreams from "./getVodStreams";
+import getVodStreams from "./GetVodStreams";
 import fetch from "cross-fetch";
 import fsPromises from "fs/promises";
 
