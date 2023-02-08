@@ -49,12 +49,14 @@ export async function createConfig() {
     password: "",
     saveLocation: "",
   };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  fs.mkdir(`${electron.app.getAppPath()}/processing`).catch(() => {});
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    await fs.mkdir(`${electron.app.getAppPath()}/processing`);
     await fs.access(CONFIG_PATH);
   } catch (err) {
-    writeConfig(configData);
+    if (err.code === "ENOENT") writeConfig(configData);
   }
 }
 

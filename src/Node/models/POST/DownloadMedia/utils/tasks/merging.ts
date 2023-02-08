@@ -5,7 +5,6 @@ import fireEvent from "../../../../../../Electron/index";
 
 import { PROCESSING_FOLDER } from "../../../../../../constants/constants";
 
-
 export async function mergeVideo(saveLocation: string) {
   const instruction = [
     "-y",
@@ -65,24 +64,27 @@ async function merging(options: string[]) {
   const mergingProcess = child_process.execFile("ffmpeg", options, {
     cwd: `${PROCESSING_FOLDER}`,
   });
+  try {
+    await new Promise<void>((resolve, reject) => {
+      mergingProcess;
 
-  await new Promise<void>((resolve, reject) => {
-    mergingProcess;
+      ipcMain.once("cancel-button-clicked", () => {
+        mergingProcess.kill();
+      });
 
-    ipcMain.once("cancel-button-clicked", () => {
-      mergingProcess.kill();
+      mergingProcess.on("exit", (code) => {
+        if (mergingProcess.killed) {
+          console.log("Merging process killed");
+          reject(Error("cancel"));
+        }
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(Error(`Merge process exited with code ${code}`));
+        }
+      });
     });
-
-    mergingProcess.on("exit", (code) => {
-      if (mergingProcess.killed) {
-        console.log("Merging process killed");
-        reject(Error("cancel"));
-      }
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(Error(`Merge process exited with code ${code}`));
-      }
-    });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 }

@@ -64,32 +64,38 @@ async function downloadingProcess(
   extension: MediaExtension,
   currentInterval: number
 ) {
-  const request = await fetch(urlList[currentInterval]);
+  try {
+    const request = await fetch(urlList[currentInterval]);
 
-  await new Promise<void>((resolve, reject) => {
-    const cancelDownload = () => {
-      writeStream.destroy(Error("cancel"));
-      writeStream.end();
-    };
+    await new Promise<void>((resolve, reject) => {
+      const cancelDownload = () => {
+        writeStream.destroy(Error("cancel"));
+        writeStream.end();
+      };
 
-    const writeStream = createWriteStream(
-      `${saveLocation}/${currentInterval}.${extension}`
-    );
+      const writeStream = createWriteStream(
+        `${saveLocation}/${currentInterval}.${extension}`
+      );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    request.body.pipe(writeStream);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      request.body.pipe(writeStream);
 
-    ipcMain.on("cancel-button-clicked", cancelDownload);
+      ipcMain.on("cancel-button-clicked", cancelDownload);
 
-    writeStream.on("error", (err) => {
-      ipcMain.removeListener("cancel-button-clicked", cancelDownload);
-      reject(err);
+      writeStream.on("error", (err) => {
+        ipcMain.removeListener("cancel-button-clicked", cancelDownload);
+        reject(err);
+      });
+
+      writeStream.on("finish", () => {
+        ipcMain.removeListener("cancel-button-clicked", cancelDownload);
+        resolve();
+      });
     });
-
-    writeStream.on("finish", () => {
-      ipcMain.removeListener("cancel-button-clicked", cancelDownload);
-      resolve();
-    });
-  });
+  } catch (err) {
+    console.log("BEGIN TERRIBLE ERROR");
+    console.log(err);
+    console.log("END TERRIBLE ERROR");
+  }
 }
