@@ -79,7 +79,7 @@ async function merging(options: string[]) {
     });
 
     mergingProcess.on("exit", (code) => {
-      if(code === null){
+      if(code === null || code === 1){
         console.log("Merge process killed");
         reject(Error("cancel"));
       }
