@@ -21,7 +21,7 @@ export default function StepperDownload() {
   const steps = [
     "Media Download Started",
     "Downloading Fragments",
-    "Merging Fragments into Video and Audio Parts",
+    "Merging Fragments",
     "Merging Audio with Video",
     "Done",
   ];
