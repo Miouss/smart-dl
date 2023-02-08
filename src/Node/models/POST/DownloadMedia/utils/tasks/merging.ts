@@ -65,7 +65,8 @@ async function merging(options: string[]) {
   const prefix = process.platform === "darwin" ? "./" : "";
 
   const mergingProcess = child_process.exec(
-    `${prefix}ffmpeg ` + options.reduce((prev, current) => prev + " " + current),
+    `${prefix}ffmpeg ` +
+      options.reduce((prev, current) => prev + " " + current),
     {
       cwd: PROCESSING_FOLDER,
     }
@@ -77,9 +78,9 @@ async function merging(options: string[]) {
     ipcMain.once("cancel-button-clicked", () => {
       killer(mergingProcess.pid, "SIGKILL");
     });
-
+    
     mergingProcess.on("exit", (code) => {
-      if(code === null || code === 1){
+      if (code === null || code === 1 || mergingProcess.killed) {
         console.log("Merge process killed");
         reject(Error("cancel"));
       }

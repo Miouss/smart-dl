@@ -28,6 +28,7 @@ export default async function DownloadMedia(req: Request, res: Response) {
 
   const verifyCancelation = () => {
     if (isCanceled) {
+      console.log("Cancelation detected in root");
       throw Error("cancel");
     }
   };

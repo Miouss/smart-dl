@@ -64,38 +64,39 @@ async function downloadingProcess(
   extension: MediaExtension,
   currentInterval: number
 ): Promise<void> {
-  try {
-    const request = await fetch(urlList[currentInterval]);
+  let isReqSucceed = false;
+  let request: Response;
 
-    await new Promise<void>((resolve, reject) => {
-      const cancelDownload = () => {
-        writeStream.destroy(Error("cancel"));
-        writeStream.end();
-      };
-
-      const writeStream = createWriteStream(
-        `${saveLocation}/${currentInterval}.${extension}`
-      );
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      request.body.pipe(writeStream);
-
-      ipcMain.on("cancel-button-clicked", cancelDownload);
-
-      writeStream.on("error", (err) => {
-        ipcMain.removeListener("cancel-button-clicked", cancelDownload);
-        reject(err);
-      });
-
-      writeStream.on("finish", () => {
-        ipcMain.removeListener("cancel-button-clicked", cancelDownload);
-        resolve();
-      });
-    });
-  } catch (err) {
-    if(err.message === "cancel") throw new Error("cancel");
-    console.log(`Error downloading file ${currentInterval} : ${err}, retrying...`);
-    return await downloadingProcess(urlList, saveLocation, extension, currentInterval);
+  while (!isReqSucceed) {
+    try {
+      request = await fetch(urlList[currentInterval]);
+      isReqSucceed = true;
+    } catch (e) {
+      if (e.message === "cancel") throw Error("cancel");
+      console.log(`File ${currentInterval} failed to download, retrying...`);
+    }
   }
+
+  await new Promise<void>((resolve, reject) => {
+    const cancelDownload = () => {
+      console.log(`File ${currentInterval} download cancelled`);
+      writeStream.destroy();
+      reject(Error("cancel"));
+    };
+
+    const writeStream = createWriteStream(
+      `${saveLocation}/${currentInterval}.${extension}`
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    request.body.pipe(writeStream);
+
+    ipcMain.once("cancel-button-clicked", cancelDownload);
+
+    writeStream.on("finish", () => {
+      ipcMain.removeListener("cancel-button-clicked", cancelDownload);
+      resolve();
+    });
+  });
 }
