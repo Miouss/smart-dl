@@ -1,5 +1,6 @@
 import { ipcMain } from "electron";
 import child_process from "child_process";
+import killer from "tree-kill";
 
 import fireEvent from "../../../../../../Electron/index";
 
@@ -52,7 +53,7 @@ export async function mergeParts(saveLocation: string, vodTitle: string) {
     `${saveLocation}\\output.aac`,
     "-c",
     "copy",
-    `${saveLocation}\\${vodTitle}.mp4`,
+    `"${saveLocation}\\${vodTitle}.mp4"`,
   ];
 
   fireEvent("merging-parts-starts");
@@ -61,15 +62,24 @@ export async function mergeParts(saveLocation: string, vodTitle: string) {
 }
 
 async function merging(options: string[]) {
-  const mergingProcess = child_process.execFile("ffmpeg", options, {
-    cwd: `${PROCESSING_FOLDER}`,
-  });
+  const mergingProcess = child_process.exec(
+    "ffmpeg " + options.reduce((prev, current) => prev + " " + current),
+    {
+      cwd: PROCESSING_FOLDER,
+    }
+  );
+
   try {
     await new Promise<void>((resolve, reject) => {
       mergingProcess;
 
       ipcMain.once("cancel-button-clicked", () => {
-        mergingProcess.kill();
+        killer(mergingProcess.pid, "SIGKILL");
+        reject(Error("cancel"));
+      });
+
+      mergingProcess.on("message", (message) => {
+        console.log(message);
       });
 
       mergingProcess.on("exit", (code) => {
@@ -77,11 +87,8 @@ async function merging(options: string[]) {
           console.log("Merging process killed");
           reject(Error("cancel"));
         }
-        if (code === 0) {
-          resolve();
-        } else {
-          reject(Error(`Merge process exited with code ${code}`));
-        }
+        console.log(`Merge process exited with code ${code}`);
+        resolve();
       });
     });
   } catch (err) {
