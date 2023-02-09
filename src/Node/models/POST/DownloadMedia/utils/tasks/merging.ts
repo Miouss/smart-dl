@@ -62,7 +62,7 @@ export async function mergeParts(saveLocation: string, vodTitle: string) {
 }
 
 async function merging(options: string[]) {
-  const prefix = process.platform === "darwin" ? "./" : "";
+  const prefix = process.platform === "win32" ? "" : "./";
 
   const mergingProcess = child_process.exec(
     `${prefix}ffmpeg ` +
