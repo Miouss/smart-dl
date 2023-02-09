@@ -11,7 +11,11 @@ import { action, createTask } from "./utils/task";
 
 import type { TaskProps } from "../../../../../types/Task";
 
-export default function StepperCancel() {
+interface Props {
+  visible: boolean;
+}
+
+export default function StepperCancel({ visible }: Props) {
   const api = window.mediaAPI;
 
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -100,6 +104,7 @@ export default function StepperCancel() {
 
   return (
     <StepperCustom
+      visible={visible}
       steps={steps}
       icons={icons}
       activeStep={activeStep}

@@ -13,7 +13,11 @@ import { action, createTask } from "./utils/task";
 
 import type { TaskProps } from "../../../../../types/Task";
 
-export default function StepperDownload() {
+interface Props {
+  visible: boolean;
+}
+
+export default function StepperDownload({ visible }: Props) {
   const api = window.mediaAPI;
 
   const [activeStep, setActiveStep] = useState<number>(1);
@@ -173,10 +177,11 @@ export default function StepperDownload() {
       api.onDeletingPartsEnds.removeAllListeners();
       api.onDownloadFullyEnds.removeAllListeners();
     };
-  }, []);
+  }, [visible]);
 
   return (
     <StepperCustom
+      visible={visible}
       steps={steps}
       icons={icons}
       activeStep={activeStep}

@@ -9,9 +9,10 @@ import {
   StepIconProps,
 } from "@mui/material";
 
-import { StyledStepIconContainer } from "../../../../../styles/components/specific/Stepper"
+import { StyledStepIconContainer } from "../../../../../styles/components/specific/Stepper";
 
 interface Props {
+  visible: boolean;
   steps: string[];
   icons: { [index: string]: React.ReactElement };
   activeStep: number;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function StepperCustom({
+  visible,
   steps,
   icons,
   activeStep,
@@ -30,6 +32,7 @@ export default function StepperCustom({
         activeStep={activeStep}
         connector={<StepConnector />}
         alternativeLabel
+        style={{ display: visible ? "flex" : "none " }}
       >
         {steps.map((label) => (
           <Step key={label}>
@@ -42,7 +45,12 @@ export default function StepperCustom({
         ))}
       </Stepper>
 
-      <Stack direction={"column"} marginTop={"1rem"} marginBottom={"1rem"}>
+      <Stack
+        direction={"column"}
+        marginTop={"1rem"}
+        marginBottom={"1rem"}
+        style={{ display: visible ? "flex" : "none " }}
+      >
         {tasks}
       </Stack>
     </>

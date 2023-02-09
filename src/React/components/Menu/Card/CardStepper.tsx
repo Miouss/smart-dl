@@ -21,7 +21,8 @@ export default function MediaMenuStepper() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {isCanceled ? <StepperCancel /> : <StepperDownload />}
+      <StepperCancel visible={isCanceled} />
+      <StepperDownload visible={!isCanceled} />
     </Box>
   );
 }
