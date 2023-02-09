@@ -58,9 +58,15 @@ const FormSearchBar = React.forwardRef(
       getSaveLocation();
     }, []);
 
+    const handlePaste = async (e: React.MouseEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      const text = await navigator.clipboard.readText();
+      (e.target as HTMLInputElement).value = text;
+    };
+
     return (
       <StackCentered direction={"row"}>
-        <UrlInput inputRef={refUrlInput} />
+        <UrlInput inputRef={refUrlInput} onContextMenu={handlePaste} />
         <ChooseSaveLocationButton
           onClick={chooseSaveLocation}
           onContextMenu={handleContextMenu}
