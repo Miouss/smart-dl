@@ -1,7 +1,7 @@
+## Video demonstration : https://streamable.com/uxvuqy
+
 # wwe-dl
 Download contents from the WWE Network
-
-Video demonstration : https://streamable.com/uxvuqy
 
 ## Testing
 
