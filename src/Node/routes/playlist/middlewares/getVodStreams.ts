@@ -1,4 +1,5 @@
 import fetch from "cross-fetch";
+import { Response, NextFunction } from "express";
 
 import { Parser } from "m3u8-parser";
 
@@ -8,12 +9,18 @@ import checkFetchError from "../../../utils/checkFetchError";
 import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 import { Media, VideoSelection, AudioSelection } from "../../../../types/Media";
 
-export default async function GetVodStreams(vodPlaylist: PlaylistUrl) {
+export async function getVodStreams(
+  req: any,
+  _: Response,
+  next: NextFunction
+) {
+  const { vodPlaylist, metadata } = req;
+
   const progressMessage = "Retrieving VOD streams";
   logProgress(progressMessage, "start");
 
   const response = await fetch(vodPlaylist.url);
-  
+
   checkFetchError(response.ok, "Can't get playlist url");
   logProgress(progressMessage, "success");
 
@@ -55,5 +62,18 @@ export default async function GetVodStreams(vodPlaylist: PlaylistUrl) {
     prefix: vodPlaylist.prefix,
   };
 
-  return mediaSelection;
+  mediaSelection.VideoSelection.sort((a, b) => {
+    return parseInt(a["Average-Bandwidth"]) >=
+      parseInt(b["Average-Bandwidth"])
+      ? -1
+      : 1;
+  });
+
+  mediaSelection.title = metadata.title;
+  mediaSelection.thumbnail = metadata.thumbnail;
+  mediaSelection.description = metadata.description;
+
+  req.mediaSelection = mediaSelection;
+
+  next();
 }

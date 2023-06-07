@@ -1,11 +1,17 @@
 import fetch from "cross-fetch";
+import { Response, NextFunction } from "express";
 
 import logProgress from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
 
 import { Metadata } from "../../../../types/Metadata";
 
-export default async function GetVodDetails(showUrl = "") {
+export async function getVodDetails(
+  req: any,
+  _: Response,
+  next: NextFunction
+) {
+  const showUrl = req.body.url;
   const progressMessage = "Retrieving VOD details";
   logProgress(progressMessage, "start");
 
@@ -27,5 +33,7 @@ export default async function GetVodDetails(showUrl = "") {
     description: data.entries[0].item.shortDescription,
   };
 
-  return metadata;
+  req.metadata = metadata;
+
+  next();
 }

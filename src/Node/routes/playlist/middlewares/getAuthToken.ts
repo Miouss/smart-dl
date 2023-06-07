@@ -1,19 +1,21 @@
 import fetch, { Headers } from "cross-fetch";
+import { Request, Response, NextFunction } from "express";
 
 import logProgress from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
 
 interface Tokens {
-  authorisationToken: string,
-  refreshToken: string
+  authorisationToken: string;
+  refreshToken: string;
 }
 
-export default async function getAuthToken(
-  username: string,
-  password: string,
-  realm: string,
-  apikey: string
+export async function getAuthToken(
+  req: any,
+  _: Response,
+  next: NextFunction
 ) {
+  const { username, password, realm, apikey } = req;
+
   const progressMessage = "Authentification";
   logProgress(progressMessage, "start");
 
@@ -36,7 +38,9 @@ export default async function getAuthToken(
   checkFetchError(response.ok, "Credentials incorrect");
   logProgress(progressMessage, "success");
 
-  const data : Tokens = await response.json();
+  const data: Tokens = await response.json();
 
-  return data.authorisationToken;
+  req.authToken = data.authorisationToken;
+
+  next();
 }

@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import DownloadMedia from "./controller/POST/DownloadMedia";
-import RetrievePlaylist from "./controller/POST/RetrievePlaylist";
+import { playlist } from "./routes/playlist/playlist";
 
 import cors from "cors";
 
@@ -16,21 +16,20 @@ appExpress.use(express.urlencoded({ extended: true }));
 appExpress.use(express.json());
 
 appExpress.post("/stream/download", DownloadMedia);
-appExpress.post("/stream/playlist", RetrievePlaylist);
+appExpress.use("/stream/playlist", playlist);
 
 export default appExpress;
 
-export function startServer(appExpress: Express){
+export function startServer(appExpress: Express) {
   return appExpress.listen(8000);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function stopServer(server: any){
+export function stopServer(server: any) {
   server.close();
 }
 
-
-export function monitorPublicFolder(){
-  appExpress.use(express.static('public'));
-  appExpress.use('/testData', express.static('testData'));
+export function monitorPublicFolder() {
+  appExpress.use(express.static("public"));
+  appExpress.use("/testData", express.static("testData"));
 }
