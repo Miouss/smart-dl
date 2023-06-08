@@ -7,18 +7,38 @@ import { ipcMain } from "electron";
 type MediaExtension = "ts" | "aac";
 type MediaType = "Video" | "Audio";
 
+import { Response, NextFunction } from "express";
+
 export async function downloadVideoFrags(
-  urlList: string[],
-  saveLocation: string
+  req: any,
+  _: Response,
+  next: NextFunction
 ) {
-  await startDownload(urlList, "Video", saveLocation, "ts");
+  const { videoUrlList, saveLocation } = req;
+
+  try {
+    await startDownload(videoUrlList, "Video", saveLocation, "ts");
+
+    next();
+  } catch (e) {
+    next(new Error("cancel"));
+  }
 }
 
 export async function downloadAudioFrags(
-  urlList: string[],
-  saveLocation: string
+  req: any,
+  _: Response,
+  next: NextFunction
 ) {
-  await startDownload(urlList, "Audio", saveLocation, "aac");
+  const { audioUrlList, saveLocation } = req;
+
+  try {
+    await startDownload(audioUrlList, "Audio", saveLocation, "aac");
+
+    next();
+  } catch (e) {
+    next(new Error("cancel"));
+  }
 }
 
 async function startDownload(
@@ -65,7 +85,7 @@ async function downloadingProcess(
   currentInterval: number
 ): Promise<void> {
   let isReqSucceed = false;
-  let request: Response;
+  let request: any;
 
   while (!isReqSucceed) {
     try {

@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 
-import App from "./React/App";
+import App from "./client/App";
 
 
 import { ThemeProvider } from "@mui/material";
 
 import "./index.css";
-import customTheme from "./React/styles/theme";
+import customTheme from "./client/styles/theme";
 
 
 const root = ReactDOM.createRoot(

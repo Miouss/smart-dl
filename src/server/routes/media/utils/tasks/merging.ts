@@ -2,9 +2,9 @@ import { ipcMain } from "electron";
 import child_process from "child_process";
 import killer from "tree-kill";
 
-import fireEvent from "../../../../../../Electron/index";
+import fireEvent from "../../../../../Electron/index";
 
-import { PROCESSING_FOLDER } from "../../../../../../constants/constants";
+import { PROCESSING_FOLDER } from "../../../../../constants/constants";
 
 export async function mergeVideo(saveLocation: string) {
   const instruction = [
