@@ -1,28 +1,27 @@
-import fetch, { Headers } from "cross-fetch";
-import { Request, Response, NextFunction } from "express";
+import fetch from "cross-fetch";
+import { Response, NextFunction } from "express";
 
 import logProgress from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
+import { createHeader } from "../utils";
+
+import { LOGIN_ENDPOINT } from "../../../../config";
 
 interface Tokens {
   authorisationToken: string;
   refreshToken: string;
 }
 
-export async function getAuthToken(
-  req: any,
-  _: Response,
-  next: NextFunction
-) {
-  const { username, password, realm, apikey } = req;
+export async function getAuthToken(req: any, _: Response, next: NextFunction) {
+  const { username, password } = req;
 
   const progressMessage = "Authentification";
   logProgress(progressMessage, "start");
 
-  const header = new Headers({
-    "Content-Type": "application/json",
-    "x-api-key": apikey,
-    Realm: realm,
+  const header = createHeader({
+    contentType: true,
+    apikey: true,
+    realm: true,
   });
 
   const options = {
@@ -32,9 +31,10 @@ export async function getAuthToken(
   };
 
   const response = await fetch(
-    "https://dce-frontoffice.imggaming.com/api/v2/login",
+    LOGIN_ENDPOINT,
     options
   );
+
   checkFetchError(response.ok, "Credentials incorrect");
   logProgress(progressMessage, "success");
 

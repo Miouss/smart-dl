@@ -5,21 +5,16 @@ import logProgress from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
 
 import { Metadata } from "../../../../types/Metadata";
+import { BASE_URL, VOD_DETAILS_ENDPOINT } from "../../../../config";
 
-export async function getVodDetails(
-  req: any,
-  _: Response,
-  next: NextFunction
-) {
+export async function getVodDetails(req: any, _: Response, next: NextFunction) {
   const showUrl = req.body.url;
   const progressMessage = "Retrieving VOD details";
   logProgress(progressMessage, "start");
 
-  const path = showUrl.replace("https://watch.wwe.com", "");
+  const path = showUrl.replace(BASE_URL, "");
 
-  const response = await fetch(
-    `https://cdn.watch.wwe.com/api/page?path=${path}&segments=fr&text_entry_format=html`
-  );
+  const response = await fetch(VOD_DETAILS_ENDPOINT + path);
 
   checkFetchError(response.ok, "Can't retrieve data from the url provided");
   logProgress(progressMessage, "success");

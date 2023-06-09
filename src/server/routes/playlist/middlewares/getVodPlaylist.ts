@@ -1,8 +1,9 @@
-import fetch, { Headers } from "cross-fetch";
+import fetch from "cross-fetch";
 import { Response, NextFunction } from "express";
 
 import logProgress from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
+import { createHeader } from "../utils";
 
 interface PlaylistUrl {
   url: string;
@@ -14,18 +15,18 @@ export async function getVodPlaylist(
   _: Response,
   next: NextFunction
 ) {
-  const { realm, apikey, authToken } = req;
+  const { authToken } = req;
   const { vodId } = req.metadata;
 
   const progressMessage = "Retrieving VOD playlist url";
   logProgress(progressMessage, "start");
 
-  const header = new Headers({
-    Authorization: `Bearer ${authToken}`,
-    "x-api-key": apikey,
-    Realm: realm,
+  const header = createHeader({
+    apikey: true,
+    realm: true,
+    authToken: authToken,
   });
-
+  
   const options = {
     headers: header,
   };

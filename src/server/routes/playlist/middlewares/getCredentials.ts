@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { readConfig } from "../../../../Electron/events/handler";
 
 export async function getCredentials(
