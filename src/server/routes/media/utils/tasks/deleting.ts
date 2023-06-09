@@ -1,6 +1,6 @@
 import fireEvent from "../../../../../Electron/index";
 import { promises } from "fs";
-import { PROCESSING_FOLDER } from "../../../../../constants/constants";
+import { PROCESSING_FOLDER } from "../../../../../config";
 
 export async function deleteFrags(saveLocation: string) {
   const file = await promises.open(`${PROCESSING_FOLDER}/number.txt`);

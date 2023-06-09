@@ -1,7 +1,7 @@
 import electron, { ipcMain, dialog } from "electron";
 import jsonfile from "jsonfile";
 import { promises as fs } from "fs";
-import { API_KEY, REALM, CONFIG_PATH } from "../../constants/constants";
+import { API_KEY, REALM, CONFIG_PATH } from "../../config";
 
 interface Config {
   realm: string;

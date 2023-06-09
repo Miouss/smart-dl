@@ -4,7 +4,7 @@ import killer from "tree-kill";
 
 import fireEvent from "../../../../../Electron/index";
 
-import { PROCESSING_FOLDER } from "../../../../../constants/constants";
+import { PROCESSING_FOLDER } from "../../../../../config";
 
 export async function mergeVideo(saveLocation: string) {
   const instruction = [

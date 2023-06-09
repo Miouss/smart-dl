@@ -1,6 +1,6 @@
 import { promises } from "fs";
 
-import { PROCESSING_FOLDER } from "../../../../constants/constants";
+import { PROCESSING_FOLDER } from "../../../../config";
 import { Response, NextFunction } from "express";
 
 export async function saveNbFiles(req: any, _: Response, next: NextFunction) {

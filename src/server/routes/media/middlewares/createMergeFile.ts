@@ -1,7 +1,7 @@
 import { truncate, promises } from "fs";
 import { Response, NextFunction } from "express";
 
-import { PROCESSING_FOLDER } from "../../../../constants/constants";
+import { PROCESSING_FOLDER } from "../../../../config";
 
 type MediaExtension = "ts" | "aac";
 
