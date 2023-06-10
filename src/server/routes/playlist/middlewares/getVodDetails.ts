@@ -11,8 +11,9 @@ import { Metadata } from "../../../../types/Metadata";
 import { BASE_URL, VOD_DETAILS_ENDPOINT } from "../../../../config";
 
 export async function getVodDetails(req: any, _: Response, next: NextFunction) {
-  const showUrl = req.body.url;
   startLogProgress("vodDetails");
+
+  const showUrl = req.body.url;
 
   const path = showUrl.replace(BASE_URL, "");
 
