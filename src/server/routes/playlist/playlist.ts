@@ -8,6 +8,7 @@ import {
   getVodPlaylist,
   getVodStreams,
   saveConfig,
+  errorHandler
 } from "./middlewares";
 
 const playlist = Router();
@@ -21,7 +22,8 @@ playlist.post(
   getVodDetails,
   getVodPlaylist,
   getVodStreams,
-  endProcess
+  endProcess,
+  errorHandler,
 );
 
 export { playlist };

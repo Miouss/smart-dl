@@ -3,26 +3,24 @@ import { Response, NextFunction } from "express";
 
 import { Parser } from "m3u8-parser";
 
-import logProgress from "../../../utils/logProgress";
+import {
+  startLogProgress,
+  successLogProgress,
+} from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
 
 import { PlaylistUrl } from "../../../../types/PlaylistUrl";
 import { Media, VideoSelection, AudioSelection } from "../../../../types/Media";
 
-export async function getVodStreams(
-  req: any,
-  _: Response,
-  next: NextFunction
-) {
+export async function getVodStreams(req: any, _: Response, next: NextFunction) {
   const { vodPlaylist, metadata } = req;
 
-  const progressMessage = "Retrieving VOD streams";
-  logProgress(progressMessage, "start");
+  startLogProgress("vodStreams");
 
   const response = await fetch(vodPlaylist.url);
 
   checkFetchError(response.ok, "Can't get playlist url");
-  logProgress(progressMessage, "success");
+  successLogProgress("vodStreams");
 
   const data = await response.text();
 
@@ -63,8 +61,7 @@ export async function getVodStreams(
   };
 
   mediaSelection.VideoSelection.sort((a, b) => {
-    return parseInt(a["Average-Bandwidth"]) >=
-      parseInt(b["Average-Bandwidth"])
+    return parseInt(a["Average-Bandwidth"]) >= parseInt(b["Average-Bandwidth"])
       ? -1
       : 1;
   });

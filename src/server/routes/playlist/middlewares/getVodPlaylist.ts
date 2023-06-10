@@ -1,9 +1,14 @@
 import fetch from "cross-fetch";
 import { Response, NextFunction } from "express";
 
-import logProgress from "../../../utils/logProgress";
+import {
+  startLogProgress,
+  successLogProgress,
+} from "../../../utils/logProgress";
 import checkFetchError from "../../../utils/checkFetchError";
 import { createHeader } from "../utils";
+
+import { VOD_PLAYLIST_ENDPOINT } from "../../../../config";
 
 interface PlaylistUrl {
   url: string;
@@ -18,23 +23,20 @@ export async function getVodPlaylist(
   const { authToken } = req;
   const { vodId } = req.metadata;
 
-  const progressMessage = "Retrieving VOD playlist url";
-  logProgress(progressMessage, "start");
+
+  startLogProgress("vodPlaylist");
 
   const header = createHeader({
     apikey: true,
     realm: true,
     authToken: authToken,
   });
-  
+
   const options = {
     headers: header,
   };
 
-  const response = await fetch(
-    `https://dce-frontoffice.imggaming.com/api/v3/stream/vod/${vodId}`,
-    options
-  );
+  const response = await fetch(VOD_PLAYLIST_ENDPOINT + vodId, options);
 
   checkFetchError(
     response.ok,
@@ -46,7 +48,7 @@ export async function getVodPlaylist(
   const response2 = await fetch(data.playerUrlCallback);
 
   checkFetchError(response2.ok, `Can't access list of available m3u8 playlist`);
-  logProgress(progressMessage, "success");
+  successLogProgress("vodPlaylist");
 
   const data2 = await response2.json();
 

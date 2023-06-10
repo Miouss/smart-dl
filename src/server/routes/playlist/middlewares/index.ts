@@ -6,3 +6,4 @@ export * from "./getVodDetails";
 export * from "./getVodPlaylist";
 export * from "./getVodStreams";
 export * from "./saveConfig";
+export * from "./errorHandler";

@@ -1,11 +1,8 @@
 import { NextFunction, Response } from "express";
-import logProgress from "../../../utils/logProgress";
+import { startLogProgress } from "../../../utils/logProgress";
 
-export function startProcess(req: any, _: Response, next: NextFunction) {
-  const logProgressMessage = "Collecting VOD's data";
-  logProgress(logProgressMessage, "start", false);
-
-  req.logProgressMessage = logProgressMessage;
+export function startProcess(_: any, __: Response, next: NextFunction) {
+  startLogProgress("process", false);
 
   next();
 }

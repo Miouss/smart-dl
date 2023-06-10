@@ -1,29 +1,34 @@
 import { Response, NextFunction } from "express";
 import { readConfig } from "../../../../Electron/events/handler";
+import {
+  startLogProgress,
+  successLogProgress,
+} from "../../../utils/logProgress";
 
 export async function getCredentials(
   req: any,
   _: Response,
   next: NextFunction
 ) {
-  const configData = await readConfig();
-  const { useSavedCredentials } = req.body;
+  try {
+    startLogProgress("credentials");
 
-  const username = useSavedCredentials
-    ? configData.username
-    : req.body.account.username;
+    const configData = await readConfig();
 
-  const password = useSavedCredentials
-    ? configData.password
-    : req.body.account.password;
+    const { useSavedCredentials, account } = req.body;
+    const { username, password } = useSavedCredentials ? configData : account;
 
-  Object.assign(req, {
-    username,
-    password,
-    realm: configData.realm,
-    apikey: configData.apikey,
-    configData,
-  });
+    Object.assign(req, {
+      username,
+      password,
+      realm: configData.realm,
+      apikey: configData.apikey,
+      configData,
+    });
 
-  next();
+    successLogProgress("credentials");
+    next();
+  } catch (err) {
+    next(err);
+  }
 }
