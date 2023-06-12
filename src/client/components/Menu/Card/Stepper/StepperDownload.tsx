@@ -18,7 +18,18 @@ interface Props {
 }
 
 export default function StepperDownload({ visible }: Props) {
-  const api = window.mediaAPI;
+  const {
+    onDownloadFully,
+    onDownloadingVideoFrags,
+    onDownloadingAudioFrags,
+    onUpdateVideoFragsSteps,
+    onUpdateAudioFragsSteps,
+    onMergingVideo,
+    onMergingAudio,
+    onDeletingFrags,
+    onMergingParts,
+    onDeletingParts,
+  } = window.mediaAPI;
 
   const [activeStep, setActiveStep] = useState<number>(1);
 
@@ -105,77 +116,63 @@ export default function StepperDownload({ visible }: Props) {
   };
 
   useEffect(() => {
-    api.onDownloadFullyStarts.do(() => setActiveStep(1));
-    api.onDownloadingVideoFragsStarts.do(
-      action("start", setDownloadVideoFrags)
-    );
-    api.onDownloadingVideoFragsEnds.do(
-      action("end", setDownloadVideoFrags)
-    );
+    onDownloadFully.starts.do(() => setActiveStep(1));
+    onDownloadingVideoFrags.starts.do(action("start", setDownloadVideoFrags));
+    onDownloadingVideoFrags.ends.do(action("end", setDownloadVideoFrags));
 
-    api.onDownloadingAudioFragsStarts.do(
-      action("start", setDownloadAudioFrags)
-    );
+    onDownloadingAudioFrags.starts.do(action("start", setDownloadAudioFrags));
 
-    api.onDownloadingAudioFragsEnds.do(
+    onDownloadingAudioFrags.ends.do(
       action("end", setDownloadAudioFrags, setActiveStep, 2)
     );
 
-    api.onUpdateVideoFragsSteps.do(
-      action("update", setDownloadVideoFrags)
-    );
+    onUpdateVideoFragsSteps.do(action("update", setDownloadVideoFrags));
 
-    api.onUpdateAudioFragsSteps.do(
-      action("update", setDownloadAudioFrags)
-    );
+    onUpdateAudioFragsSteps.do(action("update", setDownloadAudioFrags));
 
-    api.onMergingVideoStarts.do(action("start", setMergeVideo));
+    onMergingVideo.starts.do(action("start", setMergeVideo));
 
-    api.onMergingVideoEnds.do(action("end", setMergeVideo));
+    onMergingVideo.ends.do(action("end", setMergeVideo));
 
-    api.onMergingAudioStarts.do(action("start", setMergeAudio));
+    onMergingAudio.starts.do(action("start", setMergeAudio));
 
-    api.onMergingAudioEnds.do(action("end", setMergeAudio));
+    onMergingAudio.ends.do(action("end", setMergeAudio));
 
-    api.onDeletingFragsStarts.do(action("start", setDeleteFrags));
+    onDeletingFrags.starts.do(action("start", setDeleteFrags));
 
-    api.onDeletingFragsEnds.do(
-      action("end", setDeleteFrags, setActiveStep, 3)
-    );
+    onDeletingFrags.ends.do(action("end", setDeleteFrags, setActiveStep, 3));
 
-    api.onMergingPartsStarts.do(action("start", setMergeParts));
+    onMergingParts.starts.do(action("start", setMergeParts));
 
-    api.onMergingPartsEnds.do(action("end", setMergeParts));
+    onMergingParts.ends.do(action("end", setMergeParts));
 
-    api.onDeletingPartsStarts.do(action("start", setDeleteParts));
+    onDeletingParts.starts.do(action("start", setDeleteParts));
 
-    api.onDeletingPartsEnds.do(
-      action("end", setDeleteParts, setActiveStep, 5)
-    );
+    onDeletingParts.ends.do(action("end", setDeleteParts, setActiveStep, 5));
 
-    api.onDownloadFullyEnds.do(() => {
+    onDownloadFully.ends.do(() => {
       setActiveStep(6);
     });
 
     return () => {
-      api.onDownloadFullyStarts.removeAllListeners();
-      api.onDownloadingVideoFragsStarts.removeAllListeners();
-      api.onDownloadingVideoFragsEnds.removeAllListeners();
-      api.onDownloadingAudioFragsStarts.removeAllListeners();
-      api.onDownloadingAudioFragsEnds.removeAllListeners();
-      api.onUpdateVideoFragsSteps.removeAllListeners();
-      api.onUpdateAudioFragsSteps.removeAllListeners();
-      api.onMergingVideoStarts.removeAllListeners();
-      api.onMergingVideoEnds.removeAllListeners();
-      api.onMergingAudioStarts.removeAllListeners();
-      api.onMergingAudioEnds.removeAllListeners();
-      api.onDeletingFragsStarts.removeAllListeners();
-      api.onDeletingFragsEnds.removeAllListeners();
-      api.onMergingPartsStarts.removeAllListeners();
-      api.onMergingPartsEnds.removeAllListeners();
-      api.onDeletingPartsStarts.removeAllListeners();
-      api.onDeletingPartsEnds.removeAllListeners();
-      api.onDownloadFullyEnds.removeAllListeners();
+      onDownloadFully.starts.removeAllListeners();
+      onDownloadingVideoFrags.starts.removeAllListeners();
+      onDownloadingVideoFrags.ends.removeAllListeners();
+      onDownloadingAudioFrags.starts.removeAllListeners();
+      onDownloadingAudioFrags.ends.removeAllListeners();
+      onUpdateVideoFragsSteps.removeAllListeners();
+      onUpdateAudioFragsSteps.removeAllListeners();
+      onMergingVideo.starts.removeAllListeners();
+      onMergingVideo.ends.removeAllListeners();
+      onMergingAudio.starts.removeAllListeners();
+      onMergingAudio.ends.removeAllListeners();
+      onDeletingFrags.starts.removeAllListeners();
+      onDeletingFrags.ends.removeAllListeners();
+      onMergingParts.starts.removeAllListeners();
+      onMergingParts.ends.removeAllListeners();
+      onDeletingParts.starts.removeAllListeners();
+      onDeletingParts.ends.removeAllListeners();
+      onDownloadFully.ends.removeAllListeners();
     };
   }, [visible]);
 

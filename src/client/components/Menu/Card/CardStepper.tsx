@@ -8,16 +8,7 @@ import { Box } from "@mui/material";
 export default function MediaMenuStepper() {
   const [isCanceled, setIsCanceled] = useState(false);
 
-  useEffect(() => {
-    const onCancelStarts = window.mediaAPI.onCancelStarts.do(() => {
-      setIsCanceled(true);
-    });
-
-    return () => {
-      onCancelStarts;
-
-    };
-  }, [isCanceled]);
+  useCancelEvent(isCanceled, setIsCanceled);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -25,4 +16,17 @@ export default function MediaMenuStepper() {
       <StepperDownload visible={!isCanceled} />
     </Box>
   );
+}
+
+function useCancelEvent(
+  isCanceled: boolean,
+  setIsCanceled: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  const { onCancel } = window.mediaAPI;
+
+  useEffect(() => {
+    onCancel.starts.do(() => {
+      setIsCanceled(true);
+    });
+  }, [isCanceled]);
 }

@@ -9,6 +9,8 @@ import { TabPanel } from "../../../styles/components/specific/Select";
 
 import type { MediaUrls, MediaDetails } from "../../../../types/Media";
 
+export type AudioSelected = string | undefined;
+
 interface Props {
   setMediaFetched: Dispatch<SetStateAction<MediaUrls>>;
   setMediaDownloaded: Dispatch<SetStateAction<boolean>>;
@@ -27,40 +29,30 @@ export default function MediaMenuCardSelection({
   vod,
   resetSelection,
 }: Props) {
-  const [audioSelected, setAudioSelected] = useState(undefined);
+  const [audioSelected, setAudioSelected] = useState<AudioSelected>(undefined);
 
   const [tabIndex, setTabIndex] = useState(0);
 
-  const addTabProps = (index: number) => {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  };
+  const addTabProps = (index: number) => ({
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  });
 
   const handleTabChange = (newValue: number) => {
     setTabIndex(newValue);
   };
 
-  useEffect(() => {
-    if (audioSelected === undefined) {
-      handleTabChange(0);
-    } else {
-      handleTabChange(1);
-    }
-  }, [audioSelected]);
-
-  useEffect(() => {
-    handleTabChange(0);
-    setAudioSelected(undefined);
-    setMediaFetched((mediaFetched) => ({ ...mediaFetched, selected: false }));
-    setMediaDetails({
-      lang: undefined,
-      resolution: undefined,
-    });
-    setDownloadStarted(false);
-    setMediaDownloaded(false);
-  }, [vod, resetSelection]);
+  useTabChange(audioSelected, handleTabChange);
+  useResetSelection(
+    vod,
+    resetSelection,
+    setMediaFetched,
+    setMediaDownloaded,
+    setDownloadStarted,
+    setMediaDetails,
+    setAudioSelected,
+    handleTabChange
+  );
 
   return (
     <Stack direction="column" width="100%" spacing={2}>
@@ -96,4 +88,40 @@ export default function MediaMenuCardSelection({
       </TabPanel>
     </Stack>
   );
+}
+
+function useTabChange(
+  audioSelected: AudioSelected,
+  handleTabChange: (newValue: number) => void
+) {
+  useEffect(() => {
+    if (audioSelected === undefined) {
+      handleTabChange(0);
+    } else {
+      handleTabChange(1);
+    }
+  }, [audioSelected]);
+}
+
+function useResetSelection(
+  vod: any,
+  resetSelection: boolean,
+  setMediaFetched: Dispatch<SetStateAction<MediaUrls>>,
+  setMediaDownloaded: Dispatch<SetStateAction<boolean>>,
+  setDownloadStarted: Dispatch<SetStateAction<boolean>>,
+  setMediaDetails: Dispatch<SetStateAction<MediaDetails>>,
+  setAudioSelected: Dispatch<SetStateAction<AudioSelected>>,
+  handleTabChange: (newValue: number) => void
+) {
+  useEffect(() => {
+    handleTabChange(0);
+    setAudioSelected(undefined);
+    setMediaFetched((mediaFetched) => ({ ...mediaFetched, selected: false }));
+    setMediaDetails({
+      lang: undefined,
+      resolution: undefined,
+    });
+    setDownloadStarted(false);
+    setMediaDownloaded(false);
+  }, [vod, resetSelection]);
 }

@@ -7,11 +7,11 @@ interface Props {
 }
 
 export function TemporyAlert({ alertMsg }: Props) {
-  if (alertMsg) {
-    return <Alert severity={alertMsg.severity}>{alertMsg.message}</Alert>;
-  } else {
-    return <Box height="48px"></Box>;
-  }
+  return alertMsg ? (
+    <Alert severity={alertMsg.severity}>{alertMsg.message}</Alert>
+  ) : (
+    <Box height="48px"></Box>
+  );
 }
 
 export function infoAlert(message: string) {

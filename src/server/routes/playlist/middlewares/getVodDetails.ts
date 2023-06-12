@@ -5,7 +5,6 @@ import {
   startLogProgress,
   successLogProgress,
 } from "../../../utils/logProgress";
-import checkFetchError from "../../../utils/checkFetchError";
 
 import { Metadata } from "../../../../types/Metadata";
 import { BASE_URL, VOD_DETAILS_ENDPOINT } from "../../../../config";

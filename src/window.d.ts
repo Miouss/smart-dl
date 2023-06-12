@@ -4,7 +4,6 @@ import {
   CatchingOnceEventInstance,
 } from "./types/Event";
 
-
 export interface FileSystemAPI {
   chooseSaveLocationDialog: PromiseEvent;
   getSaveLocation: PromiseEvent;
@@ -17,38 +16,25 @@ export interface MediaAPI {
 
   sendCleanUpListeners: FiringEventInstance;
 
-  onCancelStarts: CatchingOnceEventInstance;
-  onCancelEnds: CatchingOnceEventInstance;
+  onCancel: CatchingOnceEventInstance;
 
-  onDownloadFullyStarts: CatchingOnceEventInstance;
-  onDownloadFullyEnds: CatchingOnceEventInstance;
+  onDownloadFully: CatchingOnceEventInstance;
 
-  onDownloadingFragsStarts: CatchingOnceEventInstance;
-  onDownloadingVideoFragsStarts: CatchingOnceEventInstance;
-  onDownloadingAudioFragsStarts: CatchingOnceEventInstance;
+  onDownloadingFrags: CatchingOnceEventInstance;
+  onDownloadingVideoFrags: CatchingOnceEventInstance;
+  onDownloadingAudioFrags: CatchingOnceEventInstance;
+
+  onMerging: CatchingOnceEventInstance;
+  onMergingVideo: CatchingOnceEventInstance;
+  onMergingAudio: CatchingOnceEventInstance;
+  onMergingParts: CatchingOnceEventInstance;
+
+  onDeletingFrags: CatchingOnceEventInstance;
+  onDeletingParts: CatchingOnceEventInstance;
+  onDeletingSource: CatchingOnceEventInstance;
 
   onUpdateVideoFragsSteps: CatchingEventInstance;
   onUpdateAudioFragsSteps: CatchingEventInstance;
-
-  onDownloadingVideoFragsEnds: CatchingOnceEventInstance;
-  onDownloadingAudioFragsEnds: CatchingOnceEventInstance;
-  onDownloadingFragsEnds: CatchingOnceEventInstance;
-
-  onMergingStarts: CatchingOnceEventInstance;
-  onMergingVideoStarts: CatchingOnceEventInstance;
-  onMergingVideoEnds: CatchingOnceEventInstance;
-  onMergingAudioStarts: CatchingOnceEventInstance;
-  onMergingAudioEnds: CatchingOnceEventInstance;
-  onMergingPartsStarts: CatchingOnceEventInstance;
-  onMergingPartsEnds: CatchingOnceEventInstance;
-  onMergingEnds: CatchingOnceEventInstance;
-
-  onDeletingFragsStarts: CatchingOnceEventInstance;
-  onDeletingFragsEnds: CatchingOnceEventInstance;
-  onDeletingPartsStarts: CatchingOnceEventInstance;
-  onDeletingPartsEnds: CatchingOnceEventInstance;
-  onDeletingSourceStarts: CatchingOnceEventInstance;
-  onDeletingSourceEnds: CatchingOnceEventInstance;
 }
 
 declare global {

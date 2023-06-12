@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// See the Electron documentation for details on how to use preload scripts:
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-
 import { contextBridge, ipcRenderer } from "electron";
 import FiringEvent from "./events/FiringEvent";
 import CatchingEvent from "./events/CatchingEvent";
@@ -16,97 +12,56 @@ contextBridge.exposeInMainWorld("fileSystemAPI", {
 });
 
 contextBridge.exposeInMainWorld("mediaAPI", {
-  sendCancelButtonClicked: createEvent(
-    new FiringEvent("cancel-button-clicked")
-  ),
-  sendCleanUpListenersDone: createEvent(
-    new FiringEvent("clean-up-listeners-done")
+  sendCancelButtonClicked: createFiringEvent("cancel-button-clicked"),
+  sendCleanUpListenersDone: createFiringEvent("clean-up-listeners-done"),
+
+  onCancel: createCatchingOnceEvent("cancel"),
+
+  onDownloadFully: createCatchingOnceEvent("download-fully"),
+
+  onRecoveringFragsPlaylists: createCatchingOnceEvent(
+    "recovering-frags-playlists"
   ),
 
-  onCancelStarts: createEvent(new CatchingOnceEvent("cancel-starts")),
-  onCancelEnds: createEvent(new CatchingOnceEvent("cancel-ends")),
+  onDownloadingFrags: createCatchingOnceEvent("downloading-frags"),
 
-  onDownloadFullyStarts: createEvent(
-    new CatchingOnceEvent("download-fully-starts")
-  ),
-  onDownloadFullyEnds: createEvent(
-    new CatchingOnceEvent("download-fully-ends")
-  ),
+  onDownloadingVideoFrags: createCatchingOnceEvent("downloading-video-frags"),
 
-  onRecoveringFragsPlaylistsStarts: createEvent(
-    new CatchingOnceEvent("recovering-frags-playlists-starts")
-  ),
-  onRecoveringFragsPlaylistsEnds: createEvent(
-    new CatchingOnceEvent("recovering-frags-playlists-ends")
-  ),
+  onDownloadingAudioFrags: createCatchingOnceEvent("downloading-audio-frags"),
 
-  onDownloadingFragsStarts: createEvent(
-    new CatchingOnceEvent("downloading-frags-starts")
-  ),
-  onDownloadingFragsEnds: createEvent(
-    new CatchingOnceEvent("downloading-frags-ends")
-  ),
+  onUpdateVideoFragsSteps: createCatchingEvent("update-video-frags-steps"),
 
-  onDownloadingVideoFragsStarts: createEvent(
-    new CatchingOnceEvent("downloading-video-frags-starts")
-  ),
-  onDownloadingVideoFragsEnds: createEvent(
-    new CatchingOnceEvent("downloading-video-frags-ends")
-  ),
+  onUpdateAudioFragsSteps: createCatchingEvent("update-audio-frags-steps"),
 
-  onDownloadingAudioFragsStarts: createEvent(
-    new CatchingOnceEvent("downloading-audio-frags-starts")
-  ),
-  onDownloadingAudioFragsEnds: createEvent(
-    new CatchingOnceEvent("downloading-audio-frags-ends")
-  ),
+  onMerging: createCatchingOnceEvent("merging"),
 
-  onUpdateVideoFragsSteps: createEvent(
-    new CatchingEvent("update-video-frags-steps")
-  ),
-  onUpdateAudioFragsSteps: createEvent(
-    new CatchingEvent("update-audio-frags-steps")
-  ),
+  onMergingVideo: createCatchingOnceEvent("merging-video"),
 
-  onMergingStarts: createEvent(new CatchingOnceEvent("merging-starts")),
-  onMergingEnds: createEvent(new CatchingOnceEvent("merging-ends")),
+  onMergingAudio: createCatchingOnceEvent("merging-audio"),
 
-  onMergingVideoStarts: createEvent(
-    new CatchingOnceEvent("merging-video-starts")
-  ),
-  onMergingVideoEnds: createEvent(new CatchingOnceEvent("merging-video-ends")),
+  onMergingParts: createCatchingOnceEvent("merging-parts"),
 
-  onMergingAudioStarts: createEvent(
-    new CatchingOnceEvent("merging-audio-starts")
-  ),
-  onMergingAudioEnds: createEvent(new CatchingOnceEvent("merging-audio-ends")),
+  onDeletingFrags: createCatchingOnceEvent("deleting-frags"),
 
-  onMergingPartsStarts: createEvent(
-    new CatchingOnceEvent("merging-parts-starts")
-  ),
-  onMergingPartsEnds: createEvent(new CatchingOnceEvent("merging-parts-ends")),
+  onDeletingParts: createCatchingOnceEvent("deleting-parts"),
 
-  onDeletingFragsStarts: createEvent(
-    new CatchingOnceEvent("deleting-frags-starts")
-  ),
-  onDeletingFragsEnds: createEvent(
-    new CatchingOnceEvent("deleting-frags-ends")
-  ),
-
-  onDeletingPartsStarts: createEvent(
-    new CatchingOnceEvent("deleting-parts-starts")
-  ),
-  onDeletingPartsEnds: createEvent(
-    new CatchingOnceEvent("deleting-parts-ends")
-  ),
-
-  onDeletingSourceEnds: createEvent(
-    new CatchingOnceEvent("deleting-source-ends")
-  ),
-  onDeletingSourceStarts: createEvent(
-    new CatchingOnceEvent("deleting-source-starts")
-  ),
+  onDeletingSource: createCatchingOnceEvent("deleting-source"),
 });
+
+function createCatchingEvent(eventName: string) {
+  return createEvent(new CatchingEvent(eventName));
+}
+
+function createFiringEvent(eventName: string) {
+  return createEvent(new FiringEvent(eventName));
+}
+
+function createCatchingOnceEvent(eventName: string) {
+  return {
+    starts: createEvent(new CatchingOnceEvent(`${eventName}-starts`)),
+    ends: createEvent(new CatchingOnceEvent(`${eventName}-ends`)),
+  };
+}
 
 function createEvent(event: CatchingEvent | CatchingOnceEvent | FiringEvent) {
   return {

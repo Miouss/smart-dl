@@ -41,30 +41,32 @@ export default function HomeLogin({
 }: Props) {
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleCredentials = (
+  const changeCredentials = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    const { id, value } = e.target;
+
     setAccount((account) => ({
-      username: e.target.id === "username" ? e.target.value : account.username,
-      password: e.target.id === "password" ? e.target.value : account.password,
+      username: id === "username" ? value : account.username,
+      password: id === "password" ? value : account.password,
     }));
   };
 
-  useEffect(() => {
-    if (useSavedCredentials && saveCredentials) {
-      setSaveCredentials(false);
-    }
-  }, [useSavedCredentials]);
+  usePreventSavingCredentialsConflict(
+    saveCredentials,
+    useSavedCredentials,
+    setSaveCredentials
+  );
 
   return (
     <Stack width={"100%"}>
       <Collapse in={!useSavedCredentials} orientation="vertical">
         <CredentialsBox>
-          <UsernameInput onChange={(e) => handleCredentials(e)} />
+          <UsernameInput onChange={changeCredentials} />
           <PasswordBox>
             <PasswordInput
               type={showPassword ? "text" : "password"}
-              onChange={(e) => handleCredentials(e)}
+              onChange={changeCredentials}
             />
             <PasswordVisibilityIcon
               setShowPassword={setShowPassword}
@@ -85,4 +87,16 @@ export default function HomeLogin({
       />
     </Stack>
   );
+}
+
+function usePreventSavingCredentialsConflict(
+  saveCredentials: boolean,
+  useSavedCredentials: boolean,
+  setSaveCredentials: Dispatch<SetStateAction<boolean>>
+) {
+  useEffect(() => {
+    if (useSavedCredentials && saveCredentials) {
+      setSaveCredentials(false);
+    }
+  }, [useSavedCredentials]);
 }

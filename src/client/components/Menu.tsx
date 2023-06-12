@@ -18,24 +18,38 @@ interface Props {
   data: any;
 }
 
-export default function Menu({ setData, setAlertMsg, data, bodyOptions }: Props) {
+export default function Menu({
+  setData,
+  setAlertMsg,
+  data,
+  bodyOptions,
+}: Props) {
   const [backHome, setBackHome] = useState(false);
 
-  useEffect(
-    function resetFields() {
-      if (backHome) {
-        setData(null);
-      }
-    },
-    [backHome]
-  );
+  useReturnHome(backHome, setData);
 
   return (
     <Stack spacing={5}>
-      <Form setData={setData} setAlertMsg={setAlertMsg} bodyOptions={bodyOptions} withSubmitButton />
+      <Form
+        setData={setData}
+        setAlertMsg={setAlertMsg}
+        bodyOptions={bodyOptions}
+        withSubmitButton
+      />
       <StackCentered>
         <MenuCard setBackHome={setBackHome} vod={data} />
       </StackCentered>
     </Stack>
   );
+}
+
+function useReturnHome(
+  backHome: boolean,
+  setData: Dispatch<SetStateAction<unknown>>
+) {
+  useEffect(() => {
+    if (backHome) {
+      setData(null);
+    }
+  }, [backHome]);
 }

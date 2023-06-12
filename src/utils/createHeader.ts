@@ -1,5 +1,5 @@
 import { Headers } from "cross-fetch";
-import { API_KEY, REALM } from "../../../../config";
+import { API_KEY, REALM } from "../config";
 
 export type HeaderOptions = {
   contentType?: boolean;

@@ -48,34 +48,45 @@ async function startDownload(
   extension: MediaExtension
 ) {
   const simultaneousDL = 10;
-  const mediaTypeLowerCase = mediaType.toLowerCase();
+  mediaType = mediaType.toLowerCase() as MediaType;
 
-  fireEvent(`downloading-${mediaTypeLowerCase}-frags-starts`);
+  fireEvent(`downloading-${mediaType}-frags-starts`);
 
   ipcMain.setMaxListeners(simultaneousDL + 1);
 
-  for (let i = 0; i < urlList.length; i += simultaneousDL) {
-    const interval =
-      i + simultaneousDL < urlList.length ? simultaneousDL : urlList.length - i;
+  const maxFrags = urlList.length;
 
-    const taskTitle = `Downloading ${urlList.length} ${mediaType} Fragments ${
-      i + 1
-    }-${i + interval}/${urlList.length}`;
+  for (let startFrag = 0; startFrag < maxFrags; startFrag += simultaneousDL) {
+    const isOverflowingMaxFrags = startFrag + simultaneousDL >= maxFrags;
+    const intervalRange = isOverflowingMaxFrags
+      ? maxFrags - startFrag
+      : simultaneousDL;
 
-    const nbFileDownloading = Array(interval).fill(0);
+    const endInterval = startFrag + intervalRange;
 
-    fireEvent(`update-${mediaTypeLowerCase}-frags-steps`, taskTitle);
+    const intervalRangeLog = `${startFrag + 1}-${endInterval}/${maxFrags}`;
+
+    const taskTitle = `Downloading ${maxFrags} ${mediaType} Fragments ${intervalRangeLog}`;
+
+    fireEvent(`update-${mediaType}-frags-steps`, taskTitle);
 
     await Promise.all(
-      nbFileDownloading.map(async (_, j) => {
-        await downloadingProcess(urlList, saveLocation, extension, i + j);
-      })
+      Array(intervalRange)
+        .fill(0)
+        .map(async (_, j) => {
+          await downloadingProcess(
+            urlList,
+            saveLocation,
+            extension,
+            startFrag + j
+          );
+        })
     );
 
-    console.log(`Fragment ${i + 1} to ${i + interval} downloaded`);
+    console.log(`Fragment ${startFrag + 1} to ${endInterval} downloaded`);
   }
 
-  fireEvent(`downloading-${mediaTypeLowerCase}-frags-ends`);
+  fireEvent(`downloading-${mediaType}-frags-ends`);
 }
 
 async function downloadingProcess(
@@ -104,9 +115,8 @@ async function downloadingProcess(
       reject(Error("cancel"));
     };
 
-    const writeStream = createWriteStream(
-      `${saveLocation}/${currentInterval}.${extension}`
-    );
+    const filePath = `${saveLocation}/${currentInterval}.${extension}`;
+    const writeStream = createWriteStream(filePath);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

@@ -41,13 +41,15 @@ export default function SelectResolution({
   const resolutionsButtons: React.ReactElement[] = [];
 
   selection.forEach((param, i) => {
+    const { audio, url, resolution } = param;
+
     resolutionsButtons.push(
       <Grid item key={`resBut${i}`}>
         <SelectButton
-          onClick={() => handleClick(param.audio, param.url, param.resolution)}
+          onClick={() => handleClick(audio, url, resolution)}
           lowercase={"true"}
         >
-          {param.resolution} <br /> ({param["Average-Bandwidth"]} kbps)
+          {resolution} <br /> ({param["Average-Bandwidth"]} kbps)
         </SelectButton>
       </Grid>
     );

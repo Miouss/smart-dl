@@ -10,6 +10,7 @@ import {
 
 import { AlertMsg } from "../../../types/AlertMsg";
 import { errorAlert } from "../../utils/Alert";
+import { createHeader } from "../../../utils/createHeader";
 
 interface Account {
   username: string;
@@ -43,8 +44,8 @@ export default function Form({
   const refUrlInput = useRef<HTMLInputElement | null>(null);
 
   async function fetching(url: string) {
-    const header = new Headers({
-      "Content-Type": "application/json",
+    const header = createHeader({
+      contentType: true,
     });
 
     const options = {
@@ -77,16 +78,20 @@ export default function Form({
     e.preventDefault();
 
     const urlProvided = refUrlInput.current.value;
-    const credentialsProvided =
-      (bodyOptions.account.username && bodyOptions.account.password) || bodyOptions.useSavedCredentials;
-    const saveLocationProvided = await api.getSaveLocation();
+
+    const { account, useSavedCredentials } = bodyOptions;
+
+    const isUsingNewCredentials = account.username && account.password;
+
+    const hasProvidedCredentials = isUsingNewCredentials || useSavedCredentials;
+    const hasProvidedSaveLocation = await api.getSaveLocation();
 
     if (!urlProvided) return setAlertMsg(errorAlert("No url provided"));
 
-    if (!credentialsProvided)
+    if (!hasProvidedCredentials)
       return setAlertMsg(errorAlert("Please provide a username and password"));
 
-    if (!saveLocationProvided)
+    if (!hasProvidedSaveLocation)
       return setAlertMsg(
         errorAlert("Please choose a save location to proceed")
       );

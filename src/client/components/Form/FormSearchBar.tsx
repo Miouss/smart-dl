@@ -1,4 +1,12 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  MouseEvent,
+  forwardRef,
+  Ref,
+} from "react";
 
 import StackCentered from "../../styles/components/global/StackCentered";
 import {
@@ -20,13 +28,13 @@ interface Props {
   withSubmitButton?: boolean;
 }
 
-const FormSearchBar = React.forwardRef(
+const api = window.fileSystemAPI;
+
+const FormSearchBar = forwardRef(
   (
     { setAlertMsg, submited, withSubmitButton }: Props,
-    refUrlInput: React.Ref<HTMLInputElement>
+    refUrlInput: Ref<HTMLInputElement>
   ) => {
-    const api = window.fileSystemAPI;
-
     const [saveLocation, setSaveLocation] = useState<string>();
 
     const alertMsg = () =>
@@ -34,7 +42,7 @@ const FormSearchBar = React.forwardRef(
         ? setAlertMsg(infoAlert(`Your save location is ${saveLocation}`))
         : setAlertMsg(warningAlert("You didn't choose a save location yet"));
 
-    const chooseSaveLocation = async (e: React.MouseEvent) => {
+    const chooseSaveLocation = async (e: MouseEvent) => {
       e.preventDefault();
       const saveLocationChosen = await api.chooseSaveLocationDialog();
 
@@ -44,25 +52,18 @@ const FormSearchBar = React.forwardRef(
       }
     };
 
-    const getSaveLocation = async () => {
-      const saveLocationStored = await api.getSaveLocation();
-      setSaveLocation(saveLocationStored);
-    };
-
-    const handleContextMenu = (e: React.MouseEvent) => {
+    const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
       alertMsg();
     };
 
-    useEffect(() => {
-      getSaveLocation();
-    }, []);
-
-    const handlePaste = async (e: React.MouseEvent<HTMLInputElement>) => {
+    const handlePaste = async (e: MouseEvent<HTMLInputElement>) => {
       e.preventDefault();
       const text = await navigator.clipboard.readText();
       (e.target as HTMLInputElement).value = text;
     };
+
+    useSavedLocation(setSaveLocation);
 
     return (
       <StackCentered direction={"row"}>
@@ -82,5 +83,18 @@ const FormSearchBar = React.forwardRef(
     );
   }
 );
+
+function useSavedLocation(
+  setSaveLocation: Dispatch<SetStateAction<string | undefined>>
+) {
+  useEffect(() => {
+    const getSaveLocation = async () => {
+      const saveLocationStored = await api.getSaveLocation();
+      setSaveLocation(saveLocationStored);
+    };
+
+    getSaveLocation();
+  }, []);
+}
 
 export default FormSearchBar;

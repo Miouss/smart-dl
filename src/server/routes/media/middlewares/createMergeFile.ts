@@ -32,15 +32,14 @@ async function createMergeFile(
   extension: MediaExtension
 ) {
   const mergeFilePath = `${PROCESSING_FOLDER}/${fileName}.txt`;
+  const options = { flag: "a" };
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   truncate(mergeFilePath, 0, () => {});
 
   for (let i = 0; i < urlList.length; i++) {
-    await promises.writeFile(
-      mergeFilePath,
-      `file '${saveLocation}/${i}.${extension}'\n`,
-      { flag: "a" }
-    );
+    const data = `file '${saveLocation}/${i}.${extension}'\n`;
+
+    await promises.writeFile(mergeFilePath, data, options);
   }
 }

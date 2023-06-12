@@ -5,8 +5,7 @@ import {
   startLogProgress,
   successLogProgress,
 } from "../../../utils/logProgress";
-import checkFetchError from "../../../utils/checkFetchError";
-import { createHeader } from "../utils";
+import { createHeader } from "../../../../utils";
 
 import { VOD_PLAYLIST_ENDPOINT } from "../../../../config";
 

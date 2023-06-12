@@ -16,7 +16,8 @@ interface Props {
 }
 
 export default function StepperCancel({ visible }: Props) {
-  const api = window.mediaAPI;
+  const { onCancel, onDeletingFrags, onDeletingParts, onDeletingSource } =
+    window.mediaAPI;
 
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -67,38 +68,38 @@ export default function StepperCancel({ visible }: Props) {
   };
 
   useEffect(() => {
-    api.onCancelStarts.do(() => {
+    onCancel.starts.do(() => {
       setActiveStep(1);
     });
 
-    api.onDeletingFragsStarts.do(
+    onDeletingFrags.starts.do(
       action("start", setDeleteFrags, setActiveStep, 2)
     );
-    api.onDeletingFragsEnds.do(action("end", setDeleteFrags));
+    onDeletingFrags.ends.do(action("end", setDeleteFrags));
 
-    api.onDeletingPartsStarts.do(
+    onDeletingParts.starts.do(
       action("start", setDeleteParts, setActiveStep, 3)
     );
-    api.onDeletingPartsEnds.do(action("end", setDeleteParts));
+    onDeletingParts.ends.do(action("end", setDeleteParts));
 
-    api.onDeletingSourceStarts.do(
+    onDeletingSource.starts.do(
       action("start", setDeleteSource, setActiveStep, 4)
     );
-    api.onDeletingSourceEnds.do(action("end", setDeleteSource));
+    onDeletingSource.ends.do(action("end", setDeleteSource));
 
-    api.onCancelEnds.do(() => {
+    onCancel.ends.do(() => {
       setActiveStep(5);
     });
 
     return () => {
-      api.onCancelStarts.removeAllListeners();
-      api.onDeletingFragsStarts.removeAllListeners();
-      api.onDeletingFragsEnds.removeAllListeners();
-      api.onDeletingPartsStarts.removeAllListeners();
-      api.onDeletingPartsEnds.removeAllListeners();
-      api.onDeletingSourceStarts.removeAllListeners();
-      api.onDeletingSourceEnds.removeAllListeners();
-      api.onCancelEnds.removeAllListeners();
+      onCancel.starts.removeAllListeners();
+      onDeletingFrags.starts.removeAllListeners();
+      onDeletingFrags.ends.removeAllListeners();
+      onDeletingParts.starts.removeAllListeners();
+      onDeletingParts.ends.removeAllListeners();
+      onDeletingSource.starts.removeAllListeners();
+      onDeletingSource.ends.removeAllListeners();
+      onCancel.ends.removeAllListeners();
     };
   }, []);
 

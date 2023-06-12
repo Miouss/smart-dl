@@ -6,7 +6,7 @@ import {
   successLogProgress,
 } from "../../../utils/logProgress";
 
-import { createHeader } from "../utils";
+import { createHeader } from "../../../../utils";
 
 import { LOGIN_ENDPOINT } from "../../../../config";
 
@@ -18,7 +18,6 @@ interface Tokens {
 export async function getAuthToken(req: any, _: Response, next: NextFunction) {
   const { username, password } = req;
 
-  const progressMessage = "Authentification";
   startLogProgress("auth");
 
   const header = createHeader({
@@ -36,7 +35,7 @@ export async function getAuthToken(req: any, _: Response, next: NextFunction) {
   try {
     const response = await fetch(LOGIN_ENDPOINT, options);
 
-    if(!response.ok) throw new Error("Credentials incorrect");
+    if (!response.ok) throw new Error("Credentials incorrect");
 
     const data: Tokens = await response.json();
 

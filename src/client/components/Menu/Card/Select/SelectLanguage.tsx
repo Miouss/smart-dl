@@ -37,21 +37,22 @@ export default function SelectLanguage({
       resolution: prevState.resolution,
     }));
   };
+
   const langBtns: React.ReactElement[] = [];
 
-  for (const lang in selection) {
+  const langs = Object.keys(selection);
+
+  langs.forEach((lang) => {
+    const langSelected = selection[lang] as unknown as LangSelection;
+
     langBtns.push(
       <Grid item key={`${lang} Btn`}>
-        <SelectButton
-          onClick={() =>
-            handleClick(selection[lang] as unknown as LangSelection)
-          }
-        >
+        <SelectButton onClick={() => handleClick(langSelected)}>
           {lang}
         </SelectButton>
       </Grid>
     );
-  }
+  });
 
   return <Grid container>{langBtns}</Grid>;
 }

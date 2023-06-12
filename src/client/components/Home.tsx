@@ -15,7 +15,12 @@ interface Props {
   bodyOptions: BodyOptions;
 }
 
-export default function Home({ setData, setBodyOptions, setAlertMsg, bodyOptions }: Props) {
+export default function Home({
+  setData,
+  setBodyOptions,
+  setAlertMsg,
+  bodyOptions,
+}: Props) {
   const [account, setAccount] = useState<Account>({
     username: "",
     password: "",
@@ -23,13 +28,7 @@ export default function Home({ setData, setBodyOptions, setAlertMsg, bodyOptions
   const [saveCredentials, setSaveCredentials] = useState(false);
   const [useSavedCredentials, setUseSavedCredentials] = useState(false);
 
-  useEffect(() => {
-    setBodyOptions({
-      account,
-      saveCredentials,
-      useSavedCredentials
-    })
-  }, [account, saveCredentials, useSavedCredentials]);
+  useBodySetter(account, saveCredentials, useSavedCredentials, setBodyOptions);
 
   return (
     <StackCentered spacing={5}>
@@ -49,4 +48,19 @@ export default function Home({ setData, setBodyOptions, setAlertMsg, bodyOptions
       </Form>
     </StackCentered>
   );
+}
+
+function useBodySetter(
+  account: Account,
+  saveCredentials: boolean,
+  useSavedCredentials: boolean,
+  setBodyOptions: Dispatch<SetStateAction<BodyOptions>>
+) {
+  useEffect(() => {
+    setBodyOptions({
+      account,
+      saveCredentials,
+      useSavedCredentials,
+    });
+  }, [account, saveCredentials, useSavedCredentials]);
 }

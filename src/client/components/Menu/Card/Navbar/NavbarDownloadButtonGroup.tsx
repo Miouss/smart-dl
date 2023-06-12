@@ -24,14 +24,14 @@ export default function NavbarDownloadButtonGroup({
   downloadButtonLabel,
   mediaSelected,
 }: Props) {
-  const waitingDownload = mediaSelected && !mediaDownloaded;
+  const isPendingDownload = mediaSelected && !mediaDownloaded;
 
   return (
     <>
       <NavbarHomeButton setBackHome={setBackHome} />
       <NavbarRetryButton setResetSelection={setResetSelection} />
 
-      {waitingDownload ? (
+      {isPendingDownload ? (
         <NavbarDownloadButton
           setDownloadStarted={setDownloadStarted}
           downloadStarted={downloadStarted}

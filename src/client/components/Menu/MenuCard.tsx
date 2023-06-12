@@ -43,43 +43,14 @@ export default function MenuCard({ setBackHome, vod }: Props) {
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [resetSelection, setResetSelection] = useState(false);
 
-  async function handleDownload() {
-    const header = new Headers({
-      "Content-Type": "application/json",
-    });
+  useDownloadHandler(downloadStarted, setMediaDownloaded, mediaFetched, vod);
 
-    const options = {
-      method: "POST",
-      headers: header,
-      body: JSON.stringify({
-        videoUrl: vod.prefix + mediaFetched.video,
-        audioUrl: vod.prefix + mediaFetched.audio,
-        vodTitle: vod.title,
-      }),
-    };
-
-    const response = await fetch(
-      "http://localhost:8000/stream/download",
-      options
-    );
-
-    if (response.ok) setMediaDownloaded(true);
-    else setMediaDownloaded(false);
-  }
-
-  useEffect(() => {
-    if (downloadStarted) {
-      handleDownload();
-    }
-  }, [downloadStarted]);
-
-  useEffect(() => {
-    setMediaFetched({ video: undefined, audio: undefined });
-    setDownloadStarted(false);
-  }, [vod, resetSelection]);
+  useMediaReset(setMediaFetched, setDownloadStarted, resetSelection, vod);
 
   return (
-    <Card sx={{ backgroundColor: CardColor, maxWidth: "720px", boxShadow: "none" }}>
+    <Card
+      sx={{ backgroundColor: CardColor, maxWidth: "720px", boxShadow: "none" }}
+    >
       <Box border={`2px solid ${CardMediaBoxColor}`}>
         <CardMedia
           component="img"
@@ -120,4 +91,56 @@ export default function MenuCard({ setBackHome, vod }: Props) {
       </CardActions>
     </Card>
   );
+}
+
+function useDownloadHandler(
+  downloadStarted: boolean,
+  setMediaDownloaded: Dispatch<SetStateAction<boolean>>,
+  mediaFetched: MediaFetched,
+  vod: Media
+) {
+  async function handleDownload() {
+    const { video, audio } = mediaFetched;
+    const { prefix, title } = vod;
+
+    const header = new Headers({
+      "Content-Type": "application/json",
+    });
+
+    const options = {
+      method: "POST",
+      headers: header,
+      body: JSON.stringify({
+        videoUrl: prefix + video,
+        audioUrl: prefix + audio,
+        vodTitle: title,
+      }),
+    };
+
+    const response = await fetch(
+      "http://localhost:8000/stream/download",
+      options
+    );
+
+    if (response.ok) setMediaDownloaded(true);
+    else setMediaDownloaded(false);
+  }
+
+  useEffect(() => {
+    if (downloadStarted) {
+      handleDownload();
+    }
+  }, [downloadStarted]);
+}
+
+function useMediaReset(
+  setMediaFetched: Dispatch<SetStateAction<MediaFetched>>,
+  setDownloadStarted: Dispatch<SetStateAction<boolean>>,
+  resetSelection: boolean,
+  vod: Media
+) {
+  useEffect(() => {
+    setMediaFetched({ video: undefined, audio: undefined });
+    setDownloadStarted(false);
+  }, [vod, resetSelection]);
 }

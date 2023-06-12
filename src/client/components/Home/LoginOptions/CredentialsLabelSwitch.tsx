@@ -26,12 +26,13 @@ export function UseSavedCredentialsSwitch({
       : setAlertMsg(warningAlert("No account saved yet"));
 
   const getSavedCredentials = async () => {
-    const usernameFetched = await api.getSavedCredentials();
+    const username = await api.getSavedCredentials();
+    const isUsernameSaved = username !== "";
 
-    if (usernameFetched !== "") {
+    if (isUsernameSaved) {
       setIsChecked(true);
-      setUsername(usernameFetched);
-    }else{
+      setUsername(username);
+    } else {
       alertMsg();
     }
   };
@@ -45,7 +46,7 @@ export function UseSavedCredentialsSwitch({
       id={"useSavedCred"}
       control={
         <Switch
-          onChange={(e, checked) => {
+          onChange={(_, checked) => {
             checked ? getSavedCredentials() : setIsChecked(checked);
           }}
         />
