@@ -85,16 +85,11 @@ typings/
 # Webpack
 .webpack/
 
+# Vite
+.vite/
+
 # Electron-Forge
 out/
 
-#api
-src/api/processing
-src/api/config.json
-
-#public
-public/testData/downloadVodPlaylist/testOuput
-
-#root
-config.json
 processing/
+config.json
