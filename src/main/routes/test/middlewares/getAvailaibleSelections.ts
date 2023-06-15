@@ -1,55 +1,45 @@
-import fetch from "cross-fetch";
 import { Response, NextFunction } from "express";
+import { createParser } from "../../../utils";
 
-import {
-  startLogProgress,
-  successLogProgress,
-  createParser,
-} from "../../../utils";
-
-import { Media, VideoSelection, AudioSelection } from "../../../../types/Media";
-
-export async function getVodStreams(req: any, _: Response, next: NextFunction) {
-  startLogProgress("vodStreams");
-
-  const { vodPlaylist, metadata } = req;
-
+export async function getAvailaibleSelections(
+  req: any,
+  _: Response,
+  next: NextFunction
+) {
   try {
-    const response = await fetch(vodPlaylist.url);
+    const { base, path } = req.message.sources;
 
-    if (!response.ok) throw new Error("Can't get playlist url");
+    const url = `${base}${path}`;
 
+    const response = await fetch(url);
     const data = await response.text();
-
     const parser = createParser(data);
 
-    const VideoSelection: Array<VideoSelection> = getVideoSelection(parser);
+    const VideoSelection: any = getVideoSelection(parser);
     sortVideoSelection(VideoSelection);
 
-    const AudioSelection: Record<string, AudioSelection> =
-      getAudioSelection(parser);
+    const AudioSelection: any = getAudioSelection(parser);
 
-    const mediaSelection: Media = {
+    const prefixArr = url.split("/");
+    prefixArr.pop();
+    const prefix = prefixArr.join("/") + "/";
+
+    const mediaSelection: any = {
       AudioSelection,
       VideoSelection,
-      prefix: vodPlaylist.prefix,
+      prefix,
     };
 
-    const { title, thumbnail, description } = metadata;
-
-    Object.assign(mediaSelection, { title, thumbnail, description });
-
-    req.mediaSelection = mediaSelection;
-
-    successLogProgress("vodStreams");
+    req.message = { ...req.message, mediaSelection };
+  } catch (e) {
+    console.error(e);
+  } finally {
     next();
-  } catch (err) {
-    next(err);
   }
 }
 
 function getAudioSelection(parser: any) {
-  const audioSelection: Record<string, AudioSelection> = {};
+  const audioSelection: any = {};
 
   const { AUDIO } = parser.manifest.mediaGroups;
 
@@ -74,7 +64,7 @@ function getAudioSelection(parser: any) {
 }
 
 function getVideoSelection(parser: any) {
-  const videoSelection: Array<VideoSelection> = [];
+  const videoSelection: any = [];
 
   const videoManifest = parser.manifest.playlists;
 
@@ -93,8 +83,8 @@ function getVideoSelection(parser: any) {
   return videoSelection;
 }
 
-function sortVideoSelection(videoSelection: Array<VideoSelection>) {
-  videoSelection.sort((a, b) => {
+function sortVideoSelection(videoSelection: any) {
+  videoSelection.sort((a: any, b: any) => {
     return parseInt(a["Average-Bandwidth"]) >= parseInt(b["Average-Bandwidth"])
       ? -1
       : 1;

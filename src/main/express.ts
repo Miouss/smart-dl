@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import { media, playlist } from "./routes";
+import { media, playlist, test } from "./routes";
 
 import cors from "cors";
 
@@ -16,6 +16,7 @@ appExpress.use(express.json());
 
 appExpress.use("/stream/download", media);
 appExpress.use("/stream/playlist", playlist);
+appExpress.use("/test", test);
 
 export default appExpress;
 
