@@ -37,7 +37,7 @@ export default function SelectLanguage({
       resolution: prevState.resolution,
     }));
   };
-
+  
   const langBtns: React.ReactElement[] = [];
 
   const langs = Object.keys(selection);

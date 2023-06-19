@@ -101,7 +101,8 @@ function useDownloadHandler(
 ) {
   async function handleDownload() {
     const { video, audio } = mediaFetched;
-    const { prefix, title } = vod;
+    const { streams, title } = vod;
+    const { prefix } = streams;
 
     const header = new Headers({
       "Content-Type": "application/json",
@@ -117,10 +118,9 @@ function useDownloadHandler(
       }),
     };
 
-    const response = await fetch(
-      "http://localhost:8000/stream/download",
-      options
-    );
+    const fetchUrl = `http://localhost:8000/media/${vod.domain}`;
+
+    const response = await fetch(fetchUrl, options);
 
     if (response.ok) setMediaDownloaded(true);
     else setMediaDownloaded(false);

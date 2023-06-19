@@ -41,7 +41,7 @@ export default function MediaMenuCardNavBar({
           mediaDownloaded={mediaDownloaded}
           downloadButtonLabel={`${
             mediaDetails.resolution?.split("x")[1]
-          }p ${mediaDetails.lang?.toUpperCase()}`}
+          }p ${mediaDetails.lang?.slice(0, 2).toUpperCase()}`}
           mediaSelected={mediaSelected}
         />
       )}

@@ -72,7 +72,7 @@ export default function MediaMenuCardSelection({
       </Stack>
       <TabPanel value={tabIndex} index={0}>
         <SelectResolution
-          selection={vod.VideoSelection}
+          selection={vod.streams.video}
           setAudioSelected={setAudioSelected}
           setMediaFetched={setMediaFetched}
           setMediaDetails={setMediaDetails}
@@ -80,7 +80,7 @@ export default function MediaMenuCardSelection({
       </TabPanel>
       <TabPanel value={tabIndex} index={1}>
         <SelectLanguage
-          selection={vod.AudioSelection[audioSelected]}
+          selection={vod.streams.audio[audioSelected]}
           setAudioSelected={setAudioSelected}
           setMediaFetched={setMediaFetched}
           setMediaDetails={setMediaDetails}

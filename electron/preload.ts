@@ -3,7 +3,7 @@ import FiringEvent from "./events/FiringEvent";
 import CatchingEvent from "./events/CatchingEvent";
 import CatchingOnceEvent from "./events/CatchingOnceEvent";
 
-import { EventCallback } from "../types/Event";
+import { EventCallback } from "../src/types/Event";
 
 contextBridge.exposeInMainWorld("fileSystemAPI", {
   chooseSaveLocationDialog: twoWaysEvent("choose-save-location-dialog"),

@@ -43,6 +43,9 @@ export default function Form({
   const refUrlInput = useRef<HTMLInputElement | null>(null);
 
   async function fetching(url: string) {
+    const domain = url.includes("disney") ? "disney" : "wwe";
+    const fetchUrl = `http://localhost:8000/playlist/${domain}`;
+
     const header = {
       "Content-Type": "application/json",
     };
@@ -56,13 +59,11 @@ export default function Form({
       }),
     };
 
-    const response = await fetch(
-      "http://localhost:8000/stream/playlist",
-      options
-    );
+    const response = await fetch(fetchUrl, options);
 
     if (response.ok) {
       const mediaSelection = await response.json();
+
       setData(mediaSelection);
       setAlertMsg(undefined);
     } else {

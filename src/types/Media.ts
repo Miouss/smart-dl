@@ -1,10 +1,16 @@
-interface Media {
-  VideoSelection: Array<VideoSelection>;
-  AudioSelection: Record<string, AudioSelection>;
+interface Streams {
+  video: Array<VideoSelection>;
+  audio: Record<string, AudioSelection>;
   prefix: string;
+}
+
+interface Media {
+  streams: Streams;
+  AudioSelection: Record<string, AudioSelection>;
   thumbnail?: string;
   title?: string;
   description?: string;
+  domain?: string;
 }
 
 interface VideoSelection {
@@ -26,19 +32,27 @@ interface LangSelection {
 }
 
 interface MediaUrls {
-  audio?: string,
-  video?: string,
+  audio?: string;
+  video?: string;
 }
 
 interface MediaFetched {
-  audio?: string,
-  video?: string,
-  selected?: boolean,
+  audio?: string;
+  video?: string;
+  selected?: boolean;
 }
 
 interface MediaDetails {
-  lang?: string,
-  resolution?: string,
+  lang?: string;
+  resolution?: string;
 }
 
-export { Media, VideoSelection, AudioSelection, LangSelection, MediaUrls, MediaDetails, MediaFetched };
+export {
+  Media,
+  VideoSelection,
+  AudioSelection,
+  LangSelection,
+  MediaUrls,
+  MediaDetails,
+  MediaFetched,
+};

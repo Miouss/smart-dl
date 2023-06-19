@@ -13,35 +13,7 @@ import type { AlertMsg } from "../types/AlertMsg";
 import type { BodyOptions } from "../types/Data";
 
 export default function App() {
-  const handleFetch = async () => {
-    const url = "https://www.disneyplus.com/en-gb/video/91a4dcf4-c450-4d21-85be-30463637f38c";
-
-    const header = {
-      "Content-Type": "application/json",
-    };
-
-    const options = {
-      method: "POST",
-      headers: header,
-      body: JSON.stringify({ url }),
-    };
-
-    try {
-      const response = await fetch("http://localhost:8000/test", options);
-
-      const data = await response.json();
-
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  return <button onClick={handleFetch} style={{
-    border: "1px solid black !important",
-  }}>fetch</button>;
-
-  /*   const [data, setData] = useState(null);
+  const [data, setData] = useState(null);
   const [bodyOptions, setBodyOptions] = useState<BodyOptions>();
   const [alertMsg, setAlertMsg] = useState<undefined | AlertMsg>();
 
@@ -70,7 +42,7 @@ export default function App() {
       />
       ;
     </Stack>
-  ); */
+  );
 }
 
 function useAlertBoxDelay(

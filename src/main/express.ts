@@ -1,5 +1,9 @@
 import express, { Express } from "express";
-import { media, playlist, test } from "./routes";
+import { wwe as wweMedia, disney as disneyMedia } from "./routes/media";
+import {
+  wwe as wwePlaylist,
+  disney as disneyPlaylist,
+} from "./routes/playlist";
 
 import cors from "cors";
 
@@ -14,9 +18,10 @@ appExpress.use(
 appExpress.use(express.urlencoded({ extended: true }));
 appExpress.use(express.json());
 
-appExpress.use("/stream/download", media);
-appExpress.use("/stream/playlist", playlist);
-appExpress.use("/test", test);
+appExpress.use("/media/wwe", wweMedia);
+appExpress.use("/media/disney", disneyMedia);
+appExpress.use("/playlist/wwe", wwePlaylist);
+appExpress.use("/playlist/disney", disneyPlaylist);
 
 export default appExpress;
 
