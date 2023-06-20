@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   startProcess,
   endProcess,
-  getSaveLocation,
   mergeDownloadedFiles,
   saveNbFiles,
   getPlaylistUrl,
@@ -13,6 +12,8 @@ import {
   checkCancelStatus,
   errorHandler,
 } from "./middlewares";
+
+import { getSaveLocation } from "../middlewares";
 
 const wwe = Router();
 

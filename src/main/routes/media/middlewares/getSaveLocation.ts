@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { readConfig } from "../../../../../../electron/events/handler";
+import { readConfig } from "../../../../../electron/events/handler";
 
 export async function getSaveLocation(
   req: any,

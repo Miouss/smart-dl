@@ -6,7 +6,7 @@ const progressMessage = {
   vodDetails: "Retrieving VOD details",
   vodPlaylist: "Retrieving VOD playlist url",
   auth: "Authentification",
-  vodStreams: "Retrieving VOD streams",
+  vodStreams: "Retrieving available streams",
 };
 
 type ProgressMessage = keyof typeof progressMessage;

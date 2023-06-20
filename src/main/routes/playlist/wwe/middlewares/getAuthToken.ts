@@ -1,4 +1,3 @@
-import fetch from "cross-fetch";
 import { Response, NextFunction } from "express";
 
 import {
@@ -6,10 +5,11 @@ import {
   successLogProgress,
 } from "../../../../utils/logProgress";
 
-import { createHeader } from "../../../../utils";
+import { createHeader, fetchResponse } from "../../../../utils";
 
 import { LOGIN_ENDPOINT } from "../../../../../config";
-import { createOptions, fetchResponse } from "../../utils";
+import { createOptions } from "../../utils";
+
 
 interface Tokens {
   authorisationToken: string;

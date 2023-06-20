@@ -1,5 +1,6 @@
 import { Response, NextFunction } from "express";
-import { createOptions, fetchResponse } from "../../utils";
+import { createOptions } from "../../utils";
+import { fetchResponse } from "../../../../utils";
 
 export async function getAuthToken(req: any, _: Response, next: NextFunction) {
   try {

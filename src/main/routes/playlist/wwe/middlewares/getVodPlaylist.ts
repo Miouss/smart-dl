@@ -1,14 +1,12 @@
-import fetch from "cross-fetch";
 import { Response, NextFunction } from "express";
 
 import {
   startLogProgress,
   successLogProgress,
 } from "../../../../utils/logProgress";
-import { createHeader } from "../../../../utils";
+import { createHeader, fetchResponse } from "../../../../utils";
 
 import { VOD_PLAYLIST_ENDPOINT } from "../../../../../config";
-import { fetchResponse } from "../../utils";
 
 interface PlaylistUrl {
   url: string;
@@ -29,7 +27,7 @@ export async function getVodPlaylist(
     const header = createHeader({
       apikey: true,
       realm: true,
-      authToken: authToken,
+      authToken,
     });
 
     const options = {

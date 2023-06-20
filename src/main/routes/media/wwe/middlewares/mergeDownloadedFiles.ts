@@ -7,10 +7,10 @@ export async function mergeDownloadedFiles(
   _: Response,
   next: NextFunction
 ) {
-  const { saveLocation } = req;
-  const { vodTitle } = req.body;
-
   try {
+    const { saveLocation } = req;
+    const { vodTitle } = req.body;
+
     await mergeVideo(saveLocation);
     await mergeAudio(saveLocation);
     await deleteFrags(saveLocation);

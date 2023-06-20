@@ -14,9 +14,9 @@ export async function downloadVideoFrags(
   _: Response,
   next: NextFunction
 ) {
-  const { videoUrlList, saveLocation } = req;
-
   try {
+    const { videoUrlList, saveLocation } = req;
+
     await startDownload(videoUrlList, "Video", saveLocation, "ts");
 
     next();
@@ -30,9 +30,9 @@ export async function downloadAudioFrags(
   _: Response,
   next: NextFunction
 ) {
-  const { audioUrlList, saveLocation } = req;
-
   try {
+    const { audioUrlList, saveLocation } = req;
+
     await startDownload(audioUrlList, "Audio", saveLocation, "aac");
 
     next();
@@ -58,6 +58,7 @@ async function startDownload(
 
   for (let startFrag = 0; startFrag < maxFrags; startFrag += simultaneousDL) {
     const isOverflowingMaxFrags = startFrag + simultaneousDL >= maxFrags;
+
     const intervalRange = isOverflowingMaxFrags
       ? maxFrags - startFrag
       : simultaneousDL;
@@ -101,9 +102,11 @@ async function downloadingProcess(
   while (!isReqSucceed) {
     try {
       request = await fetch(urlList[currentInterval]);
+      if(!request.ok) throw new Error('Request failed');
+
       isReqSucceed = true;
-    } catch (e) {
-      if (e.message === "cancel") throw Error("cancel");
+    } catch (err) {
+      if (err.message === "cancel") throw Error("cancel");
       console.log(`File ${currentInterval} failed to download, retrying...`);
     }
   }
