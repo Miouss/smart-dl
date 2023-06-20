@@ -6,10 +6,9 @@ import {
   getSources,
   sendResponse,
   getAuthToken,
-  errorHandler,
 } from "./middlewares";
 
-import { getAvailableStreams } from "../middlewares";
+import { getAvailableStreams, errorHandler } from "../middlewares";
 
 const disney = Router();
 

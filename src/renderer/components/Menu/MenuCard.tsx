@@ -108,14 +108,16 @@ function useDownloadHandler(
       "Content-Type": "application/json",
     });
 
+    const body = {
+      videoUrl: prefix + video,
+      audioUrl: prefix + audio,
+      vodTitle: title,
+    };
+
     const options = {
       method: "POST",
       headers: header,
-      body: JSON.stringify({
-        videoUrl: prefix + video,
-        audioUrl: prefix + audio,
-        vodTitle: title,
-      }),
+      body: JSON.stringify(body),
     };
 
     const fetchUrl = `http://localhost:8000/media/${vod.domain}`;

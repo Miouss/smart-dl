@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { fetchResponse } from "../../utils";
+import { fetchResponse } from "../../../../utils";
 
 export async function getMetadata(req: any, _: Response, next: NextFunction) {
   try {

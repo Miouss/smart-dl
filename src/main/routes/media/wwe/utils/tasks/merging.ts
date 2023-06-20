@@ -45,6 +45,11 @@ export async function mergeAudio(saveLocation: string) {
 }
 
 export async function mergeParts(saveLocation: string, vodTitle: string) {
+  const sanitizedVodTitle = vodTitle
+    .replace(/([^ ]):/g, "$1 -")
+    .replace(/:/g, "-")
+    .replace(/[<>"/\\|?*]/g, "");
+
   const instruction = [
     "-y",
     "-i",
@@ -53,7 +58,7 @@ export async function mergeParts(saveLocation: string, vodTitle: string) {
     `${saveLocation}/output.aac`,
     "-c",
     "copy",
-    `"${saveLocation}/${vodTitle}.mp4"`,
+    `"${saveLocation}/${sanitizedVodTitle}.mp4"`,
   ];
 
   fireEvent("merging-parts-starts");
@@ -61,16 +66,20 @@ export async function mergeParts(saveLocation: string, vodTitle: string) {
   fireEvent("merging-parts-ends");
 }
 
-async function merging(options: string[]) {
+async function merging(unsanitizedCommand: string[]) {
   const prefix = process.platform === "win32" ? "" : "./";
 
-  const mergingProcess = child_process.exec(
-    `${prefix}ffmpeg ` +
-      options.reduce((prev, current) => prev + " " + current),
-    {
-      cwd: PROCESSING_FOLDER,
-    }
+  const sanitizedCommand = unsanitizedCommand.reduce(
+    (prev, current) => prev + " " + current
   );
+
+  const command = `${prefix}ffmpeg ` + sanitizedCommand;
+
+  const options = {
+    cwd: PROCESSING_FOLDER,
+  };
+
+  const mergingProcess = child_process.exec(command, options);
 
   await new Promise<void>((resolve, reject) => {
     mergingProcess;
@@ -78,7 +87,7 @@ async function merging(options: string[]) {
     ipcMain.once("cancel-button-clicked", () => {
       killer(mergingProcess.pid, "SIGKILL");
     });
-    
+
     mergingProcess.on("exit", (code) => {
       if (code === null || code === 1 || mergingProcess.killed) {
         console.log("Merge process killed");

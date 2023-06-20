@@ -5,4 +5,3 @@ export * from "./getCredentials";
 export * from "./getVodDetails";
 export * from "./getVodPlaylist";
 export * from "./saveConfig";
-export * from "./errorHandler";

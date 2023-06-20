@@ -7,10 +7,9 @@ import {
   getVodDetails,
   getVodPlaylist,
   saveConfig,
-  errorHandler,
 } from "./middlewares";
 
-import { getAvailableStreams } from "../middlewares";
+import { getAvailableStreams, errorHandler } from "../middlewares";
 
 const wwe = Router();
 

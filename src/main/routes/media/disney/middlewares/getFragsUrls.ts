@@ -1,7 +1,8 @@
+import fetch from "cross-fetch";
 import { Response, NextFunction } from "express";
-import { createParser, fetchResponse } from "../../../../utils";
+import { createParser } from "../../../../utils";
 
-export async function getPlaylistUrl(
+export async function getFragsUrls(
   req: any,
   _: Response,
   next: NextFunction
@@ -12,6 +13,9 @@ export async function getPlaylistUrl(
     req.videoUrlList = await retrievePlaylist(videoUrl);
     req.audioUrlList = await retrievePlaylist(audioUrl);
 
+    console.log(req.videoUrlList);
+    console.log(req.audioUrlList);
+    
     next();
   } catch (err) {
     next(err);
@@ -19,12 +23,10 @@ export async function getPlaylistUrl(
 }
 
 async function retrievePlaylist(playlist: string) {
-  const data = await fetchResponse(
-    "text",
-    playlist,
-    undefined,
-    "Can't get playlist url"
-  );
+  const request = await fetch(playlist);
+  if (!request.ok) throw new Error("Can't get playlist url");
+
+  const data = await request.text();
 
   const parser = createParser(data);
   const { segments } = parser.manifest;

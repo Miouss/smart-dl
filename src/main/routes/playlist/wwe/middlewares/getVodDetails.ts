@@ -8,7 +8,7 @@ import {
 
 import { Metadata } from "../../../../../types/Metadata";
 import { BASE_URL, VOD_DETAILS_ENDPOINT } from "../../../../../config";
-import { fetchResponse } from "../../utils";
+import { fetchResponse } from "../../../../utils";
 
 export async function getVodDetails(req: any, _: Response, next: NextFunction) {
   try {
