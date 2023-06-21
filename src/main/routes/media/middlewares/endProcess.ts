@@ -1,4 +1,4 @@
-import fireEvent from "../../../../../../electron";
+import fireEvent from "../../../../../electron";
 import { Response } from "express";
 
 export function endProcess(_: any, res: Response) {

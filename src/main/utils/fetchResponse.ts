@@ -7,7 +7,7 @@ export async function fetchResponse(
   errMsg = "fetch failed"
 ) {
   const response = await fetch(url, options);
-  if (!response.ok) throw new Error(errMsg);
+  if (!response.ok) throw new Error(response.statusText || errMsg);
 
   if (type === "json") return await response.json();
   if (type === "text") return await response.text();

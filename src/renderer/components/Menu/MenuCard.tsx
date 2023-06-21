@@ -99,9 +99,10 @@ function useDownloadHandler(
   mediaFetched: MediaFetched,
   vod: Media
 ) {
+  console.log(vod);
   async function handleDownload() {
     const { video, audio } = mediaFetched;
-    const { streams, title } = vod;
+    const { streams, title, domain } = vod;
     const { prefix } = streams;
 
     const header = new Headers({
@@ -112,7 +113,10 @@ function useDownloadHandler(
       videoUrl: prefix + video,
       audioUrl: prefix + audio,
       vodTitle: title,
+      domain
     };
+
+    console.log(body);
 
     const options = {
       method: "POST",
@@ -120,7 +124,7 @@ function useDownloadHandler(
       body: JSON.stringify(body),
     };
 
-    const fetchUrl = `http://localhost:8000/media/${vod.domain}`;
+    const fetchUrl = `http://localhost:8000/media/wwe`;
 
     const response = await fetch(fetchUrl, options);
 

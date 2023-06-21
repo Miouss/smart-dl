@@ -38,6 +38,7 @@ export default function Form({
 }: Props) {
   const api = window.fileSystemAPI;
 
+  const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
   const [submited, setSubmited] = useState(false);
 
   const refUrlInput = useRef<HTMLInputElement | null>(null);
@@ -56,9 +57,10 @@ export default function Form({
       body: JSON.stringify({
         url,
         ...bodyOptions,
+        accessToken,
       }),
     };
-
+    console.log(options);
     const response = await fetch(fetchUrl, options);
 
     if (response.ok) {
@@ -66,6 +68,11 @@ export default function Form({
 
       setData(mediaSelection);
       setAlertMsg(undefined);
+    } else if (response.status === 401) {
+      const data = await response.json();
+      console.log(data);
+      setAccessToken(data.accessToken);
+      setAlertMsg(errorAlert(data.info));
     } else {
       const message = await response.text();
       setAlertMsg(errorAlert(message));

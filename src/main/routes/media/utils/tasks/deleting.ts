@@ -1,8 +1,9 @@
-import fireEvent from "../../../../../../../electron";
+import fireEvent from "../../../../../../electron";
 import { promises } from "fs";
-import { PROCESSING_FOLDER } from "../../../../../../config";
+import { PROCESSING_FOLDER } from "../../../../../config";
+import { MediaExtension } from "../../types";
 
-export async function deleteFrags(saveLocation: string) {
+export async function deleteFrags(saveLocation: string, ext: MediaExtension) {
   const file = await promises.open(`${PROCESSING_FOLDER}/number.txt`);
   const fileHandleData = await file.readFile({ encoding: "utf8" });
   await file.close();
@@ -13,22 +14,24 @@ export async function deleteFrags(saveLocation: string) {
 
   await Promise.allSettled(
     nbFiles.map(async (_, i) => {
-      await deleteFiles(`${saveLocation}/${i}.ts`);
-      await deleteFiles(`${saveLocation}/${i}.aac`);
+      await deleteFiles(`${saveLocation}/${i}.${ext.video}`);
+      await deleteFiles(`${saveLocation}/${i}.${ext.audio}`);
     })
   );
 
   fireEvent("deleting-frags-ends");
 }
 
-export async function deleteParts(saveLocation: string) {
+export async function deleteParts(saveLocation: string, ext: MediaExtension) {
   fireEvent("deleting-parts-starts");
   const deletePromises = [
-    deleteFiles(`${saveLocation}/output.ts`),
-    deleteFiles(`${saveLocation}/output.aac`),
+    deleteFiles(`${saveLocation}/output.${ext.video}`),
+    deleteFiles(`${saveLocation}/output.${ext.audio}`),
   ];
 
-  await Promise.allSettled(deletePromises.map(async (promise) => await promise));
+  await Promise.allSettled(
+    deletePromises.map(async (promise) => await promise)
+  );
 
   fireEvent("deleting-parts-ends");
 }

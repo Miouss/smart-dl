@@ -1,7 +1,7 @@
 import fetch from "cross-fetch";
 import { createWriteStream } from "fs";
 
-import fireEvent from "../../../../../../electron";
+import fireEvent from "../../../../../electron";
 import { ipcMain } from "electron";
 
 type MediaExtension = "ts" | "aac";
@@ -17,7 +17,7 @@ export async function downloadVideoFrags(
   try {
     const { videoUrlList, saveLocation } = req;
 
-    await startDownload(videoUrlList, "Video", saveLocation, "ts");
+    await startDownload(videoUrlList, "Video", saveLocation, req.ext.video);
 
     next();
   } catch (e) {
@@ -33,7 +33,7 @@ export async function downloadAudioFrags(
   try {
     const { audioUrlList, saveLocation } = req;
 
-    await startDownload(audioUrlList, "Audio", saveLocation, "aac");
+    await startDownload(audioUrlList, "Audio", saveLocation, req.ext.audio);
 
     next();
   } catch (e) {
@@ -102,7 +102,7 @@ async function downloadingProcess(
   while (!isReqSucceed) {
     try {
       request = await fetch(urlList[currentInterval]);
-      if(!request.ok) throw new Error('Request failed');
+      if (!request.ok) throw new Error("Request failed");
 
       isReqSucceed = true;
     } catch (err) {

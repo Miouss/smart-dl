@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import fireEvent from "../../../../../../electron";
+import fireEvent from "../../../../../electron";
 import cancelDownloadedFiles from "../utils/cancelDownloadedFiles";
 
 export async function errorHandler(
@@ -15,10 +15,10 @@ export async function errorHandler(
     fireEvent("cancel-starts");
 
     try {
-      const { saveLocation } = req;
+      const { saveLocation, ext } = req;
       const { vodTitle } = req.body;
 
-      await cancelDownloadedFiles(saveLocation, vodTitle);
+      await cancelDownloadedFiles(saveLocation, vodTitle, ext);
     } catch (err) {
       console.log(err);
     }

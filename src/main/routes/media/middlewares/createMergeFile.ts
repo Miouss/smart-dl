@@ -1,17 +1,17 @@
-import { truncate, promises } from "fs";
 import { Response, NextFunction } from "express";
+import { truncate, promises } from "fs";
 
-import { PROCESSING_FOLDER } from "../../../../../config";
+import { PROCESSING_FOLDER } from "../../../../config";
 
-type MediaExtension = "ts" | "aac";
+type MediaExtension = "ts" | "aac" | "mp4" | "mp4a";
 
 export async function createVideoMergeFile(
   req: any,
   _: Response,
   next: NextFunction
 ) {
-  const { videoUrlList, saveLocation } = req;
-  await createMergeFile("listVideo", videoUrlList, saveLocation, "ts");
+  const { videoUrlList, saveLocation, ext } = req;
+  await createMergeFile("listVideo", videoUrlList, saveLocation, ext.video);
   next();
 }
 
@@ -20,8 +20,9 @@ export async function createAudioMergeFile(
   _: Response,
   next: NextFunction
 ) {
-  const { audioUrlList, saveLocation } = req;
-  await createMergeFile("listAudio", audioUrlList, saveLocation, "aac");
+  const { audioUrlList, saveLocation, ext } = req;
+
+  await createMergeFile("listAudio", audioUrlList, saveLocation, ext.audio);
   next();
 }
 

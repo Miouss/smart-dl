@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import fireEvent from "../../../../../../electron";
+import fireEvent from "../../../../../electron";
 import { Response, NextFunction } from "express";
 
 export function startProcess(req: any, __: Response, next: NextFunction) {
