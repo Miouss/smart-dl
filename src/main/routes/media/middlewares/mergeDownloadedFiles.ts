@@ -13,9 +13,9 @@ export async function mergeDownloadedFiles(
 
     await mergeVideo(videoUrlList, saveLocation, ext);
     await mergeAudio(audioUrlList, saveLocation, ext);
-    //await deleteFrags(saveLocation, ext);
+    await deleteFrags(saveLocation, ext);
     await mergeParts(saveLocation, vodTitle, ext);
-    //await deleteParts(saveLocation, ext);
+    await deleteParts(saveLocation, ext);
     next();
   } catch (err) {
     next(new Error("cancel"));
