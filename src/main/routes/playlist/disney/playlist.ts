@@ -1,25 +1,29 @@
 import { Router } from "express";
 
 import {
+  startProcess,
   getVideoId,
   getMetadata,
   getSources,
-  sendResponse,
+  endProcess,
   getAuthToken,
 } from "./middlewares";
 
-import { getAvailableStreams, errorHandler } from "../middlewares";
+import { getAvailableStreams, errorHandler, getCredentials, saveConfig } from "../middlewares";
 
 const disney = Router();
 
 disney.post(
   "/",
+  startProcess,
+  getCredentials,
   getAuthToken,
+  saveConfig,
   getVideoId,
   getMetadata,
   getSources,
   getAvailableStreams,
-  sendResponse,
+  endProcess,
   errorHandler
 );
 

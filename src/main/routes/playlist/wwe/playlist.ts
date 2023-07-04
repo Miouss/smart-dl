@@ -3,13 +3,11 @@ import {
   startProcess,
   endProcess,
   getAuthToken,
-  getCredentials,
   getVodDetails,
   getVodPlaylist,
-  saveConfig,
 } from "./middlewares";
 
-import { getAvailableStreams, errorHandler } from "../middlewares";
+import { getAvailableStreams, errorHandler, getCredentials, saveConfig } from "../middlewares";
 
 const wwe = Router();
 

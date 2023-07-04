@@ -1,9 +1,9 @@
 import { Response, NextFunction } from "express";
-import { readConfig } from "../../../../../../electron/events/handler";
+import { readConfig } from "../../../../../electron/events/handler";
 import {
   startLogProgress,
   successLogProgress,
-} from "../../../../utils/logProgress";
+} from "../../../utils/logProgress";
 
 export async function getCredentials(
   req: any,
@@ -16,13 +16,13 @@ export async function getCredentials(
     const configData = await readConfig();
 
     const { useSavedCredentials, account } = req.body;
-    const { username, password } = useSavedCredentials ? configData : account;
+    const { username, password } = useSavedCredentials
+      ? configData.credentials[req.domain]
+      : account;
 
     Object.assign(req, {
       username,
       password,
-      realm: configData.realm,
-      apikey: configData.apikey,
       configData,
     });
 

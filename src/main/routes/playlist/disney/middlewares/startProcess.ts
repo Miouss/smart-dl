@@ -4,7 +4,7 @@ import { startLogProgress } from "../../../../utils/logProgress";
 export function startProcess(req: any, _: Response, next: NextFunction) {
   startLogProgress("process", false);
 
-  req.domain = "wwe";
+  req.domain = "disney";
 
   next();
 }

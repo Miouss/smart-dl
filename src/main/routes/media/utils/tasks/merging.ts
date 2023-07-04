@@ -7,12 +7,20 @@ import fireEvent from "../../../../../../electron";
 import { PROCESSING_FOLDER } from "../../../../../config";
 import { MediaExtension } from "../../types";
 
-export async function mergeVideo(saveLocation: string, ext: MediaExtension) {
-  await merge(saveLocation, ext, "video");
+export async function mergeVideo(
+  videoUrlList: string[],
+  saveLocation: string,
+  ext: MediaExtension
+) {
+  await merge(videoUrlList, saveLocation, ext, "video");
 }
 
-export async function mergeAudio(saveLocation: string, ext: MediaExtension) {
-  await merge(saveLocation, ext, "audio");
+export async function mergeAudio(
+  audioUrlList: string[],
+  saveLocation: string,
+  ext: MediaExtension
+) {
+  await merge(audioUrlList, saveLocation, ext, "audio");
 }
 
 export async function mergeParts(
@@ -42,24 +50,26 @@ export async function mergeParts(
 }
 
 async function merge(
+  urlList: string[],
   saveLocation: string,
   ext: MediaExtension,
   type: "video" | "audio"
 ) {
-  const typeFirstLetterCapitalized = type.charAt(0).toUpperCase() + type.slice(1);
+  const fragsArgs = urlList
+    .map((_, i) => `${saveLocation}/${i}.${ext[type]}`)
+    .join("|");
 
+    
   const instruction = [
     "-y",
-    "-safe",
-    "0",
-    "-f",
-    "concat",
     "-i",
-    `list${typeFirstLetterCapitalized}.txt`,
+    `"concat:${fragsArgs}"`,
     "-c",
     "copy",
     `"${saveLocation}/output.${ext[type]}"`,
   ];
+
+  console.log(instruction);
 
   const event = `merging-${type}`;
   fireEvent(`${event}-starts`);
@@ -84,18 +94,19 @@ async function merging(unsanitizedCommand: string[]) {
 
   await new Promise<void>((resolve, reject) => {
     mergingProcess;
-    console.log(mergingProcess.spawnargs);
     ipcMain.once("cancel-button-clicked", () => {
       killer(mergingProcess.pid, "SIGKILL");
     });
 
     mergingProcess.on("exit", (code, signal) => {
-      console.log(`Merge process exited with code ${code} and signal ${signal}`);
-      if (code === null || code === 1 || mergingProcess.killed) {
+      console.log(
+        `Merge process exited with code ${code} and signal ${signal}`
+      );
+      if (code === 1 || mergingProcess.killed) {
         console.log("Merge process killed");
         //reject(Error("cancel"));
       }
-      if (code === 0) resolve();
+      resolve();
     });
   });
 }

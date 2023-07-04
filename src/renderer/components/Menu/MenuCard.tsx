@@ -124,7 +124,7 @@ function useDownloadHandler(
       body: JSON.stringify(body),
     };
 
-    const fetchUrl = `http://localhost:8000/media/wwe`;
+    const fetchUrl = `http://localhost:8000/media/${domain}`;
 
     const response = await fetch(fetchUrl, options);
 

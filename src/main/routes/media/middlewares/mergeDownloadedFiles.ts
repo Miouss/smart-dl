@@ -8,14 +8,14 @@ export async function mergeDownloadedFiles(
   next: NextFunction
 ) {
   try {
-    const { saveLocation, ext } = req;
+    const { videoUrlList, audioUrlList, saveLocation, ext } = req;
     const { vodTitle } = req.body;
 
-    await mergeVideo(saveLocation, ext);
-    await mergeAudio(saveLocation, ext);
-    await deleteFrags(saveLocation, ext);
+    await mergeVideo(videoUrlList, saveLocation, ext);
+    await mergeAudio(audioUrlList, saveLocation, ext);
+    //await deleteFrags(saveLocation, ext);
     await mergeParts(saveLocation, vodTitle, ext);
-    await deleteParts(saveLocation, ext);
+    //await deleteParts(saveLocation, ext);
     next();
   } catch (err) {
     next(new Error("cancel"));

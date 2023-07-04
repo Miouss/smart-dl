@@ -60,7 +60,7 @@ export default function Form({
         accessToken,
       }),
     };
-    console.log(options);
+
     const response = await fetch(fetchUrl, options);
 
     if (response.ok) {
@@ -70,7 +70,7 @@ export default function Form({
       setAlertMsg(undefined);
     } else if (response.status === 401) {
       const data = await response.json();
-      console.log(data);
+
       setAccessToken(data.accessToken);
       setAlertMsg(errorAlert(data.info));
     } else {

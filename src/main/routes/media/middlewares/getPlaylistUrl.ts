@@ -13,10 +13,13 @@ export async function getPlaylistUrl(
     req.videoUrlList = await retrievePlaylist(videoUrl, domain);
     req.audioUrlList = await retrievePlaylist(audioUrl, domain);
 
+    console.log(videoUrl);
     req.ext = {
-      video: path.extname(req.videoUrlList[0].split("?")[0]).substring(1),
-      audio: path.extname(req.audioUrlList[0].split("?")[0]).substring(1),
+      video: path.extname(req.videoUrlList[1].split("?")[0]).substring(1),
+      audio: path.extname(req.audioUrlList[1].split("?")[0]).substring(1),
     };
+
+    if(req.ext.audio === "mp4a") req.ext.audio = "aac";
 
     next();
   } catch (err) {
@@ -33,7 +36,6 @@ async function retrievePlaylist(playlist: string, domain: "wwe" | "disney") {
   );
 
   const parser = createParser(data);
-  console.log(playlist);
   const { segments } = parser.manifest;
 
   let base: string;
@@ -51,6 +53,13 @@ async function retrievePlaylist(playlist: string, domain: "wwe" | "disney") {
   segments.forEach((element: any) => {
     urlList.push(base + element.uri);
   });
+
+  if (segments[0].map) {
+    urlList.unshift(base + segments[0].map.uri);
+    console.log(base);
+  }
+
+  console.log(segments[0].key);
 
   return urlList;
 }

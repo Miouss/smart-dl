@@ -1,11 +1,9 @@
 import electron, { ipcMain, dialog } from "electron";
 import jsonfile from "jsonfile";
 import { promises as fs } from "fs";
-import { API_KEY, REALM, CONFIG_PATH } from "../../src/config";
+import { CONFIG_PATH } from "../../src/config";
 
 interface Config {
-  realm: string;
-  apikey: string;
   username: string;
   password: string;
   saveLocation: string;
@@ -32,7 +30,12 @@ async function chooseSaveLocationDialog() {
 async function getSavedCredentials() {
   const configData = await readConfig();
 
-  return configData.username;
+  const availableCredentials = [];
+
+  if(configData.credentials.wwe.username) availableCredentials.push("wwe");
+  if(configData.credentials.disney.username) availableCredentials.push("disney");
+
+  return availableCredentials;
 }
 
 async function getSaveLocation() {
@@ -43,8 +46,6 @@ async function getSaveLocation() {
 
 export async function createConfig() {
   const configData: Config = {
-    realm: REALM,
-    apikey: API_KEY,
     username: "",
     password: "",
     saveLocation: "",

@@ -39,7 +39,7 @@ async function createMergeFile(
   truncate(mergeFilePath, 0, () => {});
 
   for (let i = 0; i < urlList.length; i++) {
-    const data = `file '${saveLocation}/${i}.${extension}'\n`;
+    const data = `file "${saveLocation}\\${i}.${extension}"\n`;
 
     await promises.writeFile(mergeFilePath, data, options);
   }

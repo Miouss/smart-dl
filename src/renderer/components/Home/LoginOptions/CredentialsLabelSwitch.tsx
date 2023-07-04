@@ -18,20 +18,24 @@ export function UseSavedCredentialsSwitch({
   setAlertMsg,
 }: Props) {
   const api = window.fileSystemAPI;
-  const [username, setUsername] = useState<string>("");
+  const [domainsSaved, setDomainsSaved] = useState<string>("");
 
   const alertMsg = () =>
-    username
-      ? setAlertMsg(infoAlert(`The account '${username}' will be use`))
+    domainsSaved
+      ? setAlertMsg(
+          infoAlert(
+            `The accounts saved for providers : ${domainsSaved} are available to use`
+          )
+        )
       : setAlertMsg(warningAlert("No account saved yet"));
 
   const getSavedCredentials = async () => {
-    const username = await api.getSavedCredentials();
-    const isUsernameSaved = username !== "";
+    const domainsWithUsernameSaved = await api.getSavedCredentials();
+    const hasUsernameSaved = domainsWithUsernameSaved.length > 0;
 
-    if (isUsernameSaved) {
+    if (hasUsernameSaved) {
       setIsChecked(true);
-      setUsername(username);
+      setDomainsSaved(domainsWithUsernameSaved.join(", ").toLocaleUpperCase());
     } else {
       alertMsg();
     }
@@ -39,7 +43,7 @@ export function UseSavedCredentialsSwitch({
 
   useEffect(() => {
     checked && alertMsg();
-  }, [username, checked]);
+  }, [domainsSaved, checked]);
 
   return (
     <FormControlLabel

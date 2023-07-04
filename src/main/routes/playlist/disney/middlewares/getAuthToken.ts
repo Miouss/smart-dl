@@ -2,12 +2,16 @@ import { Response, NextFunction } from "express";
 import { createOptions } from "../../utils";
 import { fetchResponse } from "../../../../utils";
 
-export async function getAuthToken(req: any, res: Response, next: NextFunction) {
+export async function getAuthToken(
+  req: any,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const apiKey =
       "ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84";
 
-    const { username, password } = req.body.account;
+    const { username, password } = req;
 
     const accessToken = req.accessToken ?? (await getAccessToken(apiKey));
     const profile = await getProfileIdAndToken(
@@ -26,11 +30,11 @@ export async function getAuthToken(req: any, res: Response, next: NextFunction) 
   }
 }
 
-async function getAccessToken(apiKey: string) {
+async function getAccessToken(authorization: string) {
   const url = "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql";
 
   const header = {
-    authorization: apiKey,
+    authorization,
   };
 
   const body = {
@@ -71,11 +75,9 @@ async function getProfileIdAndToken(
       const data = await getByOtp(accessToken, email, password);
       return data;
     } catch (err) {
-      console.log(err);
       await requestOtp(accessToken, email);
-      res.status(
-        401
-      ).json({
+
+      res.status(401).json({
         info: "OTP requested, please look at your email and enter the OTP in the password field",
         accessToken,
       });
@@ -84,14 +86,14 @@ async function getProfileIdAndToken(
 }
 
 async function getByCredentials(
-  accessToken: string,
+  authorization: string,
   email: string,
   password: string
 ) {
   const url = "https://disney.api.edge.bamgrid.com/v1/public/graphql";
 
   const header = {
-    authorization: accessToken,
+    authorization,
   };
 
   const body = {
@@ -116,11 +118,15 @@ async function getByCredentials(
   };
 }
 
-async function getByOtp(accessToken: string, email: string, password: string) {
+async function getByOtp(
+  authorization: string,
+  email: string,
+  password: string
+) {
   const url = "https://disney.api.edge.bamgrid.com/v1/public/graphql";
 
   const header = {
-    authorization: accessToken,
+    authorization,
   };
 
   const body = {
@@ -140,10 +146,8 @@ async function getByOtp(accessToken: string, email: string, password: string) {
   const data = await fetchResponse("json", url, options);
 
   const header2 = {
-    authorization: accessToken,
+    authorization,
   };
-
-  console.log(data);
 
   const body2 = {
     query:
@@ -166,11 +170,11 @@ async function getByOtp(accessToken: string, email: string, password: string) {
   };
 }
 
-async function requestOtp(accessToken: string, email: string) {
+async function requestOtp(authorization: string, email: string) {
   const url = "https://disney.api.edge.bamgrid.com/v1/public/graphql";
 
   const header = {
-    authorization: accessToken,
+    authorization,
   };
 
   const body = {
@@ -187,12 +191,14 @@ async function requestOtp(accessToken: string, email: string) {
 
   const options = createOptions("POST", header, body);
 
-  await fetchResponse(
+  const data = await fetchResponse(
     "json",
     url,
     options,
     "OTP has been requested too many times, try again later"
   );
+
+  if(data.errors) throw new Error("Login failed");
 }
 
 async function getRefreshToken(profile: { id: string; token: string }) {
@@ -220,11 +226,11 @@ async function getRefreshToken(profile: { id: string; token: string }) {
   return data.extensions.sdk.token.refreshToken;
 }
 
-async function getDRMToken(refreshToken: string, apiKey: string) {
+async function getDRMToken(refreshToken: string, authorization: string) {
   const url = "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql";
 
   const header = {
-    authorization: apiKey,
+    authorization,
   };
 
   const body = {
