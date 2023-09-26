@@ -1,6 +1,6 @@
-# Video demonstration : https://streamable.com/uxvuqy
+# Video demonstration : https://youtu.be/5hqUIFGVgns
 
-# wwe-dl
+# smart-dl
 Download contents from the WWE Network
 
 ## Testing
