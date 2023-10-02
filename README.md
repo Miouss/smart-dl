@@ -1,4 +1,4 @@
-# Video demonstration : https://youtu.be/5hqUIFGVgns
+# [Video demonstration](https://youtu.be/5hqUIFGVgns)
 
 # smart-dl
 Download contents from the WWE Network
